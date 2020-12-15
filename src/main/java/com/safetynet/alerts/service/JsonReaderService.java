@@ -11,7 +11,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -33,6 +33,15 @@ public class JsonReaderService {
 
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private PersonService personService;
+
+    @Autowired
+    private MedicalRecordService medicalRecordService;
+
+    @Autowired
+    private FireStationService fireStationService;
+
 
     private String filePath;
 
@@ -52,8 +61,13 @@ public class JsonReaderService {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(inputStreamReader);
 
             this.lstPerson = readListPersonFromJsonObject(jsonObject);
+            personService.saveAllPersons(this.lstPerson);
+
             this.lstFireStation = readListFireStationFromJsonObject(jsonObject);
+            fireStationService.saveAllFireStations(lstFireStation);
+
             this.lstMedicalRecords = readListMedicalRecordFromJsonObject(jsonObject);
+            medicalRecordService.saveAllMedicalRecords(lstMedicalRecords);
 
             inputStreamReader.close();
 
@@ -73,7 +87,6 @@ public class JsonReaderService {
         {
             try {
                 personList.add(objectMapper.readValue(itemArray.toString(), Person.class));
-                System.out.println(objectMapper.readValue(itemArray.toString(), Person.class).toString());
             } catch (JsonProcessingException exception) {
                 logger.error("Error while parsing input json file - persons : " + exception.getMessage() + " Stack Strace : " + exception.getStackTrace());
             }
@@ -92,7 +105,7 @@ public class JsonReaderService {
         {
             try {
                 fireStationList.add(objectMapper.readValue(itemArray.toString(), FireStation.class));
-                System.out.println(objectMapper.readValue(itemArray.toString(), FireStation.class).toString());
+
             } catch (JsonProcessingException exception) {
                 logger.error("Error while parsing input json file - firestations : " + exception.getMessage() + " Stack Strace : " + exception.getStackTrace());
             }
@@ -111,7 +124,6 @@ public class JsonReaderService {
         {
             try {
                 medicalRecordList.add(objectMapper.readValue(itemArray.toString(), MedicalRecord.class));
-                System.out.println(objectMapper.readValue(itemArray.toString(), MedicalRecord.class).toString());
             } catch (JsonProcessingException exception) {
                 logger.error("Error while parsing input json file - medicalRecords : " + exception.getMessage() + " Stack Strace : " + exception.getStackTrace());
             }

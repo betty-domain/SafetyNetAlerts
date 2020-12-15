@@ -1,5 +1,6 @@
 package com.safetynet.alerts.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -18,5 +19,6 @@ public class FireStation {
     private Long id;
 
     private String address;
-    private Integer number;
+
+    private Integer station;
 }
