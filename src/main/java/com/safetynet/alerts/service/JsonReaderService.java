@@ -1,5 +1,6 @@
 package com.safetynet.alerts.service;
 
+import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.FireStation;
@@ -52,6 +53,7 @@ public class JsonReaderService {
     public void ReadDataFromJsonFile() {
         logger.debug("Démarrage du chargement du fichier data.json");
 
+        //TODO : voir si cette syntaxe est acceptable et valable pour les tests unitaires ou s'il faut utiliser une notation avec classpath
         this.filePath = "./src/main/resources/data.json";
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(this.filePath));
@@ -75,7 +77,7 @@ public class JsonReaderService {
             logger.error("Error while parsing input json file : " + exception.getMessage() + " Stack Strace : " + exception.getStackTrace());
         }
 
-        logger.debug("Chargement du fichier data.json terminé et réussi");
+        logger.debug("Chargement du fichier data.json terminé");
     }
 
     private List<Person> readListPersonFromJsonObject(JSONObject jsonObject) {
@@ -89,6 +91,7 @@ public class JsonReaderService {
                 personList.add(objectMapper.readValue(itemArray.toString(), Person.class));
             } catch (JsonProcessingException exception) {
                 logger.error("Error while parsing input json file - persons : " + exception.getMessage() + " Stack Strace : " + exception.getStackTrace());
+                //TODO : voir comment propager l'exception
             }
         });
 
@@ -106,8 +109,10 @@ public class JsonReaderService {
             try {
                 fireStationList.add(objectMapper.readValue(itemArray.toString(), FireStation.class));
 
+                //TODO : problème d'une station de pompier en double dans le fichier de départ et donc dans la base de données
             } catch (JsonProcessingException exception) {
                 logger.error("Error while parsing input json file - firestations : " + exception.getMessage() + " Stack Strace : " + exception.getStackTrace());
+                //TODO : voir comment propager l'exception
             }
         });
 
@@ -126,6 +131,7 @@ public class JsonReaderService {
                 medicalRecordList.add(objectMapper.readValue(itemArray.toString(), MedicalRecord.class));
             } catch (JsonProcessingException exception) {
                 logger.error("Error while parsing input json file - medicalRecords : " + exception.getMessage() + " Stack Strace : " + exception.getStackTrace());
+                //TODO : voir comment propager l'exception
             }
         });
 
