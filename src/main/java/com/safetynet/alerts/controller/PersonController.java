@@ -1,8 +1,7 @@
 package com.safetynet.alerts.controller;
 
-import com.safetynet.alerts.ViewObjects.PersonInfo;
+import com.safetynet.alerts.viewObjects.PersonInfo;
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.service.JsonReaderService;
 import com.safetynet.alerts.service.PersonService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,14 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Iterator;
-import java.util.Optional;
 
 @RestController
 public class PersonController {
@@ -42,7 +38,7 @@ public class PersonController {
     public Person addPerson(@Validated @RequestBody Person person) {
         logger.info("Requête Post sur le endpoint 'person' reçue");
 
-        //TODO : comment retourner un code erreur sur la requête si la personne existe déjà ?
+        //TODO : comment retourner un code erreur sur la requête si la personne existe déjà ? erreur 403 à retourner (HTTPResponse et ResponseStatus)
         Person createdPerson = personService.addPerson(person);
 
         logger.info("Réponse suite au Post sur le endpoint 'person' envoyée");
@@ -62,9 +58,10 @@ public class PersonController {
         return updatedPerson;
     }
 
-    @DeleteMapping("/person/{firstname}/{lastname}")
-    public void DeletePerson(@PathVariable("firstname") final String firstname, @PathVariable("lastname") final String lastname)
+    @DeleteMapping("/person")
+    public void deletePerson(@RequestParam String firstname, @RequestParam String lastname)
     {
+        //TODO : retourner l'id de la personne supprimée
         logger.info("Requête Delete sur le endpoint 'person' reçue avec les paramètres firstname :" + firstname + " et lastname : " + lastname + " reçue");
 
         personService.deletePerson(firstname,lastname);
@@ -72,10 +69,11 @@ public class PersonController {
         logger.info("Réponse suite au Delete sur le endpoint 'person' reçue avec les paramètres firstname :" + firstname + " et lastname : " + lastname + " envoyée" );
     }
 
-    @GetMapping("/personInfo/{firstName}&{lastName}")
-    public Iterable<PersonInfo> getPersonsInfo(@PathVariable("firstName") final String firstname, @PathVariable("lastName") final String lastname ) {
-        //TODO : voir si le endpoint est correct car il ne respecte pas la syntaxe parsonInfo?{firstname}&{lastname}
+    @GetMapping("/personInfo")
+    public Iterable<PersonInfo> getPersonsInfo(@RequestParam String firstname, @RequestParam String lastname) {
+        //TODO : voir si le endpoint est correct car il ne respecte pas la syntaxe personInfo?{firstname}&{lastname} : changer en RequestParam
         logger.info("Requête Get sur le endpoint 'personInfo' avec firstname : {" + firstname + "} et lastname  {" + lastname + "} reçue");
+
 
         Iterable<PersonInfo> personInfoIterable = personService.getPersonsInfo(firstname,lastname);
 

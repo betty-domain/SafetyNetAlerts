@@ -1,6 +1,6 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.ViewObjects.PersonInfo;
+import com.safetynet.alerts.viewObjects.PersonInfo;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,9 +32,8 @@ public class PersonService {
      */
     public void saveAllPersons(List<Person> personList) {
 
-        if (personList != null) {
+        if (personList != null && !personList.isEmpty()) {
             personRepository.saveAll(personList);
-        } else {//TODO à implémenter
         }
     }
 
@@ -54,7 +52,6 @@ public class PersonService {
      * @return Liste des personnes
      */
     public Optional<Person> getPersonByFirstNameAndLastName(String firstname, String lastname) {
-        //TODO : que faire si plusieurs personnes sont présentes avec ce prénom ET ce nom ?
         return personRepository.findByFirstNameAndLastNameAllIgnoreCase(firstname, lastname);
     }
 
@@ -123,6 +120,7 @@ public class PersonService {
      */
     public void deletePerson(String firstname, String lastname)
     {
+        //Todo : gérer lec as où la personne si elle n'existe pas (erreur 403)
         personRepository.deletePersonByFirstNameAndLastNameAllIgnoreCase(firstname, lastname);
     }
 
@@ -134,6 +132,7 @@ public class PersonService {
      */
     public Iterable<PersonInfo> getPersonsInfo(String firstname, String lastname)
     {
+        //TODO à modifier pour ne chercherque par nom de famille
         List<Person> personList = personRepository.findAllByFirstNameAndLastNameAllIgnoreCase(firstname, lastname);
         Optional<MedicalRecord> optionalMedicalRecord = medicalRecordService.findMedicalRecordByFirstnameAndLastname(firstname, lastname);
 
@@ -166,4 +165,6 @@ public class PersonService {
 
         return  personInfoIterable;
     }
+
+
 }

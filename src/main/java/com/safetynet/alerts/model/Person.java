@@ -23,21 +23,19 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NonNull
-    //TODO quelle annotation peut-on utiliser pour obliger un non empty sur les chaines de caractères ?
+    //TODO quelle annotation peut-on utiliser pour obliger un non empty sur les chaines de caractères ? cf annotation hibernate
     private String firstName;
 
-    @NonNull
     private String lastName;
-    @NonNull
+
     private String address;
-    @NonNull
+
     private String city;
-    @NonNull
+
     private String zip;
-    @NonNull
+
     private String phone;
-    @NonNull
+
     private String email;
 
 }
