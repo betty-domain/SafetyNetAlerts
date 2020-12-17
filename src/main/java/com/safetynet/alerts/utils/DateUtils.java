@@ -22,8 +22,9 @@ public class DateUtils {
      * @param birthDate birthDate
      * @return calculated age
      */
-    public int getAge(LocalDate birthDate)
-    {
-        return Period.between(birthDate,this.getNowLocalDate()).getYears();
+    public int getAge(LocalDate birthDate) {
+
+        return Period.between(birthDate, this.getNowLocalDate()).getYears();
+
     }
 }
