@@ -1,11 +1,15 @@
 package com.safetynet.alerts.controller;
 
+import com.safetynet.alerts.model.FunctionalException;
 import com.safetynet.alerts.viewObjects.PersonInfo;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.service.PersonService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.aspectj.weaver.patterns.PerObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +18,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 @RestController
 public class PersonController {
@@ -38,12 +46,15 @@ public class PersonController {
     public Person addPerson(@Validated @RequestBody Person person) {
         logger.info("Requête Post sur le endpoint 'person' reçue");
 
-        //TODO : comment retourner un code erreur sur la requête si la personne existe déjà ? erreur 403 à retourner (HTTPResponse et ResponseStatus)
         Person createdPerson = personService.addPerson(person);
 
-        logger.info("Réponse suite au Post sur le endpoint 'person' envoyée");
+        if (createdPerson != null) {
+            logger.info("Réponse suite au Post sur le endpoint 'person' envoyée");
+            return createdPerson;
+        } else {
+            throw new FunctionalException("insert.person.error");
 
-        return createdPerson;
+        }
     }
 
     @PutMapping("/person")
@@ -51,22 +62,32 @@ public class PersonController {
     {
         logger.info("Requête Put sur le endpoint 'person' reçue");
 
-        Person updatedPerson = personService.updatePerson(person);
-        //TODO : comment retourner un code erreur sur la requête si la personne existe déjà ?
-        logger.info("Réponse suite au Put sur le endpoint 'person' envoyée");
-
-        return updatedPerson;
+        Optional<Person> updatedPerson = personService.updatePerson(person);
+        if (updatedPerson.isPresent())
+        {
+            logger.info("Réponse suite au Put sur le endpoint 'person' envoyée");
+            return updatedPerson.get();
+        }
+        else
+        {
+            throw new FunctionalException("update.person.error");
+        }
     }
 
     @DeleteMapping("/person")
-    public void deletePerson(@RequestParam String firstname, @RequestParam String lastname)
+    public Integer deletePerson(@RequestParam String firstname, @RequestParam String lastname)
     {
-        //TODO : retourner l'id de la personne supprimée
         logger.info("Requête Delete sur le endpoint 'person' reçue avec les paramètres firstname :" + firstname + " et lastname : " + lastname + " reçue");
 
-        personService.deletePerson(firstname,lastname);
-
-        logger.info("Réponse suite au Delete sur le endpoint 'person' reçue avec les paramètres firstname :" + firstname + " et lastname : " + lastname + " envoyée" );
+        Integer deleteResult = personService.deletePerson(firstname,lastname);
+        if (deleteResult!=null) {
+            logger.info("Réponse suite au Delete sur le endpoint 'person' reçue avec les paramètres firstname :" + firstname + " et lastname : " + lastname + " envoyée");
+            return deleteResult;
+        }
+        else
+        {
+            throw new FunctionalException("delete.person.error");
+        }
     }
 
     @GetMapping("/personInfo")

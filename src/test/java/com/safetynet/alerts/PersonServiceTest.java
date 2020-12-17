@@ -3,15 +3,10 @@ package com.safetynet.alerts;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.service.PersonService;
-import com.safetynet.alerts.utils.DateUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,8 +18,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyIterable;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -115,7 +108,7 @@ public class PersonServiceTest {
     @Test
     public void getPersonByFirstNameAndLastNameWithNullValues()
     {
-        when(personRepositoryMock.findByFirstNameAndLastNameAllIgnoreCase(any(String.class), any(String.class))).thenReturn(null);
+        when(personRepositoryMock.findByFirstNameAndLastNameAllIgnoreCase(null, null)).thenReturn(null);
         assertThat(personService.getPersonByFirstNameAndLastName(null,null)).isNull();
     }
 
@@ -132,6 +125,23 @@ public class PersonServiceTest {
     {
         Optional<Person> optionalPerson = Optional.of(person);
         when(personRepositoryMock.findByFirstNameAndLastNameAllIgnoreCase(any(String.class), any(String.class))).thenReturn(optionalPerson);
-        assertThat(personService.getPersonByFirstNameAndLastName(new String(),new String())).isPresent().isInstanceOf(Person.class);
+        assertThat(personService.getPersonByFirstNameAndLastName(new String(),new String())).isPresent().get().isInstanceOf(Person.class);
     }
+
+    @Test
+    public void addPersonWithNullPerson()
+    {
+        when(personRepositoryMock.save(null)).thenReturn(null);
+        verify(personRepositoryMock, Mockito.times(0)).save(any());
+        assertThat(personService.addPerson(null)).isNull();
+    }
+
+    @Test
+    public void addPersonWithPerson()
+    {
+        when(personRepositoryMock.save(person)).thenReturn(person);
+        assertThat(personService.addPerson(person)).isEqualTo(person);
+        verify(personRepositoryMock, Mockito.times(1)).save(any());
+    }
+
 }

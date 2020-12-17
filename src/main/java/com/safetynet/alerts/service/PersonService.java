@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,21 +57,29 @@ public class PersonService {
     }
 
     /**
-     * Sauvegarde une personne
-     * @param person personne à sauvegarder
+     * Sauvegarde une personne si elle n'existe pas déjà
+     * @param person personne à sauvegarder,
+     * @return personne enregistrée, null si elle existait déjà
      */
     public Person addPerson(Person person) {
-
-        Optional<Person> personOptional = this.getPersonByFirstNameAndLastName(person.getFirstName(),person.getLastName());
-        if (personOptional.isPresent())
-        {
-            logger.error("Impossible d'ajouter une personne qui existe déjà, firstname: {" + person.getFirstName() + "} et lastname : {"+ person.getLastName() + "}");
-            return null;
+        if (person != null) {
+            Optional<Person> personOptional = this.getPersonByFirstNameAndLastName(person.getFirstName(),person.getLastName());
+            if (personOptional.isPresent())
+            {
+                logger.error("Erreur lors de l'ajout d'une personne déjà existante");
+                return null;
+            }
+            else {
+                try {
+                    personRepository.save(person);
+                }
+                catch (Exception exception) {
+                    logger.error("Erreur lors de l'ajout d'une personne :" + exception.getMessage() + " StackTrace : " + exception.getStackTrace());
+                    return null;
+                }
+            }
         }
-        else {
-            personRepository.save(person);
-            return person;
-        }
+        return person;
     }
 
     /**
@@ -78,38 +87,36 @@ public class PersonService {
      * @param person Personne à mettre à jour
      * @return Personne mise à jour, null si la mise à jour a échoué ou que la personne n'existait pas
      */
-    public Person updatePerson(Person person)
+    public Optional<Person> updatePerson(Person person)
     {
-        Optional<Person> personOptional = this.getPersonByFirstNameAndLastName(person.getFirstName(),person.getLastName());
+        if (person!=null) {
+            Optional<Person> personOptional = this.getPersonByFirstNameAndLastName(person.getFirstName(), person.getLastName());
 
-        if (personOptional.isPresent())
-        {
-            Person personToUpdate = personOptional.get();
-            //TODO : normalement le not null est garanti par l'annotation sur la classe ?
-            if (person.getAddress()!=null) {
+            if (personOptional.isPresent()) {
+                Person personToUpdate = personOptional.get();
+
                 personToUpdate.setAddress(person.getAddress());
-            }
-            if (person.getCity()!=null) {
                 personToUpdate.setCity(person.getCity());
-            }
-            if (person.getEmail()!=null) {
                 personToUpdate.setEmail(person.getEmail());
-            }
-
-            if (person.getPhone()!=null) {
                 personToUpdate.setPhone(person.getPhone());
-            }
-
-            if (person.getZip()!=null) {
                 personToUpdate.setZip(person.getZip());
+
+                try {
+                    personRepository.save(personToUpdate);
+                    return Optional.of(personToUpdate);
+                } catch (Exception exception) {
+                    logger.error("Erreur lors de la mise à jour d'une personne : " + exception.getMessage() + " StackTrace : " + exception.getStackTrace());
+                    return Optional.empty();
+                }
+            } else {
+                logger.error("Erreur lors de la mise à jour d'une personne : la personne n'existe pas");
+                return Optional.empty();
             }
-            personRepository.save(personToUpdate);
-            return personToUpdate;
         }
         else
         {
-            //TODO : fatu-il tracer une exception ici ou une info pour signifier que l'utilisateur existe déjà?
-            return null;
+            logger.error("Erreur lors de la mise à jour d'une personne : object null envoyé");
+            return Optional.empty();
         }
     }
 
@@ -118,10 +125,23 @@ public class PersonService {
      * @param firstname prénom de la personne à supprimer
      * @param lastname nom de la personne à supprimer
      */
-    public void deletePerson(String firstname, String lastname)
+    public Integer deletePerson(String firstname, String lastname)
     {
-        //Todo : gérer lec as où la personne si elle n'existe pas (erreur 403)
-        personRepository.deletePersonByFirstNameAndLastNameAllIgnoreCase(firstname, lastname);
+        Optional<Person> personOptional = this.getPersonByFirstNameAndLastName(firstname,lastname);
+        if (personOptional.isPresent()) {
+            try {
+                return personRepository.deletePersonByFirstNameAndLastNameAllIgnoreCase(firstname, lastname);
+
+            } catch (Exception exception) {
+                logger.error("Erreur lors de la suppression d'une personne :" + exception.getMessage() + " StackTrace : " + exception.getStackTrace());
+                return null;
+            }
+        }
+        else
+        {
+            logger.error("Erreur lors de la suppression d'une personne inexistante");
+            return null;
+        }
     }
 
     /**

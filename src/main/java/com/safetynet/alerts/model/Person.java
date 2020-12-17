@@ -7,35 +7,44 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
-@Entity
+@Entity @IdClass(PersonId.class)
 @Table(name="Persons")
 public class Person {
 
-    public Person()
-    {
-
-    }
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    //TODO quelle annotation peut-on utiliser pour obliger un non empty sur les chaines de caractères ? cf annotation hibernate
+    @NotNull
+    @NotEmpty
     private String firstName;
 
+    @Id
+    @NotNull
+    @NotEmpty
     private String lastName;
 
+    @NotNull
+    @NotEmpty
     private String address;
 
+    @NotNull
+    @NotEmpty
     private String city;
 
+    @NotNull
+    @NotEmpty
     private String zip;
 
+    @NotNull
+    @NotEmpty
     private String phone;
 
+    @NotNull
+    @NotEmpty
     private String email;
 
 }
