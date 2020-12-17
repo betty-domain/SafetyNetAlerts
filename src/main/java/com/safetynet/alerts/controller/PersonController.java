@@ -62,11 +62,11 @@ public class PersonController {
     {
         logger.info("Requête Put sur le endpoint 'person' reçue");
 
-        Optional<Person> updatedPerson = personService.updatePerson(person);
-        if (updatedPerson.isPresent())
+        Person updatedPerson = personService.updatePerson(person);
+        if (updatedPerson!=null )
         {
             logger.info("Réponse suite au Put sur le endpoint 'person' envoyée");
-            return updatedPerson.get();
+            return updatedPerson;
         }
         else
         {
@@ -90,16 +90,5 @@ public class PersonController {
         }
     }
 
-    @GetMapping("/personInfo")
-    public Iterable<PersonInfo> getPersonsInfo(@RequestParam String firstname, @RequestParam String lastname) {
-        //TODO : voir si le endpoint est correct car il ne respecte pas la syntaxe personInfo?{firstname}&{lastname} : changer en RequestParam
-        logger.info("Requête Get sur le endpoint 'personInfo' avec firstname : {" + firstname + "} et lastname  {" + lastname + "} reçue");
 
-
-        Iterable<PersonInfo> personInfoIterable = personService.getPersonsInfo(firstname,lastname);
-
-        logger.info("Réponse suite au Get sur le endpoint 'personInfo' avec firstname : {" + firstname + "} et lastname  {" + lastname + "} transmise");
-
-        return personInfoIterable;
-    }
 }

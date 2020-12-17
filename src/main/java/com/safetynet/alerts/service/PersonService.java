@@ -7,6 +7,7 @@ import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.utils.DateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.event.internal.OnUpdateVisitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,19 +24,26 @@ public class PersonService {
     @Autowired
     private PersonRepository personRepository;
 
-    @Autowired
-    private MedicalRecordService medicalRecordService;
-
     /**
      * Sauvegarde la liste des personnes passées en paramètre
      *
      * @param personList Liste des personnes à sauvegarder
      */
-    public void saveAllPersons(List<Person> personList) {
+    public boolean saveAllPersons(List<Person> personList) {
 
         if (personList != null && !personList.isEmpty()) {
-            personRepository.saveAll(personList);
+            try
+            {
+                personRepository.saveAll(personList);
+                return true;
+            }
+            catch (Exception exception)
+            {
+                logger.error("Erreur lors de l'enregistrement de la liste des personnes " + exception.getMessage() + " , Stack Trace : " + exception.getStackTrace());
+                //TODO voir comment faire suivre l'exception et arrêter le programme éventuellement ?
+            }
         }
+        return false;
     }
 
     /**
@@ -44,7 +52,12 @@ public class PersonService {
      * @return Liste des personnes
      */
     public Iterable<Person> getAllPersons() {
-        return personRepository.findAll();
+        try {
+            return personRepository.findAll();
+        } catch (Exception exception) {
+            logger.error("Erreur lors de la récupération de la liste des personnes : " + exception.getMessage() + " Stack Trace + " + exception.getStackTrace());
+            return null;
+        }
     }
 
     /**
@@ -53,7 +66,12 @@ public class PersonService {
      * @return Liste des personnes
      */
     public Optional<Person> getPersonByFirstNameAndLastName(String firstname, String lastname) {
-        return personRepository.findByFirstNameAndLastNameAllIgnoreCase(firstname, lastname);
+        try {
+            return personRepository.findByFirstNameAndLastNameAllIgnoreCase(firstname, lastname);
+        } catch (Exception exception) {
+            logger.error("Erreur lors de la récupération d'une personne : " + exception.getMessage() + " Stack Trace + " + exception.getStackTrace());
+            return null;
+        }
     }
 
     /**
@@ -87,7 +105,7 @@ public class PersonService {
      * @param person Personne à mettre à jour
      * @return Personne mise à jour, null si la mise à jour a échoué ou que la personne n'existait pas
      */
-    public Optional<Person> updatePerson(Person person)
+    public Person updatePerson(Person person)
     {
         if (person!=null) {
             Optional<Person> personOptional = this.getPersonByFirstNameAndLastName(person.getFirstName(), person.getLastName());
@@ -103,20 +121,20 @@ public class PersonService {
 
                 try {
                     personRepository.save(personToUpdate);
-                    return Optional.of(personToUpdate);
+                    return personToUpdate;
                 } catch (Exception exception) {
                     logger.error("Erreur lors de la mise à jour d'une personne : " + exception.getMessage() + " StackTrace : " + exception.getStackTrace());
-                    return Optional.empty();
+                    return null;
                 }
             } else {
                 logger.error("Erreur lors de la mise à jour d'une personne : la personne n'existe pas");
-                return Optional.empty();
+                return null;
             }
         }
         else
         {
             logger.error("Erreur lors de la mise à jour d'une personne : object null envoyé");
-            return Optional.empty();
+            return null;
         }
     }
 
@@ -144,47 +162,7 @@ public class PersonService {
         }
     }
 
-    /**
-     * Récupère les informations des personnes selon leur nom et prénoms
-     * @param firstname prénom
-     * @param lastname nom
-     * @return liste des personnes avec leurs informations
-     */
-    public Iterable<PersonInfo> getPersonsInfo(String firstname, String lastname)
-    {
-        //TODO à modifier pour ne chercherque par nom de famille
-        List<Person> personList = personRepository.findAllByFirstNameAndLastNameAllIgnoreCase(firstname, lastname);
-        Optional<MedicalRecord> optionalMedicalRecord = medicalRecordService.findMedicalRecordByFirstnameAndLastname(firstname, lastname);
 
-        return  convertToPersonInfoIterable(personList,optionalMedicalRecord);
-    }
-
-    private Iterable<PersonInfo> convertToPersonInfoIterable(List<Person> personList, Optional<MedicalRecord> optionalMedicalRecord)
-    {
-        List<PersonInfo> personInfoIterable = new ArrayList<>() ;
-
-        MedicalRecord medicalRecord = new MedicalRecord();
-        if (optionalMedicalRecord.isPresent())
-        {
-            medicalRecord = optionalMedicalRecord.get();
-        }
-
-        DateUtils dateUtil = new DateUtils();
-
-        final MedicalRecord finalMedicalRecord = medicalRecord;
-        personList.forEach(person -> {
-            PersonInfo personInfo = new PersonInfo();
-            personInfo.setAdresse(person.getAddress());
-            personInfo.setAge(dateUtil.getAge(finalMedicalRecord.getBirthdate()));
-            personInfo.setMail(person.getEmail());
-            personInfo.setAllergies(finalMedicalRecord.getAllergies());
-            personInfo.setNom(person.getLastName());
-            personInfo.setDosageMedicaments(finalMedicalRecord.getMedications());
-            personInfoIterable.add(personInfo);
-        });
-
-        return  personInfoIterable;
-    }
 
 
 }
