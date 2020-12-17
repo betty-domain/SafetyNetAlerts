@@ -1,5 +1,6 @@
 package com.safetynet.alerts.controller;
 
+import com.safetynet.alerts.ViewObjects.PersonInfo;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.service.JsonReaderService;
 import com.safetynet.alerts.service.PersonService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Iterator;
 import java.util.Optional;
 
 @RestController
@@ -40,9 +42,10 @@ public class PersonController {
     public Person addPerson(@Validated @RequestBody Person person) {
         logger.info("Requête Post sur le endpoint 'person' reçue");
 
+        //TODO : comment retourner un code erreur sur la requête si la personne existe déjà ?
         Person createdPerson = personService.addPerson(person);
 
-        logger.info("Réponse suite au Post sur le endpoint 'person' envoyées");
+        logger.info("Réponse suite au Post sur le endpoint 'person' envoyée");
 
         return createdPerson;
     }
@@ -54,7 +57,7 @@ public class PersonController {
 
         Person updatedPerson = personService.updatePerson(person);
         //TODO : comment retourner un code erreur sur la requête si la personne existe déjà ?
-        logger.info("Réponse suite au Put sur le endpoint 'person' traitée");
+        logger.info("Réponse suite au Put sur le endpoint 'person' envoyée");
 
         return updatedPerson;
     }
@@ -66,6 +69,18 @@ public class PersonController {
 
         personService.deletePerson(firstname,lastname);
 
-        logger.info("Réponse suite au Delete sur le endpoint 'person' reçue avec les paramètres firstname :" + firstname + " et lastname : " + lastname + " traitée" );
+        logger.info("Réponse suite au Delete sur le endpoint 'person' reçue avec les paramètres firstname :" + firstname + " et lastname : " + lastname + " envoyée" );
+    }
+
+    @GetMapping("/personInfo/{firstName}&{lastName}")
+    public Iterable<PersonInfo> getPersonsInfo(@PathVariable("firstName") final String firstname, @PathVariable("lastName") final String lastname ) {
+        //TODO : voir si le endpoint est correct car il ne respecte pas la syntaxe parsonInfo?{firstname}&{lastname}
+        logger.info("Requête Get sur le endpoint 'personInfo' avec firstname : {" + firstname + "} et lastname  {" + lastname + "} reçue");
+
+        Iterable<PersonInfo> personInfoIterable = personService.getPersonsInfo(firstname,lastname);
+
+        logger.info("Réponse suite au Get sur le endpoint 'personInfo' avec firstname : {" + firstname + "} et lastname  {" + lastname + "} transmise");
+
+        return personInfoIterable;
     }
 }

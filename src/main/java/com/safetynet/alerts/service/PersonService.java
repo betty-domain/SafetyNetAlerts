@@ -1,10 +1,16 @@
 package com.safetynet.alerts.service;
 
+import com.safetynet.alerts.ViewObjects.PersonInfo;
+import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
+import com.safetynet.alerts.utils.DateUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,8 +18,13 @@ import java.util.Optional;
 @Service
 public class PersonService {
 
+    private static final Logger logger = LogManager.getLogger(PersonService.class);
+
     @Autowired
     private PersonRepository personRepository;
+
+    @Autowired
+    private MedicalRecordService medicalRecordService;
 
     /**
      * Sauvegarde la liste des personnes passées en paramètre
@@ -43,6 +54,7 @@ public class PersonService {
      * @return Liste des personnes
      */
     public Optional<Person> getPersonByFirstNameAndLastName(String firstname, String lastname) {
+        //TODO : que faire si plusieurs personnes sont présentes avec ce prénom ET ce nom ?
         return personRepository.findByFirstNameAndLastNameAllIgnoreCase(firstname, lastname);
     }
 
@@ -55,7 +67,7 @@ public class PersonService {
         Optional<Person> personOptional = this.getPersonByFirstNameAndLastName(person.getFirstName(),person.getLastName());
         if (personOptional.isPresent())
         {
-            //TODO : ajouter une trace dans les logs pour signifier que la personne existe déjà
+            logger.error("Impossible d'ajouter une personne qui existe déjà, firstname: {" + person.getFirstName() + "} et lastname : {"+ person.getLastName() + "}");
             return null;
         }
         else {
@@ -112,5 +124,46 @@ public class PersonService {
     public void deletePerson(String firstname, String lastname)
     {
         personRepository.deletePersonByFirstNameAndLastNameAllIgnoreCase(firstname, lastname);
+    }
+
+    /**
+     * Récupère les informations des personnes selon leur nom et prénoms
+     * @param firstname prénom
+     * @param lastname nom
+     * @return liste des personnes avec leurs informations
+     */
+    public Iterable<PersonInfo> getPersonsInfo(String firstname, String lastname)
+    {
+        List<Person> personList = personRepository.findAllByFirstNameAndLastNameAllIgnoreCase(firstname, lastname);
+        Optional<MedicalRecord> optionalMedicalRecord = medicalRecordService.findMedicalRecordByFirstnameAndLastname(firstname, lastname);
+
+        return  convertToPersonInfoIterable(personList,optionalMedicalRecord);
+    }
+
+    private Iterable<PersonInfo> convertToPersonInfoIterable(List<Person> personList, Optional<MedicalRecord> optionalMedicalRecord)
+    {
+        List<PersonInfo> personInfoIterable = new ArrayList<>() ;
+
+        MedicalRecord medicalRecord = new MedicalRecord();
+        if (optionalMedicalRecord.isPresent())
+        {
+            medicalRecord = optionalMedicalRecord.get();
+        }
+
+        DateUtils dateUtil = new DateUtils();
+
+        final MedicalRecord finalMedicalRecord = medicalRecord;
+        personList.forEach(person -> {
+            PersonInfo personInfo = new PersonInfo();
+            personInfo.setAdresse(person.getAddress());
+            personInfo.setAge(dateUtil.getAge(finalMedicalRecord.getBirthdate()));
+            personInfo.setMail(person.getEmail());
+            personInfo.setAllergies(finalMedicalRecord.getAllergies());
+            personInfo.setNom(person.getLastName());
+            personInfo.setDosageMedicaments(finalMedicalRecord.getMedications());
+            personInfoIterable.add(personInfo);
+        });
+
+        return  personInfoIterable;
     }
 }
