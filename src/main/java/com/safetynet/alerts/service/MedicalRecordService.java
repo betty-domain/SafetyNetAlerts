@@ -29,13 +29,15 @@ public class MedicalRecordService {
     }
 
     /**
-     * Récupère la donnée médicale correspondant à un nom et un prénom précis
-     * @param firstname nom recherché
+     * Récupère la liste des donnée médicale correspondant à un nom de famille
      * @param lastname prénom recherché
-     * @return donnée médicale du patient (nom et prénom) fourni
+     * @return liste des données médicales des patients corresponadnt au nom de famille fourni
      */
-    public Optional<MedicalRecord> findMedicalRecordByFirstnameAndLastname(String firstname, String lastname)
-    {
-        return medicalRecordRepository.findByFirstNameAndLastNameAllIgnoreCase(firstname, lastname);
+    public List<MedicalRecord> getListMedicalRecordByLastname(String lastname) {
+        if (lastname != null) {
+            return medicalRecordRepository.findAllByLastNameAllIgnoreCase(lastname);
+        } else {
+            return null;
+        }
     }
 }

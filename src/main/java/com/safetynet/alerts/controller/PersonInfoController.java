@@ -1,8 +1,7 @@
 package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.service.PersonInfoService;
-import com.safetynet.alerts.service.PersonService;
-import com.safetynet.alerts.viewObjects.PersonInfo;
+import com.safetynet.alerts.model.dto.PersonInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ public class PersonInfoController {
 
     @GetMapping("/personInfo")
     public Iterable<PersonInfo> getPersonsInfo(@RequestParam String firstname, @RequestParam String lastname) {
-        //TODO : voir si le endpoint est correct car il ne respecte pas la syntaxe personInfo?{firstname}&{lastname} : changer en RequestParam
+
         logger.info("Requête Get sur le endpoint 'personInfo' avec firstname : {" + firstname + "} et lastname  {" + lastname + "} reçue");
 
 
