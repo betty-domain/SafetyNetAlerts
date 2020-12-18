@@ -27,7 +27,6 @@ public interface PersonCommunityMemberDTOMapper {
     })
     CommunityMemberDTO personToCommunityMemberDTO(Person person, MedicalRecord medicalRecord);
 
-    List<Person> map(List<CommunityMemberDTO> communityMemberDTO);
 
     @Named("calculateAge")
     public static int getAge(LocalDate birthDate) {

@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface MedicalRecordRepository extends CrudRepository<MedicalRecord,Long> {
 
     List<MedicalRecord> findAllByLastNameAllIgnoreCase(String lastname);
+
+    MedicalRecord findByLastNameAndFirstNameAllIgnoreCase(String lastname, String firstname);
 }

@@ -10,14 +10,14 @@ public class FireStationCommunity {
 
     private List<CommunityMemberDTO> communityMemberDTOList = new ArrayList<>();
     private long adultsCount;
-    private long childCount;
+    private long childsCount;
 
     public long getAdultsCount() {
 
         return communityMemberDTOList.stream().filter(communityMemberDTO -> communityMemberDTO.getAge() > 18).count();
     }
 
-    public long getChildCount() {
+    public long getChildsCount() {
         return communityMemberDTOList.stream().filter(communityMemberDTO -> communityMemberDTO.getAge() <= 18).count();
     }
 }

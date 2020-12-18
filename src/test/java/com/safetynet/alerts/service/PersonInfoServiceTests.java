@@ -1,8 +1,10 @@
 package com.safetynet.alerts.service;
 
+import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.model.dto.PersonInfo;
+import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.utils.DateUtils;
@@ -33,6 +35,9 @@ public class PersonInfoServiceTests {
 
     @MockBean
     private MedicalRecordRepository medicalRecordRepositoryMock;
+
+    @MockBean
+    private FireStationRepository fireStationRepositoryMock;
 
     @MockBean
     private DateUtils dateUtilsMock;
@@ -138,7 +143,7 @@ public class PersonInfoServiceTests {
         assertThat(isPersonInfoEqualToPerson(personInfosList.get(0), person, medicalRecord)).isTrue();
         assertThat(isPersonInfoEqualToPerson(personInfosList.get(1), secondPerson, secondMedicalRecord)).isTrue();
         assertThat(isPersonInfoEqualToPerson(personInfosList.get(2), thirdPerson, null)).isTrue();
-        assertThat(personInfosList.get(0).getAge()).isEqualTo(Period.between(medicalRecord.getBirthDate(),nowMockLocalDate).getYears());
+        assertThat(personInfosList.get(0).getAge()).isEqualTo(Period.between(medicalRecord.getBirthDate(), nowMockLocalDate).getYears());
     }
 
     private boolean isPersonInfoEqualToPerson(PersonInfo personInfoToCompare, Person personToCompare, MedicalRecord medicalRecordToCompare) {
@@ -156,4 +161,38 @@ public class PersonInfoServiceTests {
                     personInfoToCompare.getLastname().equalsIgnoreCase(personToCompare.getLastName());
         }
     }
+
+    @Test
+    public void getFireStationCommunityWithNullValues() {
+        assertThat(personInfoService.getFireStationCommunity(null)).isNull();
+        verify(fireStationRepositoryMock, Mockito.times(0)).findDistinctByStation(any(Integer.class));
+
+    }
+
+    @Test
+    public void getFireStationCommunityWithValidValues() {
+
+        FireStation fireStation = new FireStation();
+        fireStation.setStation(1);
+        fireStation.setAddress(person.getAddress());
+
+        List<FireStation> fireStationList = new ArrayList<>();
+        fireStationList.add(fireStation);
+
+        List<Person> personList = new ArrayList<>();
+        personList.add(person);
+
+        MedicalRecord medicalRecord = new MedicalRecord();
+        medicalRecord.setBirthDate(LocalDate.of(1910,10,10));
+
+        when(fireStationRepositoryMock.findDistinctByStation(1)).thenReturn(fireStationList);
+        when(personRepositoryMock.findAllByAddressInOrderByAddress(any())).thenReturn(personList);
+        when(medicalRecordRepositoryMock.findByLastNameAndFirstNameAllIgnoreCase(any(String.class), any(String.class))).thenReturn(medicalRecord);
+
+        assertThat(personInfoService.getFireStationCommunity(1).getAdultsCount()).isEqualTo(1);
+        assertThat(personInfoService.getFireStationCommunity(1).getChildsCount()).isEqualTo(0);
+        assertThat(personInfoService.getFireStationCommunity(1).getCommunityMemberDTOList()).size().isEqualTo(1);
+
+    }
+
 }

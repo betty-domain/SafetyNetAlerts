@@ -16,6 +16,8 @@ public interface PersonRepository extends CrudRepository<Person, Long> {
 
     List<Person> findAllByLastNameAllIgnoreCase(String lastname);
 
+    List<Person> findAllByAddressInOrderByAddress(List<String> addressList);
+
     @Transactional
     Integer deletePersonByFirstNameAndLastNameAllIgnoreCase(String firstname, String lastname);
     //TODO est ce que le delete peut retourner un objet personne supprimé?
