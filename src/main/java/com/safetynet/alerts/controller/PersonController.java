@@ -44,7 +44,7 @@ public class PersonController {
             logger.info("Réponse suite au Post sur le endpoint 'person' envoyée");
             return createdPerson;
         } else {
-            throw new FunctionalException("insert.person.error");
+            throw new FunctionalException("person.insert.error");
 
         }
     }
@@ -62,7 +62,7 @@ public class PersonController {
         }
         else
         {
-            throw new FunctionalException("update.person.error");
+            throw new FunctionalException("person.update.error");
         }
     }
 
@@ -78,7 +78,7 @@ public class PersonController {
         }
         else
         {
-            throw new FunctionalException("delete.person.error");
+            throw new FunctionalException("person.delete.error");
         }
     }
 

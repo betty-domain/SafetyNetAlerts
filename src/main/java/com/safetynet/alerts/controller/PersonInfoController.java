@@ -1,5 +1,6 @@
 package com.safetynet.alerts.controller;
 
+import com.safetynet.alerts.model.FunctionalException;
 import com.safetynet.alerts.service.PersonInfoService;
 import com.safetynet.alerts.model.dto.PersonInfo;
 import org.apache.logging.log4j.LogManager;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class PersonInfoController {
@@ -18,15 +21,16 @@ public class PersonInfoController {
     private PersonInfoService personInfoService;
 
     @GetMapping("/personInfo")
-    public Iterable<PersonInfo> getPersonsInfo(@RequestParam String firstname, @RequestParam String lastname) {
+    public List<PersonInfo> getPersonsInfo(@RequestParam String firstname, @RequestParam String lastname) {
 
         logger.info("Requête Get sur le endpoint 'personInfo' avec firstname : {" + firstname + "} et lastname  {" + lastname + "} reçue");
 
-
-        Iterable<PersonInfo> personInfoIterable = personInfoService.getPersonsInfo(firstname,lastname);
-
-        logger.info("Réponse suite au Get sur le endpoint 'personInfo' avec firstname : {" + firstname + "} et lastname  {" + lastname + "} transmise");
-
-        return personInfoIterable;
+        List<PersonInfo> personInfoIterable = personInfoService.getPersonsInfo(firstname, lastname);
+        if (personInfoIterable != null) {
+            logger.info("Réponse suite au Get sur le endpoint 'personInfo' avec firstname : {" + firstname + "} et lastname  {" + lastname + "} transmise");
+            return personInfoIterable;
+        } else {
+            throw new FunctionalException("personInfo.get.error");
+        }
     }
 }
