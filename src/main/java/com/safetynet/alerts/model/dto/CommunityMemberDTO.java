@@ -1,24 +1,24 @@
 package com.safetynet.alerts.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Data
 public class CommunityMemberDTO {
 
+    @JsonView(Views.Public.class)
     private String firstName;
 
+    @JsonView(Views.Public.class)
     private String lastName;
 
+    @JsonView(Views.Public.class)
     private String address;
 
+    @JsonView(Views.Public.class)
     private String phone;
 
-    //TODO : est il possible de ne pas générer cette propriété en réponse dans le JSON ?
+    @JsonView(Views.Private.class)
     private int age;
 
     public String toString()

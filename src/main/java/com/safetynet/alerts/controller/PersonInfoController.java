@@ -1,7 +1,9 @@
 package com.safetynet.alerts.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.safetynet.alerts.model.FunctionalException;
 import com.safetynet.alerts.model.dto.FireStationCommunity;
+import com.safetynet.alerts.model.dto.Views;
 import com.safetynet.alerts.service.PersonInfoService;
 import com.safetynet.alerts.model.dto.PersonInfo;
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +37,7 @@ public class PersonInfoController {
         }
     }
 
+    @JsonView(Views.Public.class)
     @GetMapping("/fireStation")
     public FireStationCommunity getFireStationCommunity(@RequestParam Integer stationNumber) {
 
