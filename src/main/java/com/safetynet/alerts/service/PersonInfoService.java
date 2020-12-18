@@ -2,6 +2,7 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.model.dto.FireStationCommunity;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.utils.DateUtils;
@@ -11,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -58,9 +58,9 @@ public class PersonInfoService {
 
         personList.forEach(personIterator -> {
             PersonInfo personInfo = new PersonInfo();
-            personInfo.setAdresse(personIterator.getAddress());
+            personInfo.setAddress(personIterator.getAddress());
             personInfo.setMail(personIterator.getEmail());
-            personInfo.setNom(personIterator.getLastName());
+            personInfo.setLastname(personIterator.getLastName());
 
             Optional<MedicalRecord> medicalRecordForPerson = medicalRecordList.stream().filter(medicalRecord ->
                     medicalRecord.getFirstName().equalsIgnoreCase(personIterator.getFirstName())
@@ -68,18 +68,23 @@ public class PersonInfoService {
             ).findFirst();
 
             if (medicalRecordForPerson.isPresent()) {
-                personInfo.setAllergies(medicalRecordForPerson.get().getAllergies());
-                personInfo.setDosageMedicaments(medicalRecordForPerson.get().getMedications());
+                personInfo.setAllergiesList(medicalRecordForPerson.get().getAllergies());
+                personInfo.setMedicationList(medicalRecordForPerson.get().getMedications());
                 personInfo.setAge(dateUtil.getAge(medicalRecordForPerson.get().getBirthdate()));
             }
             else
             {
-                personInfo.setAllergies(new ArrayList<>());
-                personInfo.setDosageMedicaments(new ArrayList<>());
+                personInfo.setAllergiesList(new ArrayList<>());
+                personInfo.setMedicationList(new ArrayList<>());
             }
             personInfoIterable.add(personInfo);
         });
 
         return personInfoIterable;
+    }
+
+
+    public FireStationCommunity getFireStationCommunity(Integer any) {
+        return null;
     }
 }

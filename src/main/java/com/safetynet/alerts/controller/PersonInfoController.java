@@ -1,6 +1,7 @@
 package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.model.FunctionalException;
+import com.safetynet.alerts.model.dto.FireStationCommunity;
 import com.safetynet.alerts.service.PersonInfoService;
 import com.safetynet.alerts.model.dto.PersonInfo;
 import org.apache.logging.log4j.LogManager;
@@ -33,4 +34,20 @@ public class PersonInfoController {
             throw new FunctionalException("personInfo.get.error");
         }
     }
+
+    @GetMapping("/fireStation")
+    public FireStationCommunity getFireStationCommunity(@RequestParam Integer stationNumber) {
+
+        logger.info("Requête Get sur le endpoint 'fireStation' avec stationNumber : {" + stationNumber.toString() + "} reçue");
+
+        FireStationCommunity fireStationCommunity = personInfoService.getFireStationCommunity(stationNumber);
+        if (fireStationCommunity != null) {
+            logger.info("Réponse suite au Get sur le endpoint 'fireStation' avec stationNumber : {" +stationNumber.toString() + "} transmise");
+            return fireStationCommunity;
+        } else {
+            throw new FunctionalException("personInfo.getFireStationCommunity.error");
+        }
+    }
+
+
 }

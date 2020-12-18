@@ -2,7 +2,7 @@ package com.safetynet.alerts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.FunctionalException;
-import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.model.dto.FireStationCommunity;
 import com.safetynet.alerts.model.dto.PersonInfo;
 import com.safetynet.alerts.service.PersonInfoService;
 import org.junit.jupiter.api.Test;
@@ -44,11 +44,11 @@ public class PersonInfoControllerTests {
     @Test
     public void getPersonsInfoValidTest() throws Exception {
         PersonInfo personInfo = new PersonInfo();
-        personInfo.setNom("myName");
-        personInfo.setAdresse("myAddress");
+        personInfo.setLastname("myName");
+        personInfo.setAddress("myAddress");
         personInfo.setMail("myMail");
-        personInfo.setAllergies(new ArrayList<>());
-        personInfo.setDosageMedicaments(new ArrayList<>());
+        personInfo.setAllergiesList(new ArrayList<>());
+        personInfo.setMedicationList(new ArrayList<>());
         personInfo.setAge(15);
         List<PersonInfo> personInfoList = new ArrayList<>();
         personInfoList.add(personInfo);
@@ -83,4 +83,38 @@ public class PersonInfoControllerTests {
                     assertThat(mvcResult.getResolvedException().getMessage()).isEqualTo("personInfo.get.error");
                 });
     }
+
+    @Test
+    public void getFireStationCommunityWithException() throws Exception{
+
+        when(personInfoServiceMock.getFireStationCommunity(any(Integer.class))).thenReturn(null);
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/fireStation").
+                param("stationNumber","1").
+                contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(builder).
+                andExpect(status().isBadRequest()).
+                andExpect(mvcResult ->
+                {
+                    assertThat(mvcResult.getResolvedException()).isInstanceOf(FunctionalException.class);
+                    assertThat(mvcResult.getResolvedException().getMessage()).isEqualTo("personInfo.getFireStationCommunity.error");
+                });
+    }
+
+    @Test
+    public void getFireStationCommunityValidTest() throws Exception{
+
+        FireStationCommunity fireStationCommunity = new FireStationCommunity();
+
+        when(personInfoServiceMock.getFireStationCommunity(any(Integer.class))).thenReturn(fireStationCommunity);
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/fireStation").
+                param("stationNumber","1").
+                contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(builder).
+                andExpect(status().isOk());
+    }
+
 }

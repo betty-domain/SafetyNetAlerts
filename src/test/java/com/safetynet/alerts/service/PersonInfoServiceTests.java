@@ -2,12 +2,9 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.model.PersonId;
 import com.safetynet.alerts.model.dto.PersonInfo;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
-import com.safetynet.alerts.service.PersonInfoService;
-import com.safetynet.alerts.service.PersonService;
 import com.safetynet.alerts.utils.DateUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -146,17 +143,17 @@ public class PersonInfoServiceTests {
 
     private boolean isPersonInfoEqualToPerson(PersonInfo personInfoToCompare, Person personToCompare, MedicalRecord medicalRecordToCompare) {
         if (medicalRecordToCompare != null) {
-            return personInfoToCompare.getAdresse().equalsIgnoreCase(personToCompare.getAddress()) &&
-                    personInfoToCompare.getAllergies().equals(medicalRecordToCompare.getAllergies()) &&
+            return personInfoToCompare.getAddress().equalsIgnoreCase(personToCompare.getAddress()) &&
+                    personInfoToCompare.getAllergiesList().equals(medicalRecordToCompare.getAllergies()) &&
                     personInfoToCompare.getMail().equalsIgnoreCase(personToCompare.getEmail()) &&
-                    personInfoToCompare.getDosageMedicaments().equals(medicalRecordToCompare.getMedications()) &&
-                    personInfoToCompare.getNom().equalsIgnoreCase(personToCompare.getLastName());
+                    personInfoToCompare.getMedicationList().equals(medicalRecordToCompare.getMedications()) &&
+                    personInfoToCompare.getLastname().equalsIgnoreCase(personToCompare.getLastName());
         } else {
-            return personInfoToCompare.getAdresse().equalsIgnoreCase(personToCompare.getAddress()) &&
-                    personInfoToCompare.getAllergies().equals(new ArrayList<>()) &&
+            return personInfoToCompare.getAddress().equalsIgnoreCase(personToCompare.getAddress()) &&
+                    personInfoToCompare.getAllergiesList().equals(new ArrayList<>()) &&
                     personInfoToCompare.getMail().equalsIgnoreCase(personToCompare.getEmail()) &&
-                    personInfoToCompare.getDosageMedicaments().equals(new ArrayList<>()) &&
-                    personInfoToCompare.getNom().equalsIgnoreCase(personToCompare.getLastName());
+                    personInfoToCompare.getMedicationList().equals(new ArrayList<>()) &&
+                    personInfoToCompare.getLastname().equalsIgnoreCase(personToCompare.getLastName());
         }
     }
 }
