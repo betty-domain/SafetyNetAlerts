@@ -1,4 +1,4 @@
-package com.safetynet.alerts;
+package com.safetynet.alerts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.controller.PersonController;
@@ -62,6 +62,7 @@ public class PersonControllerTests {
         person.setEmail("myEmail");
         person.setZip("myZip");
         List<Person> personList = new ArrayList<>();
+        personList.add(person);
 
         when(personServiceMock.getAllPersons()).thenReturn(personList);
 

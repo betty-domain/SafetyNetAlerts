@@ -1,4 +1,4 @@
-package com.safetynet.alerts;
+package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
