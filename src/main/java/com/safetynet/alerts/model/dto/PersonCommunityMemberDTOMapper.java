@@ -13,7 +13,7 @@ import org.mapstruct.Named;
 import java.time.LocalDate;
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface PersonCommunityMemberDTOMapper {
 
     DateUtils dateUtils = new DateUtils();

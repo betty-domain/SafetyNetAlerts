@@ -20,4 +20,9 @@ public class CommunityMemberDTO {
 
     //TODO : est il possible de ne pas générer cette propriété en réponse dans le JSON ?
     private int age;
+
+    public String toString()
+    {
+        return "CommunityMemberDTO.toString() appel";
+    }
 }

@@ -6,6 +6,7 @@ import com.safetynet.alerts.utils.DateUtils;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDate;
@@ -14,15 +15,16 @@ import java.time.Period;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-
+@SpringBootTest(properties = {
+        "application.runner.enabled=false" })
 public class PersonCommunityMemberDTOMapperTests {
 
     @MockBean
-    DateUtils dateUtils;
+    private DateUtils dateUtils;
 
     private PersonCommunityMemberDTOMapper mapper = Mappers.getMapper(PersonCommunityMemberDTOMapper.class);
 
-    //TODO : voir pourquoi l'annotation @Test génère une erreur dans les TU
+    @Test
     public void personToCommunityMemberDTO_MapsCorrect() {
         Person person = new Person();
         person.setFirstName("personFirstName");
