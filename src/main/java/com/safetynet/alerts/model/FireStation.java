@@ -1,6 +1,5 @@
 package com.safetynet.alerts.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 
 import javax.persistence.Entity;
