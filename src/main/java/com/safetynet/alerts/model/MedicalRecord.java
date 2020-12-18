@@ -29,7 +29,7 @@ public class MedicalRecord{
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
-    private LocalDate birthdate;
+    private LocalDate birthDate;
 
     @ElementCollection
     private List<String> medications;

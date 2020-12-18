@@ -70,7 +70,7 @@ public class PersonInfoService {
             if (medicalRecordForPerson.isPresent()) {
                 personInfo.setAllergiesList(medicalRecordForPerson.get().getAllergies());
                 personInfo.setMedicationList(medicalRecordForPerson.get().getMedications());
-                personInfo.setAge(dateUtil.getAge(medicalRecordForPerson.get().getBirthdate()));
+                personInfo.setAge(dateUtil.getAge(medicalRecordForPerson.get().getBirthDate()));
             }
             else
             {

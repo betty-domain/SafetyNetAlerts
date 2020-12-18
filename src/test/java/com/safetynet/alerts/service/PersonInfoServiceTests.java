@@ -77,7 +77,7 @@ public class PersonInfoServiceTests {
         MedicalRecord medicalRecord = new MedicalRecord();
         medicalRecord.setFirstName(person.getFirstName());
         medicalRecord.setLastName(person.getLastName());
-        medicalRecord.setBirthdate(LocalDate.of(2000, 5, 14));
+        medicalRecord.setBirthDate(LocalDate.of(2000, 5, 14));
         List<String> allergiesList = new ArrayList<>();
         allergiesList.add("Allergie 1");
         allergiesList.add("Allergie 2");
@@ -102,7 +102,7 @@ public class PersonInfoServiceTests {
         MedicalRecord secondMedicalRecord = new MedicalRecord();
         secondMedicalRecord.setFirstName(secondPerson.getFirstName());
         secondMedicalRecord.setLastName(secondPerson.getLastName());
-        secondMedicalRecord.setBirthdate(LocalDate.of(1970, 12, 31));
+        secondMedicalRecord.setBirthDate(LocalDate.of(1970, 12, 31));
         List<String> secondAllergiesList = new ArrayList<>();
         secondAllergiesList.add("Second Allergie 1");
 
@@ -138,7 +138,7 @@ public class PersonInfoServiceTests {
         assertThat(isPersonInfoEqualToPerson(personInfosList.get(0), person, medicalRecord)).isTrue();
         assertThat(isPersonInfoEqualToPerson(personInfosList.get(1), secondPerson, secondMedicalRecord)).isTrue();
         assertThat(isPersonInfoEqualToPerson(personInfosList.get(2), thirdPerson, null)).isTrue();
-        assertThat(personInfosList.get(0).getAge()).isEqualTo(Period.between(medicalRecord.getBirthdate(),nowMockLocalDate).getYears());
+        assertThat(personInfosList.get(0).getAge()).isEqualTo(Period.between(medicalRecord.getBirthDate(),nowMockLocalDate).getYears());
     }
 
     private boolean isPersonInfoEqualToPerson(PersonInfo personInfoToCompare, Person personToCompare, MedicalRecord medicalRecordToCompare) {

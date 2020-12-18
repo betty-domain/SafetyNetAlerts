@@ -8,16 +8,16 @@ import java.util.List;
 @Data
 public class FireStationCommunity {
 
-    private List<CommunityMember> communityMemberList = new ArrayList<>();
+    private List<CommunityMemberDTO> communityMemberDTOList = new ArrayList<>();
     private long adultsCount;
     private long childCount;
 
     public long getAdultsCount() {
 
-        return communityMemberList.stream().filter(communityMember -> communityMember.getAge() > 18).count();
+        return communityMemberDTOList.stream().filter(communityMemberDTO -> communityMemberDTO.getAge() > 18).count();
     }
 
     public long getChildCount() {
-        return communityMemberList.stream().filter(communityMember -> communityMember.getAge() <= 18).count();
+        return communityMemberDTOList.stream().filter(communityMemberDTO -> communityMemberDTO.getAge() <= 18).count();
     }
 }
