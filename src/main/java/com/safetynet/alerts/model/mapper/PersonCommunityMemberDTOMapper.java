@@ -1,7 +1,8 @@
-package com.safetynet.alerts.model.dto;
+package com.safetynet.alerts.model.mapper;
 
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.model.dto.CommunityMemberDTO;
 import com.safetynet.alerts.utils.DateUtils;
 
 import org.mapstruct.Context;

@@ -2,8 +2,8 @@ package com.safetynet.alerts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.FunctionalException;
-import com.safetynet.alerts.model.dto.FireStationCommunity;
-import com.safetynet.alerts.model.dto.PersonInfo;
+import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
+import com.safetynet.alerts.model.dto.PersonInfoDTO;
 import com.safetynet.alerts.service.PersonInfoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,17 +43,17 @@ public class PersonInfoControllerTests {
 
     @Test
     public void getPersonsInfoValidTest() throws Exception {
-        PersonInfo personInfo = new PersonInfo();
-        personInfo.setLastname("myName");
-        personInfo.setAddress("myAddress");
-        personInfo.setMail("myMail");
-        personInfo.setAllergiesList(new ArrayList<>());
-        personInfo.setMedicationList(new ArrayList<>());
-        personInfo.setAge(15);
-        List<PersonInfo> personInfoList = new ArrayList<>();
-        personInfoList.add(personInfo);
+        PersonInfoDTO personInfoDTO = new PersonInfoDTO();
+        personInfoDTO.setLastname("myName");
+        personInfoDTO.setAddress("myAddress");
+        personInfoDTO.setMail("myMail");
+        personInfoDTO.setAllergiesList(new ArrayList<>());
+        personInfoDTO.setMedicationList(new ArrayList<>());
+        personInfoDTO.setAge(15);
+        List<PersonInfoDTO> personInfoDTOList = new ArrayList<>();
+        personInfoDTOList.add(personInfoDTO);
 
-        when(personInfoServiceMock.getPersonsInfo("firstname", "lastname")).thenReturn(personInfoList);
+        when(personInfoServiceMock.getPersonsInfo("firstname", "lastname")).thenReturn(personInfoDTOList);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/personInfo").
                 param("firstname","firstname").
@@ -105,9 +105,9 @@ public class PersonInfoControllerTests {
     @Test
     public void getFireStationCommunityValidTest() throws Exception{
 
-        FireStationCommunity fireStationCommunity = new FireStationCommunity();
+        FireStationCommunityDTO fireStationCommunityDTO = new FireStationCommunityDTO();
 
-        when(personInfoServiceMock.getFireStationCommunity(any(Integer.class))).thenReturn(fireStationCommunity);
+        when(personInfoServiceMock.getFireStationCommunity(any(Integer.class))).thenReturn(fireStationCommunityDTO);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/fireStation").
                 param("stationNumber","1").

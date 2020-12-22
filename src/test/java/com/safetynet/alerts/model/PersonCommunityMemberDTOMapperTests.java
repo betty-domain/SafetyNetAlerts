@@ -1,7 +1,7 @@
 package com.safetynet.alerts.model;
 
 import com.safetynet.alerts.model.dto.CommunityMemberDTO;
-import com.safetynet.alerts.model.dto.PersonCommunityMemberDTOMapper;
+import com.safetynet.alerts.model.mapper.PersonCommunityMemberDTOMapper;
 import com.safetynet.alerts.utils.DateUtils;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;

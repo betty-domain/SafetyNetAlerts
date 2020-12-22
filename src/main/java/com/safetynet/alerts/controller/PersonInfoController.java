@@ -2,10 +2,10 @@ package com.safetynet.alerts.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.safetynet.alerts.model.FunctionalException;
-import com.safetynet.alerts.model.dto.FireStationCommunity;
+import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
 import com.safetynet.alerts.model.dto.Views;
 import com.safetynet.alerts.service.PersonInfoService;
-import com.safetynet.alerts.model.dto.PersonInfo;
+import com.safetynet.alerts.model.dto.PersonInfoDTO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +24,14 @@ public class PersonInfoController {
     private PersonInfoService personInfoService;
 
     @GetMapping("/personInfo")
-    public List<PersonInfo> getPersonsInfo(@RequestParam String firstname, @RequestParam String lastname) {
+    public List<PersonInfoDTO> getPersonsInfo(@RequestParam String firstname, @RequestParam String lastname) {
 
         logger.info("Requête Get sur le endpoint 'personInfo' avec firstname : {" + firstname + "} et lastname  {" + lastname + "} reçue");
 
-        List<PersonInfo> personInfoIterable = personInfoService.getPersonsInfo(firstname, lastname);
-        if (personInfoIterable != null) {
+        List<PersonInfoDTO> personInfoDTOIterable = personInfoService.getPersonsInfo(firstname, lastname);
+        if (personInfoDTOIterable != null) {
             logger.info("Réponse suite au Get sur le endpoint 'personInfo' avec firstname : {" + firstname + "} et lastname  {" + lastname + "} transmise");
-            return personInfoIterable;
+            return personInfoDTOIterable;
         } else {
             throw new FunctionalException("personInfo.get.error");
         }
@@ -39,14 +39,14 @@ public class PersonInfoController {
 
     @JsonView(Views.Public.class)
     @GetMapping("/fireStation")
-    public FireStationCommunity getFireStationCommunity(@RequestParam Integer stationNumber) {
+    public FireStationCommunityDTO getFireStationCommunity(@RequestParam Integer stationNumber) {
 
         logger.info("Requête Get sur le endpoint 'fireStation' avec stationNumber : {" + stationNumber.toString() + "} reçue");
 
-        FireStationCommunity fireStationCommunity = personInfoService.getFireStationCommunity(stationNumber);
-        if (fireStationCommunity != null) {
+        FireStationCommunityDTO fireStationCommunityDTO = personInfoService.getFireStationCommunity(stationNumber);
+        if (fireStationCommunityDTO != null) {
             logger.info("Réponse suite au Get sur le endpoint 'fireStation' avec stationNumber : {" +stationNumber.toString() + "} transmise");
-            return fireStationCommunity;
+            return fireStationCommunityDTO;
         } else {
             throw new FunctionalException("personInfo.getFireStationCommunity.error");
         }

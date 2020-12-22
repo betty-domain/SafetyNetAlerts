@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class FireStationCommunity {
+public class FireStationCommunityDTO {
 
     @JsonView(Views.Public.class)
     private List<CommunityMemberDTO> communityMemberDTOList = new ArrayList<>();

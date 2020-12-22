@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class PersonInfo {
+public class PersonInfoDTO {
 //TODO : voir si on utilise MapStruct ou non pour la transformation en DTO
     private String lastname;
     private String address;

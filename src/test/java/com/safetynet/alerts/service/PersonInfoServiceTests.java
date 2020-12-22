@@ -3,7 +3,7 @@ package com.safetynet.alerts.service;
 import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.model.dto.PersonInfo;
+import com.safetynet.alerts.model.dto.PersonInfoDTO;
 import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
@@ -137,28 +137,28 @@ public class PersonInfoServiceTests {
         LocalDate nowMockLocalDate = LocalDate.of(2020, 12, 31);
         when(dateUtilsMock.getNowLocalDate()).thenReturn(nowMockLocalDate);
 
-        List<PersonInfo> personInfosList = personInfoService.getPersonsInfo(person.getFirstName(), person.getLastName());
+        List<PersonInfoDTO> personInfosListDTO = personInfoService.getPersonsInfo(person.getFirstName(), person.getLastName());
 
-        assertThat(personInfosList).size().isEqualTo(3);
-        assertThat(isPersonInfoEqualToPerson(personInfosList.get(0), person, medicalRecord)).isTrue();
-        assertThat(isPersonInfoEqualToPerson(personInfosList.get(1), secondPerson, secondMedicalRecord)).isTrue();
-        assertThat(isPersonInfoEqualToPerson(personInfosList.get(2), thirdPerson, null)).isTrue();
-        assertThat(personInfosList.get(0).getAge()).isEqualTo(Period.between(medicalRecord.getBirthDate(), nowMockLocalDate).getYears());
+        assertThat(personInfosListDTO).size().isEqualTo(3);
+        assertThat(isPersonInfoEqualToPerson(personInfosListDTO.get(0), person, medicalRecord)).isTrue();
+        assertThat(isPersonInfoEqualToPerson(personInfosListDTO.get(1), secondPerson, secondMedicalRecord)).isTrue();
+        assertThat(isPersonInfoEqualToPerson(personInfosListDTO.get(2), thirdPerson, null)).isTrue();
+        assertThat(personInfosListDTO.get(0).getAge()).isEqualTo(Period.between(medicalRecord.getBirthDate(), nowMockLocalDate).getYears());
     }
 
-    private boolean isPersonInfoEqualToPerson(PersonInfo personInfoToCompare, Person personToCompare, MedicalRecord medicalRecordToCompare) {
+    private boolean isPersonInfoEqualToPerson(PersonInfoDTO personInfoDTOToCompare, Person personToCompare, MedicalRecord medicalRecordToCompare) {
         if (medicalRecordToCompare != null) {
-            return personInfoToCompare.getAddress().equalsIgnoreCase(personToCompare.getAddress()) &&
-                    personInfoToCompare.getAllergiesList().equals(medicalRecordToCompare.getAllergies()) &&
-                    personInfoToCompare.getMail().equalsIgnoreCase(personToCompare.getEmail()) &&
-                    personInfoToCompare.getMedicationList().equals(medicalRecordToCompare.getMedications()) &&
-                    personInfoToCompare.getLastname().equalsIgnoreCase(personToCompare.getLastName());
+            return personInfoDTOToCompare.getAddress().equalsIgnoreCase(personToCompare.getAddress()) &&
+                    personInfoDTOToCompare.getAllergiesList().equals(medicalRecordToCompare.getAllergies()) &&
+                    personInfoDTOToCompare.getMail().equalsIgnoreCase(personToCompare.getEmail()) &&
+                    personInfoDTOToCompare.getMedicationList().equals(medicalRecordToCompare.getMedications()) &&
+                    personInfoDTOToCompare.getLastname().equalsIgnoreCase(personToCompare.getLastName());
         } else {
-            return personInfoToCompare.getAddress().equalsIgnoreCase(personToCompare.getAddress()) &&
-                    personInfoToCompare.getAllergiesList().equals(new ArrayList<>()) &&
-                    personInfoToCompare.getMail().equalsIgnoreCase(personToCompare.getEmail()) &&
-                    personInfoToCompare.getMedicationList().equals(new ArrayList<>()) &&
-                    personInfoToCompare.getLastname().equalsIgnoreCase(personToCompare.getLastName());
+            return personInfoDTOToCompare.getAddress().equalsIgnoreCase(personToCompare.getAddress()) &&
+                    personInfoDTOToCompare.getAllergiesList().equals(new ArrayList<>()) &&
+                    personInfoDTOToCompare.getMail().equalsIgnoreCase(personToCompare.getEmail()) &&
+                    personInfoDTOToCompare.getMedicationList().equals(new ArrayList<>()) &&
+                    personInfoDTOToCompare.getLastname().equalsIgnoreCase(personToCompare.getLastName());
         }
     }
 

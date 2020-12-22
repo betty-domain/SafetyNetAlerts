@@ -4,13 +4,13 @@ import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.model.dto.CommunityMemberDTO;
-import com.safetynet.alerts.model.dto.FireStationCommunity;
-import com.safetynet.alerts.model.dto.PersonCommunityMemberDTOMapper;
+import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
+import com.safetynet.alerts.model.mapper.PersonCommunityMemberDTOMapper;
 import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.utils.DateUtils;
-import com.safetynet.alerts.model.dto.PersonInfo;
+import com.safetynet.alerts.model.dto.PersonInfoDTO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mapstruct.factory.Mappers;
@@ -42,7 +42,7 @@ public class PersonInfoService {
      * @param lastname  nom
      * @return liste des personnes avec leurs informations
      */
-    public List<PersonInfo> getPersonsInfo(String firstname, String lastname) {
+    public List<PersonInfoDTO> getPersonsInfo(String firstname, String lastname) {
         if (lastname != null) {
             List<Person> personList = personRepository.findAllByLastNameAllIgnoreCase(lastname);
             List<MedicalRecord> optionalMedicalRecord = medicalRecordRepository.findAllByLastNameAllIgnoreCase(lastname);
@@ -60,16 +60,16 @@ public class PersonInfoService {
      * @param medicalRecordList liste des données médicales
      * @return liste consolidée de personneInfo
      */
-    private List<PersonInfo> convertToPersonInfoIterable(List<Person> personList, List<MedicalRecord> medicalRecordList) {
-        List<PersonInfo> personInfoIterable = new ArrayList<>();
+    private List<PersonInfoDTO> convertToPersonInfoIterable(List<Person> personList, List<MedicalRecord> medicalRecordList) {
+        List<PersonInfoDTO> personInfoDTOIterable = new ArrayList<>();
 
         DateUtils dateUtil = new DateUtils();
 
         personList.forEach(personIterator -> {
-            PersonInfo personInfo = new PersonInfo();
-            personInfo.setAddress(personIterator.getAddress());
-            personInfo.setMail(personIterator.getEmail());
-            personInfo.setLastname(personIterator.getLastName());
+            PersonInfoDTO personInfoDTO = new PersonInfoDTO();
+            personInfoDTO.setAddress(personIterator.getAddress());
+            personInfoDTO.setMail(personIterator.getEmail());
+            personInfoDTO.setLastname(personIterator.getLastName());
 
             Optional<MedicalRecord> medicalRecordForPerson = medicalRecordList.stream().filter(medicalRecord ->
                     medicalRecord.getFirstName().equalsIgnoreCase(personIterator.getFirstName())
@@ -77,17 +77,17 @@ public class PersonInfoService {
             ).findFirst();
 
             if (medicalRecordForPerson.isPresent()) {
-                personInfo.setAllergiesList(medicalRecordForPerson.get().getAllergies());
-                personInfo.setMedicationList(medicalRecordForPerson.get().getMedications());
-                personInfo.setAge(dateUtil.getAge(medicalRecordForPerson.get().getBirthDate()));
+                personInfoDTO.setAllergiesList(medicalRecordForPerson.get().getAllergies());
+                personInfoDTO.setMedicationList(medicalRecordForPerson.get().getMedications());
+                personInfoDTO.setAge(dateUtil.getAge(medicalRecordForPerson.get().getBirthDate()));
             } else {
-                personInfo.setAllergiesList(new ArrayList<>());
-                personInfo.setMedicationList(new ArrayList<>());
+                personInfoDTO.setAllergiesList(new ArrayList<>());
+                personInfoDTO.setMedicationList(new ArrayList<>());
             }
-            personInfoIterable.add(personInfo);
+            personInfoDTOIterable.add(personInfoDTO);
         });
 
-        return personInfoIterable;
+        return personInfoDTOIterable;
     }
 
     /**
@@ -95,7 +95,7 @@ public class PersonInfoService {
      * @param stationNumber numéro de la station de feu
      * @return Objet consolidant la liste des personnes et le nb d'adultes et d'enfants
      */
-    public FireStationCommunity getFireStationCommunity(Integer stationNumber) {
+    public FireStationCommunityDTO getFireStationCommunity(Integer stationNumber) {
         if (stationNumber != null) {
             //on récupère la liste des stations
             List<FireStation> fireStationList = fireStationRepository.findDistinctByStation(stationNumber);
@@ -120,10 +120,10 @@ public class PersonInfoService {
                                 personToCommunityMemberDTO(personIterator,medicalRecord));
             });
 
-            FireStationCommunity fireStationCommunity = new FireStationCommunity();
-            fireStationCommunity.setCommunityMemberDTOList(communityMemberDTOList);
+            FireStationCommunityDTO fireStationCommunityDTO = new FireStationCommunityDTO();
+            fireStationCommunityDTO.setCommunityMemberDTOList(communityMemberDTOList);
 
-            return fireStationCommunity;
+            return fireStationCommunityDTO;
 
         } else {
             return null;
