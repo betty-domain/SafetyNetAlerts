@@ -21,4 +21,24 @@ public class FireStationService {
         else {//TODO à implémenter
         }
     }
+
+    public Iterable<FireStation> getAllFireStations() {
+        return  null;
+    }
+
+    public FireStation addFireStation(FireStation fireStation) {
+        return  null;
+    }
+
+    public FireStation updateFireStation(FireStation fireStation) {
+        return  null;
+    }
+
+    public Integer deleteFireStationByAddress( String address) {
+        return Integer.MAX_VALUE;
+    }
+
+    public Integer deleteFireStationByAddressAndStation(Integer station, final String address) {
+        return Integer.MAX_VALUE;
+    }
 }
