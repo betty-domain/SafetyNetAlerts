@@ -33,13 +33,6 @@ public class PersonInfoControllerTests {
     @MockBean
     private PersonInfoService personInfoServiceMock;
 
-    public static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Test
     public void getPersonsInfoValidTest() throws Exception {
@@ -84,37 +77,5 @@ public class PersonInfoControllerTests {
                 });
     }
 
-    @Test
-    public void getFireStationCommunityWithException() throws Exception{
-
-        when(personInfoServiceMock.getFireStationCommunity(any(Integer.class))).thenReturn(null);
-
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/fireStation").
-                param("stationNumber","1").
-                contentType(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(builder).
-                andExpect(status().isBadRequest()).
-                andExpect(mvcResult ->
-                {
-                    assertThat(mvcResult.getResolvedException()).isInstanceOf(FunctionalException.class);
-                    assertThat(mvcResult.getResolvedException().getMessage()).isEqualTo("personInfo.getFireStationCommunity.error");
-                });
-    }
-
-    @Test
-    public void getFireStationCommunityValidTest() throws Exception{
-
-        FireStationCommunityDTO fireStationCommunityDTO = new FireStationCommunityDTO();
-
-        when(personInfoServiceMock.getFireStationCommunity(any(Integer.class))).thenReturn(fireStationCommunityDTO);
-
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/fireStation").
-                param("stationNumber","1").
-                contentType(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(builder).
-                andExpect(status().isOk());
-    }
 
 }

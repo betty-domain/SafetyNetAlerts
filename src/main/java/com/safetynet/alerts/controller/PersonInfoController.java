@@ -37,20 +37,7 @@ public class PersonInfoController {
         }
     }
 
-    @JsonView(Views.Public.class)
-    @GetMapping("/fireStation")
-    public FireStationCommunityDTO getFireStationCommunity(@RequestParam Integer stationNumber) {
 
-        logger.info("Requête Get sur le endpoint 'fireStation' avec stationNumber : {" + stationNumber.toString() + "} reçue");
-
-        FireStationCommunityDTO fireStationCommunityDTO = personInfoService.getFireStationCommunity(stationNumber);
-        if (fireStationCommunityDTO != null) {
-            logger.info("Réponse suite au Get sur le endpoint 'fireStation' avec stationNumber : {" +stationNumber.toString() + "} transmise");
-            return fireStationCommunityDTO;
-        } else {
-            throw new FunctionalException("personInfo.getFireStationCommunity.error");
-        }
-    }
 
 
 }

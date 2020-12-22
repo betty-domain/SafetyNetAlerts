@@ -37,9 +37,6 @@ public class PersonInfoServiceTests {
     private MedicalRecordRepository medicalRecordRepositoryMock;
 
     @MockBean
-    private FireStationRepository fireStationRepositoryMock;
-
-    @MockBean
     private DateUtils dateUtilsMock;
 
     @Autowired
@@ -162,37 +159,5 @@ public class PersonInfoServiceTests {
         }
     }
 
-    @Test
-    public void getFireStationCommunityWithNullValues() {
-        assertThat(personInfoService.getFireStationCommunity(null)).isNull();
-        verify(fireStationRepositoryMock, Mockito.times(0)).findDistinctByStation(any(Integer.class));
-
-    }
-
-    @Test
-    public void getFireStationCommunityWithValidValues() {
-
-        FireStation fireStation = new FireStation();
-        fireStation.setStation(1);
-        fireStation.setAddress(person.getAddress());
-
-        List<FireStation> fireStationList = new ArrayList<>();
-        fireStationList.add(fireStation);
-
-        List<Person> personList = new ArrayList<>();
-        personList.add(person);
-
-        MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setBirthDate(LocalDate.of(1910,10,10));
-
-        when(fireStationRepositoryMock.findDistinctByStation(1)).thenReturn(fireStationList);
-        when(personRepositoryMock.findAllByAddressInOrderByAddress(any())).thenReturn(personList);
-        when(medicalRecordRepositoryMock.findByLastNameAndFirstNameAllIgnoreCase(any(String.class), any(String.class))).thenReturn(medicalRecord);
-
-        assertThat(personInfoService.getFireStationCommunity(1).getAdultsCount()).isEqualTo(1);
-        assertThat(personInfoService.getFireStationCommunity(1).getChildsCount()).isEqualTo(0);
-        assertThat(personInfoService.getFireStationCommunity(1).getCommunityMemberDTOList()).size().isEqualTo(1);
-
-    }
 
 }

@@ -10,21 +10,24 @@ public class DateUtils {
 
     /**
      * return now() in LocalDate Format using ZoneId system
+     *
      * @return now in LocalDate Format
      */
-    public LocalDate getNowLocalDate()
-    {
+    public LocalDate getNowLocalDate() {
         return LocalDate.now(ZoneId.systemDefault());
     }
 
     /**
      * Calcul age based on a birthdate LocalDate
+     *
      * @param birthDate birthDate
      * @return calculated age
      */
     public int getAge(LocalDate birthDate) {
-
-        return Period.between(birthDate, this.getNowLocalDate()).getYears();
-
+        if (birthDate != null) {
+            return Period.between(birthDate, this.getNowLocalDate()).getYears();
+        } else {
+            return Integer.MAX_VALUE;
+        }
     }
 }

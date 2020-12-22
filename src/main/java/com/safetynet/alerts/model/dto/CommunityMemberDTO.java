@@ -21,8 +21,4 @@ public class CommunityMemberDTO {
     @JsonView(Views.Private.class)
     private int age;
 
-    public String toString()
-    {
-        return "CommunityMemberDTO.toString() appel";
-    }
 }
