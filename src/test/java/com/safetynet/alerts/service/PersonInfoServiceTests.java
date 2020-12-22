@@ -137,27 +137,6 @@ public class PersonInfoServiceTests {
         List<PersonInfoDTO> personInfosListDTO = personInfoService.getPersonsInfo(person.getFirstName(), person.getLastName());
 
         assertThat(personInfosListDTO).size().isEqualTo(3);
-        assertThat(isPersonInfoEqualToPerson(personInfosListDTO.get(0), person, medicalRecord)).isTrue();
-        assertThat(isPersonInfoEqualToPerson(personInfosListDTO.get(1), secondPerson, secondMedicalRecord)).isTrue();
-        assertThat(isPersonInfoEqualToPerson(personInfosListDTO.get(2), thirdPerson, null)).isTrue();
-        assertThat(personInfosListDTO.get(0).getAge()).isEqualTo(Period.between(medicalRecord.getBirthDate(), nowMockLocalDate).getYears());
-    }
-
-    private boolean isPersonInfoEqualToPerson(PersonInfoDTO personInfoDTOToCompare, Person personToCompare, MedicalRecord medicalRecordToCompare) {
-        if (medicalRecordToCompare != null) {
-            return personInfoDTOToCompare.getAddress().equalsIgnoreCase(personToCompare.getAddress()) &&
-                    personInfoDTOToCompare.getAllergiesList().equals(medicalRecordToCompare.getAllergies()) &&
-                    personInfoDTOToCompare.getMail().equalsIgnoreCase(personToCompare.getEmail()) &&
-                    personInfoDTOToCompare.getMedicationList().equals(medicalRecordToCompare.getMedications()) &&
-                    personInfoDTOToCompare.getLastname().equalsIgnoreCase(personToCompare.getLastName());
-        } else {
-            return personInfoDTOToCompare.getAddress().equalsIgnoreCase(personToCompare.getAddress()) &&
-                    personInfoDTOToCompare.getAllergiesList().equals(new ArrayList<>()) &&
-                    personInfoDTOToCompare.getMail().equalsIgnoreCase(personToCompare.getEmail()) &&
-                    personInfoDTOToCompare.getMedicationList().equals(new ArrayList<>()) &&
-                    personInfoDTOToCompare.getLastname().equalsIgnoreCase(personToCompare.getLastName());
         }
-    }
-
 
 }

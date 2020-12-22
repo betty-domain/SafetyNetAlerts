@@ -1,16 +1,10 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.model.dto.CommunityMemberDTO;
-import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
-import com.safetynet.alerts.model.mapper.PersonCommunityMemberDTOMapper;
 import com.safetynet.alerts.model.mapper.PersonInfoDTOMapper;
-import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
-import com.safetynet.alerts.utils.DateUtils;
 import com.safetynet.alerts.model.dto.PersonInfoDTO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

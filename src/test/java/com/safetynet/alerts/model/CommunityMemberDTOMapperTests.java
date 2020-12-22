@@ -1,7 +1,7 @@
 package com.safetynet.alerts.model;
 
 import com.safetynet.alerts.model.dto.CommunityMemberDTO;
-import com.safetynet.alerts.model.mapper.PersonCommunityMemberDTOMapper;
+import com.safetynet.alerts.model.mapper.CommunityMemberDTOMapper;
 import com.safetynet.alerts.utils.DateUtils;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -17,15 +17,15 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest(properties = {
         "application.runner.enabled=false" })
-public class PersonCommunityMemberDTOMapperTests {
+public class CommunityMemberDTOMapperTests {
 
     @MockBean
     private DateUtils dateUtils;
 
-    private PersonCommunityMemberDTOMapper mapper = Mappers.getMapper(PersonCommunityMemberDTOMapper.class);
+    private CommunityMemberDTOMapper mapper = Mappers.getMapper(CommunityMemberDTOMapper.class);
 
     @Test
-    public void personToCommunityMemberDTO_MapsCorrect() {
+    public void communityMemberDTO_MapsCorrect() {
         Person person = new Person();
         person.setFirstName("personFirstName");
         person.setLastName("personLastName");
@@ -52,5 +52,11 @@ public class PersonCommunityMemberDTOMapperTests {
         assertThat(communityMemberDTO.getAge()).isEqualTo(Period.between(medicalRecord.getBirthDate(),nowLocalDateMock).getYears());
 
 
+    }
+
+    @Test
+    public void communityMemberDTO_NullValues()
+    {
+        assertThat(mapper.personToCommunityMemberDTO(null,null)).isNull();
     }
 }

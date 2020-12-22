@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface PersonCommunityMemberDTOMapper {
+public interface CommunityMemberDTOMapper {
 
     DateUtils dateUtils = new DateUtils();
 

@@ -5,7 +5,7 @@ import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.model.dto.CommunityMemberDTO;
 import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
-import com.safetynet.alerts.model.mapper.PersonCommunityMemberDTOMapper;
+import com.safetynet.alerts.model.mapper.CommunityMemberDTOMapper;
 import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
@@ -59,7 +59,7 @@ public class FireStationCommunityService {
                         personIterator.getFirstName());
 
                 communityMemberDTOList.add(
-                        Mappers.getMapper(PersonCommunityMemberDTOMapper.class).
+                        Mappers.getMapper(CommunityMemberDTOMapper.class).
                                 personToCommunityMemberDTO(personIterator, medicalRecord));
             });
 
