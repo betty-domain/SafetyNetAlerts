@@ -36,18 +36,15 @@ public class FireStationControllerTests {
     private FireStation fireStation;
 
     @BeforeEach
-    public void initTest()
-    {
+    public void initTest() {
         fireStation = new FireStation();
         fireStation.setStation(1);
         fireStation.setAddress("myAddress");
         fireStation.setId(10L);
     }
 
-
     @Test
-    public void getAllFireStationsTests() throws Exception
-    {
+    public void getAllFireStationsTests() throws Exception {
         List<FireStation> fireStationList = new ArrayList<>();
         fireStationList.add(fireStation);
 
@@ -62,13 +59,13 @@ public class FireStationControllerTests {
     }
 
     @Test
-    public void addFireStationValidTests() throws Exception
-    {
+    public void addFireStationValidTests() throws Exception {
 
         when(fireStationServiceMock.addFireStation(fireStation)).thenReturn(fireStation);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/firestation").
-                contentType(MediaType.APPLICATION_JSON).content(TestsUtils.asJsonString(fireStation));;
+                contentType(MediaType.APPLICATION_JSON).content(TestsUtils.asJsonString(fireStation));
+        ;
 
         mockMvc.perform(builder).
                 andExpect(status().isOk());
@@ -76,13 +73,13 @@ public class FireStationControllerTests {
     }
 
     @Test
-    public void updateFireStationValidTests() throws Exception
-    {
+    public void updateFireStationValidTests() throws Exception {
 
         when(fireStationServiceMock.updateFireStation(fireStation)).thenReturn(fireStation);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/firestation").
-                contentType(MediaType.APPLICATION_JSON).content(TestsUtils.asJsonString(fireStation));;
+                contentType(MediaType.APPLICATION_JSON).content(TestsUtils.asJsonString(fireStation));
+        ;
 
         mockMvc.perform(builder).
                 andExpect(status().isOk());
@@ -90,8 +87,7 @@ public class FireStationControllerTests {
     }
 
     @Test
-    public void deleteFireStationByAddressValidTests() throws Exception
-    {
+    public void deleteFireStationByAddressValidTests() throws Exception {
 
         when(fireStationServiceMock.deleteFireStationByAddress(fireStation.getAddress())).thenReturn(1);
 
@@ -104,12 +100,11 @@ public class FireStationControllerTests {
     }
 
     @Test
-    public void deleteFireStationByStationValidTests() throws Exception
-    {
+    public void deleteFireStationByAddressAndStationValidTests() throws Exception {
 
-        when(fireStationServiceMock.deleteFireStationByAddressAndStation(fireStation.getStation(), fireStation.getAddress())).thenReturn(1);
+        when(fireStationServiceMock.deleteFireStationByAddressAndStation(fireStation.getAddress(), fireStation.getStation())).thenReturn(1);
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/firestation/"+ fireStation.getAddress() + "/" +
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/firestation/" + fireStation.getAddress() + "/" +
                 fireStation.getStation().toString()).
                 contentType(MediaType.APPLICATION_JSON);
 
@@ -135,10 +130,8 @@ public class FireStationControllerTests {
                 });
     }
 
-
     @Test
     public void updateFireStationWithException() throws Exception {
-
 
         when(fireStationServiceMock.updateFireStation(any(FireStation.class))).thenReturn(null);
 
@@ -154,14 +147,12 @@ public class FireStationControllerTests {
                 });
     }
 
-
     @Test
     public void deleteFireStationByAddressWithException() throws Exception {
 
-
         when(fireStationServiceMock.deleteFireStationByAddress(any(String.class))).thenReturn(null);
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/firestation/"+fireStation.getAddress()).
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/firestation/" + fireStation.getAddress()).
                 contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder).
@@ -176,10 +167,9 @@ public class FireStationControllerTests {
     @Test
     public void deleteFireStationByStationWithException() throws Exception {
 
+        when(fireStationServiceMock.deleteFireStationByAddressAndStation(any(String.class), any(Integer.class))).thenReturn(null);
 
-        when(fireStationServiceMock.deleteFireStationByAddressAndStation(any(Integer.class),any(String.class) )).thenReturn(null);
-
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/firestation/"+fireStation.getAddress() + "/"+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/firestation/" + fireStation.getAddress() + "/" +
                 fireStation.getStation().toString()).
                 contentType(MediaType.APPLICATION_JSON);
 

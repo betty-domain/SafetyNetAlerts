@@ -87,7 +87,7 @@ public class FireStationController {
     {
         logger.info("Requête Delete sur le endpoint 'firestation' reçue avec les paramètres station :" + station + " reçue");
 
-        Integer deleteResult = fireStationService.deleteFireStationByAddressAndStation(station, address);
+        Integer deleteResult = fireStationService.deleteFireStationByAddressAndStation(address,station);
         if (deleteResult!=null) {
             logger.info("Réponse suite au Delete sur le endpoint 'firestation' reçue avec les paramètres station :" + station + " envoyée");
             return deleteResult;
