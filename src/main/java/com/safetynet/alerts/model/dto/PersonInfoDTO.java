@@ -7,7 +7,6 @@ import java.util.List;
 
 @Data
 public class PersonInfoDTO {
-//TODO : voir si on utilise MapStruct ou non pour la transformation en DTO
     private String lastname;
     private String address;
     private int age;
