@@ -27,7 +27,6 @@ public class PersonInfoDTOMapperTests {
 
     private PersonInfoDTOMapper mapper = Mappers.getMapper(PersonInfoDTOMapper.class);
 
-
     @Test
     public void personInfoDTO_MapsCorrect() {
         Person person = new Person();
@@ -42,7 +41,7 @@ public class PersonInfoDTOMapperTests {
         MedicalRecord medicalRecord = new MedicalRecord();
         medicalRecord.setLastName("medicalRecordLastName");
         medicalRecord.setFirstName("medicalRecordFirstNAme");
-        medicalRecord.setBirthDate(LocalDate.of(200,01,01));
+        medicalRecord.setBirthDate(LocalDate.of(200, 01, 01));
         List<String> allergiesList = new ArrayList<>();
         allergiesList.add("Allergie 1");
         allergiesList.add("Allergie 2");
@@ -55,25 +54,84 @@ public class PersonInfoDTOMapperTests {
 
         medicalRecord.setMedications(medicamentList);
 
-        LocalDate nowLocalDateMock = LocalDate.of(2020,12,31);
+        LocalDate nowLocalDateMock = LocalDate.of(2020, 12, 31);
         when(dateUtils.getNowLocalDate()).thenReturn(nowLocalDateMock);
 
-        PersonInfoDTO personInfoDTO = mapper.personToPersonInfoDTO(person,medicalRecord);
+        PersonInfoDTO personInfoDTO = mapper.personToPersonInfoDTO(person, medicalRecord);
 
         assertThat(personInfoDTO.getAddress()).isEqualTo(person.getAddress());
         assertThat(personInfoDTO.getLastname()).isEqualTo(person.getLastName());
         assertThat(personInfoDTO.getMail()).isEqualTo(person.getEmail());
         assertThat(personInfoDTO.getAllergiesList()).isEqualTo(medicalRecord.getAllergies());
         assertThat(personInfoDTO.getMedicationList()).isEqualTo(medicalRecord.getMedications());
-        assertThat(personInfoDTO.getAge()).isEqualTo(Period.between(medicalRecord.getBirthDate(),nowLocalDateMock).getYears());
-
+        assertThat(personInfoDTO.getAge()).isEqualTo(Period.between(medicalRecord.getBirthDate(), nowLocalDateMock).getYears());
 
     }
 
     @Test
-    public void communityMemberDTO_NullValues()
-    {
-        assertThat(mapper.personToPersonInfoDTO(null,null)).isNull();
+    public void personInfoDTO_NullPerson() {
+        Person person = null;
+
+        MedicalRecord medicalRecord = new MedicalRecord();
+        medicalRecord.setLastName("medicalRecordLastName");
+        medicalRecord.setFirstName("medicalRecordFirstNAme");
+        medicalRecord.setBirthDate(LocalDate.of(200, 01, 01));
+        List<String> allergiesList = new ArrayList<>();
+        allergiesList.add("Allergie 1");
+        allergiesList.add("Allergie 2");
+
+        medicalRecord.setAllergies(allergiesList);
+
+        List<String> medicamentList = new ArrayList<>();
+        medicamentList.add("medicament 1");
+        medicamentList.add("medicament 2");
+
+        medicalRecord.setMedications(medicamentList);
+
+        LocalDate nowLocalDateMock = LocalDate.of(2020, 12, 31);
+        when(dateUtils.getNowLocalDate()).thenReturn(nowLocalDateMock);
+
+        PersonInfoDTO personInfoDTO = mapper.personToPersonInfoDTO(person, medicalRecord);
+
+        assertThat(personInfoDTO.getAddress()).isNull();
+        assertThat(personInfoDTO.getLastname()).isNull();
+        assertThat(personInfoDTO.getMail()).isNull();
+        assertThat(personInfoDTO.getAllergiesList()).isEqualTo(medicalRecord.getAllergies());
+        assertThat(personInfoDTO.getMedicationList()).isEqualTo(medicalRecord.getMedications());
+        assertThat(personInfoDTO.getAge()).isEqualTo(Period.between(medicalRecord.getBirthDate(), nowLocalDateMock).getYears());
+
+    }
+
+    @Test
+    public void personInfoDTO_NullMedicalRecord() {
+        Person person = new Person();
+        person.setFirstName("personFirstName");
+        person.setLastName("personLastName");
+        person.setAddress("personAddress");
+        person.setPhone("personPhone");
+        person.setZip("personZip");
+        person.setEmail("personMail");
+        person.setCity("personCity");
+
+        MedicalRecord medicalRecord = null;
+
+        LocalDate nowLocalDateMock = LocalDate.of(2020, 12, 31);
+        when(dateUtils.getNowLocalDate()).thenReturn(nowLocalDateMock);
+
+        PersonInfoDTO personInfoDTO = mapper.personToPersonInfoDTO(person, medicalRecord);
+
+        assertThat(personInfoDTO.getAddress()).isEqualTo(person.getAddress());
+        assertThat(personInfoDTO.getLastname()).isEqualTo(person.getLastName());
+        assertThat(personInfoDTO.getMail()).isEqualTo(person.getEmail());
+        assertThat(personInfoDTO.getAllergiesList()).isEmpty();
+        assertThat(personInfoDTO.getMedicationList()).isEmpty();
+        assertThat(personInfoDTO.getAge()).isEqualTo(0);
+
+    }
+
+    @Test
+    public void communityMemberDTO_NullValues() {
+        assertThat(mapper.personToPersonInfoDTO(null, null)).isNull();
     }
 
 }
