@@ -38,7 +38,7 @@ public class CommunityMemberDTOMapperTests {
         MedicalRecord medicalRecord = new MedicalRecord();
         medicalRecord.setLastName("medicalRecordLastName");
         medicalRecord.setFirstName("medicalRecordFirstNAme");
-        medicalRecord.setBirthDate(LocalDate.of(200,01,01));
+        medicalRecord.setBirthDate(LocalDate.of(2000,01,01));
 
         LocalDate nowLocalDateMock = LocalDate.of(2020,12,31);
         when(dateUtils.getNowLocalDate()).thenReturn(nowLocalDateMock);
