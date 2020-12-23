@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
 import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
@@ -109,6 +110,31 @@ public class FireStationCommunityServiceTests {
         assertThat(fireStationCommunityService.getFireStationCommunity(1).getAdultsCount()).isEqualTo(1);
         assertThat(fireStationCommunityService.getFireStationCommunity(1).getChildsCount()).isEqualTo(0);
         assertThat(fireStationCommunityService.getFireStationCommunity(1).getCommunityMemberDTOList()).size().isEqualTo(1);
+
+    }
+
+    @Test
+    public void getFireStationCommunityWithNullMedicalRecord() {
+
+        FireStation fireStation = new FireStation();
+        fireStation.setStation(1);
+        fireStation.setAddress(person.getAddress());
+
+        List<FireStation> fireStationList = new ArrayList<>();
+        fireStationList.add(fireStation);
+
+        List<Person> personList = new ArrayList<>();
+        personList.add(person);
+
+        when(fireStationRepositoryMock.findDistinctByStation(1)).thenReturn(fireStationList);
+        when(personRepositoryMock.findAllByAddressInOrderByAddress(any())).thenReturn(personList);
+        when(medicalRecordRepositoryMock.findByFirstNameAndLastNameAllIgnoreCase(any(String.class), any(String.class))).thenReturn(Optional.empty());
+
+        FireStationCommunityDTO fireStationCommunityDTO =fireStationCommunityService.getFireStationCommunity(1);
+
+        assertThat(fireStationCommunityDTO.getAdultsCount()).isEqualTo(1);
+        assertThat(fireStationCommunityDTO.getChildsCount()).isEqualTo(0);
+        assertThat(fireStationCommunityDTO.getCommunityMemberDTOList()).size().isEqualTo(1);
 
     }
 }
