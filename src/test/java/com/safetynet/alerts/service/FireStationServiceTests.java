@@ -166,7 +166,10 @@ public class FireStationServiceTests {
     @Test
     public void updateFireStationWithStation()
     {
-        when(fireStationRepositoryMock.findFirstByAddressIgnoreCaseAndStation(any(String.class), any(Integer.class))).thenReturn(Optional.of(fireStation));
+        List<FireStation> fireStationList = new ArrayList<>();
+        fireStationList.add(fireStation);
+
+        when(fireStationRepositoryMock.findAllByAddressIgnoreCase(any(String.class))).thenReturn(fireStationList);
         when(fireStationRepositoryMock.save(fireStation)).thenReturn(fireStation);
         assertThat(fireStationService.updateFireStation(fireStation)).isEqualTo(fireStation);
         verify(fireStationRepositoryMock, Mockito.times(1)).save(fireStation);
@@ -175,7 +178,8 @@ public class FireStationServiceTests {
     @Test
     public void updateFireStationWithNonExistingFireStation()
     {
-        when(fireStationRepositoryMock.findFirstByAddressIgnoreCaseAndStation(any(String.class), any(Integer.class))).thenReturn(Optional.empty());
+        List<FireStation> fireStationList = new ArrayList<>();
+        when(fireStationRepositoryMock.findAllByAddressIgnoreCase(any(String.class))).thenReturn(fireStationList);
 
         assertThat(fireStationService.updateFireStation(fireStation)).isEqualTo(null);
         verify(fireStationRepositoryMock, Mockito.times(0)).save(any());
@@ -184,7 +188,9 @@ public class FireStationServiceTests {
     @Test
     public void updateFireStationWithException()
     {
-        when(fireStationRepositoryMock.findFirstByAddressIgnoreCaseAndStation(any(String.class), any(Integer.class))).thenReturn(Optional.of(fireStation));
+        List<FireStation> fireStationList = new ArrayList<>();
+        fireStationList.add(fireStation);
+        when(fireStationRepositoryMock.findAllByAddressIgnoreCase(any(String.class))).thenReturn(fireStationList);
 
         given(fireStationRepositoryMock.save(fireStation)).willAnswer(invocation -> { throw new Exception();});
 

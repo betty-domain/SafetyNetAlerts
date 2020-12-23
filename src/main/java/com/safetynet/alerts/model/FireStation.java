@@ -1,5 +1,7 @@
 package com.safetynet.alerts.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.safetynet.alerts.model.dto.Views;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -15,9 +17,12 @@ public class FireStation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(Views.Private.class)
     private Long id;
 
+    @JsonView(Views.Public.class)
     private String address;
 
+    @JsonView(Views.Public.class)
     private Integer station;
 }

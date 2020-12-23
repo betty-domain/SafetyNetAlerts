@@ -1,7 +1,9 @@
 package com.safetynet.alerts.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.model.FunctionalException;
+import com.safetynet.alerts.model.dto.Views;
 import com.safetynet.alerts.service.FireStationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +26,7 @@ public class FireStationController {
     private FireStationService fireStationService;
 
     @GetMapping("/firestations")
+    @JsonView(Views.Public.class)
     public Iterable<FireStation> getAllPersons() {
         logger.info("Requête Get sur le endpoint 'firestations' reçue");
 
@@ -36,6 +39,7 @@ public class FireStationController {
 
 
     @PostMapping("/firestation")
+    @JsonView(Views.Public.class)
     public FireStation addFireStation(@Validated @RequestBody FireStation fireStation) {
         logger.info("Requête Post sur le endpoint 'firestation' reçue");
 
@@ -50,6 +54,7 @@ public class FireStationController {
     }
 
     @PutMapping("/firestation")
+    @JsonView(Views.Public.class)
     public FireStation updateFireStation(@RequestBody FireStation fireStation)
     {
         logger.info("Requête Put sur le endpoint 'firestation' reçue");
@@ -65,6 +70,8 @@ public class FireStationController {
             throw new FunctionalException("firestation.update.error");
         }
     }
+
+    //TODO : impossible de mettre des requestPAram sur le même endpoint
 
     @DeleteMapping("/firestation/{address}")
     public Integer deleteFireStation(@PathVariable String address)
