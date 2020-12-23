@@ -1,6 +1,7 @@
 package com.safetynet.alerts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.safetynet.alerts.TestsUtils.TestsUtils;
 import com.safetynet.alerts.controller.PersonController;
 import com.safetynet.alerts.model.FunctionalException;
 import com.safetynet.alerts.model.Person;
@@ -42,14 +43,6 @@ public class PersonControllerTests {
     @MockBean
     private PersonService personServiceMock;
 
-    public static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Test
     public void getAllPersonsTest() throws Exception {
 
@@ -88,7 +81,7 @@ public class PersonControllerTests {
         when(personServiceMock.addPerson(person)).thenReturn(person);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/person").
-                contentType(MediaType.APPLICATION_JSON).content(asJsonString(person));
+                contentType(MediaType.APPLICATION_JSON).content(TestsUtils.asJsonString(person));
 
         mockMvc.perform(builder).
                 andExpect(status().isOk());
@@ -109,7 +102,7 @@ public class PersonControllerTests {
         when(personServiceMock.addPerson(any(Person.class))).thenReturn(null);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/person").
-                contentType(MediaType.APPLICATION_JSON).content(asJsonString(person));
+                contentType(MediaType.APPLICATION_JSON).content(TestsUtils.asJsonString(person));
 
         mockMvc.perform(builder).
                 andExpect(status().isBadRequest()).
@@ -134,7 +127,7 @@ public class PersonControllerTests {
         when(personServiceMock.updatePerson(person)).thenReturn(person);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/person").
-                contentType(MediaType.APPLICATION_JSON).content(asJsonString(person));
+                contentType(MediaType.APPLICATION_JSON).content(TestsUtils.asJsonString(person));
 
         mockMvc.perform(builder).
                 andExpect(status().isOk());
@@ -155,7 +148,7 @@ public class PersonControllerTests {
         when(personServiceMock.updatePerson(any(Person.class))).thenReturn(null);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/person").
-                contentType(MediaType.APPLICATION_JSON).content(asJsonString(person));
+                contentType(MediaType.APPLICATION_JSON).content(TestsUtils.asJsonString(person));
 
         mockMvc.perform(builder).
                 andExpect(status().isBadRequest()).
