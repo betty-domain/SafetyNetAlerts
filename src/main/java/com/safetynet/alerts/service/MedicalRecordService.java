@@ -28,4 +28,19 @@ public class MedicalRecordService {
         }
     }
 
+    public Iterable<MedicalRecord> getAllMedicalRecords() {
+        return null;
+    }
+
+    public MedicalRecord addMedicalRecord(final MedicalRecord medicalRecord) {
+        return null;
+    }
+
+    public MedicalRecord updateMedicalRecord(final MedicalRecord medicalRecord) {
+        return null;
+    }
+
+    public Integer deleteMedicalRecord(final String firstname, final String lastname) {
+        return null;
+    }
 }
