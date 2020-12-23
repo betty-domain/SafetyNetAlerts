@@ -70,7 +70,7 @@ public class FireStationServiceTests {
         List<FireStation> fireStationList = new ArrayList<>();
         fireStationList.add(new FireStation());
 
-        when(fireStationRepositoryMock.saveAll(anyIterable())).thenReturn(new ArrayList<FireStation>());
+        when(fireStationRepositoryMock.saveAll(anyIterable())).thenReturn(new ArrayList<>());
         assertThat(fireStationService.saveAllFireStations(fireStationList)).isTrue();
         verify(fireStationRepositoryMock, Mockito.times(1)).saveAll(anyIterable());
     }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FireStationCommunityService {
@@ -55,12 +56,19 @@ public class FireStationCommunityService {
 
             //on construit les données à retourner en récupérant l'âge sur le medicalRecord de la personne parcourue dans la liste
             personList.forEach(personIterator -> {
-                MedicalRecord medicalRecord = medicalRecordRepository.findByLastNameAndFirstNameAllIgnoreCase(personIterator.getLastName(),
-                        personIterator.getFirstName());
+                Optional<MedicalRecord> optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastNameAllIgnoreCase(personIterator.getFirstName(), personIterator.getLastName()
+                );
 
-                communityMemberDTOList.add(
-                        Mappers.getMapper(CommunityMemberDTOMapper.class).
-                                personToCommunityMemberDTO(personIterator, medicalRecord));
+                if (optionalMedicalRecord.isPresent()) {
+                    communityMemberDTOList.add(
+                            Mappers.getMapper(CommunityMemberDTOMapper.class).
+                                    personToCommunityMemberDTO(personIterator, optionalMedicalRecord.get()));
+                }
+                else {
+                    communityMemberDTOList.add(
+                            Mappers.getMapper(CommunityMemberDTOMapper.class).
+                                    personToCommunityMemberDTO(personIterator, new MedicalRecord()));
+                }
             });
 
             FireStationCommunityDTO fireStationCommunityDTO = new FireStationCommunityDTO();

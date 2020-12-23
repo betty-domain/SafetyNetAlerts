@@ -19,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -103,7 +104,7 @@ public class FireStationCommunityServiceTests {
 
         when(fireStationRepositoryMock.findDistinctByStation(1)).thenReturn(fireStationList);
         when(personRepositoryMock.findAllByAddressInOrderByAddress(any())).thenReturn(personList);
-        when(medicalRecordRepositoryMock.findByLastNameAndFirstNameAllIgnoreCase(any(String.class), any(String.class))).thenReturn(medicalRecord);
+        when(medicalRecordRepositoryMock.findByFirstNameAndLastNameAllIgnoreCase(any(String.class), any(String.class))).thenReturn(Optional.of(medicalRecord));
 
         assertThat(fireStationCommunityService.getFireStationCommunity(1).getAdultsCount()).isEqualTo(1);
         assertThat(fireStationCommunityService.getFireStationCommunity(1).getChildsCount()).isEqualTo(0);

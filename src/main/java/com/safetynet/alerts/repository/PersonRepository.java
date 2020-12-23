@@ -12,8 +12,6 @@ import java.util.Optional;
 public interface PersonRepository extends CrudRepository<Person, Long> {
     Optional<Person> findByFirstNameAndLastNameAllIgnoreCase(String firstname, String lastname);
 
-    List<Person> findAllByFirstNameAndLastNameAllIgnoreCase(String firstname, String lastname);
-
     List<Person> findAllByLastNameAllIgnoreCase(String lastname);
 
     List<Person> findAllByAddressInOrderByAddress(List<String> addressList);

@@ -76,7 +76,7 @@ public class PersonServiceTests {
         List<Person> lstPerson = new ArrayList<>();
         lstPerson.add(new Person());
 
-        when(personRepositoryMock.saveAll(anyIterable())).thenReturn(new ArrayList<Person>());
+        when(personRepositoryMock.saveAll(anyIterable())).thenReturn(new ArrayList<>());
         assertThat(personService.saveAllPersons(lstPerson)).isTrue();
         verify(personRepositoryMock, Mockito.times(1)).saveAll(anyIterable());
     }
