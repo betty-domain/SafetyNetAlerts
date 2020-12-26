@@ -14,14 +14,15 @@ public class FireStationCommunityDTO {
     @JsonView(Views.Public.class)
     private long adultsCount;
     @JsonView(Views.Public.class)
-    private long childsCount;
+    private long childrenCount;
 
     public long getAdultsCount() {
-
-        return communityMemberDTOList.stream().filter(communityMemberDTO -> communityMemberDTO.getAge() > 18).count();
+        adultsCount = communityMemberDTOList.stream().filter(communityMemberDTO -> communityMemberDTO.getAge() > 18).count();
+        return adultsCount;
     }
 
-    public long getChildsCount() {
-        return communityMemberDTOList.stream().filter(communityMemberDTO -> communityMemberDTO.getAge() <= 18).count();
+    public long getChildrenCount() {
+        childrenCount = communityMemberDTOList.stream().filter(communityMemberDTO -> communityMemberDTO.getAge() <= 18).count();
+        return childrenCount;
     }
 }

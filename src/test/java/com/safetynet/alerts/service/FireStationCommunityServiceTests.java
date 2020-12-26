@@ -108,7 +108,7 @@ public class FireStationCommunityServiceTests {
         when(medicalRecordRepositoryMock.findByFirstNameAndLastNameAllIgnoreCase(any(String.class), any(String.class))).thenReturn(Optional.of(medicalRecord));
 
         assertThat(fireStationCommunityService.getFireStationCommunity(1).getAdultsCount()).isEqualTo(1);
-        assertThat(fireStationCommunityService.getFireStationCommunity(1).getChildsCount()).isEqualTo(0);
+        assertThat(fireStationCommunityService.getFireStationCommunity(1).getChildrenCount()).isEqualTo(0);
         assertThat(fireStationCommunityService.getFireStationCommunity(1).getCommunityMemberDTOList()).size().isEqualTo(1);
 
     }
@@ -133,7 +133,7 @@ public class FireStationCommunityServiceTests {
         FireStationCommunityDTO fireStationCommunityDTO =fireStationCommunityService.getFireStationCommunity(1);
 
         assertThat(fireStationCommunityDTO.getAdultsCount()).isEqualTo(1);
-        assertThat(fireStationCommunityDTO.getChildsCount()).isEqualTo(0);
+        assertThat(fireStationCommunityDTO.getChildrenCount()).isEqualTo(0);
         assertThat(fireStationCommunityDTO.getCommunityMemberDTOList()).size().isEqualTo(1);
 
     }
