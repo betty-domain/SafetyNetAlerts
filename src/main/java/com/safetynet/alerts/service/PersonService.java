@@ -7,8 +7,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonService {
@@ -25,14 +27,11 @@ public class PersonService {
      */
     public boolean saveAllPersons(List<Person> personList) {
 
-        if (personList != null && !personList.isEmpty()) {
-            try
-            {
+        if (personList != null) {
+            try {
                 personRepository.saveAll(personList);
                 return true;
-            }
-            catch (Exception exception)
-            {
+            } catch (Exception exception) {
                 logger.error("Erreur lors de l'enregistrement de la liste des personnes " + exception.getMessage() + " , Stack Trace : " + exception.getStackTrace());
                 //TODO voir comment faire suivre l'exception et arrêter le programme éventuellement ?
             }
@@ -70,22 +69,20 @@ public class PersonService {
 
     /**
      * Sauvegarde une personne si elle n'existe pas déjà
+     *
      * @param person personne à sauvegarder,
      * @return personne enregistrée, null si elle existait déjà
      */
     public Person addPerson(Person person) {
         if (person != null) {
-            Optional<Person> personOptional = this.getPersonByFirstNameAndLastName(person.getFirstName(),person.getLastName());
-            if (personOptional.isPresent())
-            {
+            Optional<Person> personOptional = this.getPersonByFirstNameAndLastName(person.getFirstName(), person.getLastName());
+            if (personOptional.isPresent()) {
                 logger.error("Erreur lors de l'ajout d'une personne déjà existante");
                 return null;
-            }
-            else {
+            } else {
                 try {
                     personRepository.save(person);
-                }
-                catch (Exception exception) {
+                } catch (Exception exception) {
                     logger.error("Erreur lors de l'ajout d'une personne :" + exception.getMessage() + " StackTrace : " + exception.getStackTrace());
                     return null;
                 }
@@ -96,12 +93,12 @@ public class PersonService {
 
     /**
      * Met à jour une personne si elle existe déjà
+     *
      * @param person Personne à mettre à jour
      * @return Personne mise à jour, null si la mise à jour a échoué ou que la personne n'existait pas
      */
-    public Person updatePerson(Person person)
-    {
-        if (person!=null) {
+    public Person updatePerson(Person person) {
+        if (person != null) {
             Optional<Person> personOptional = this.getPersonByFirstNameAndLastName(person.getFirstName(), person.getLastName());
 
             if (personOptional.isPresent()) {
@@ -124,9 +121,7 @@ public class PersonService {
                 logger.error("Erreur lors de la mise à jour d'une personne : la personne n'existe pas");
                 return null;
             }
-        }
-        else
-        {
+        } else {
             logger.error("Erreur lors de la mise à jour d'une personne : object null envoyé");
             return null;
         }
@@ -134,12 +129,12 @@ public class PersonService {
 
     /**
      * Suppression d'une personne si elle existe
+     *
      * @param firstname prénom de la personne à supprimer
-     * @param lastname nom de la personne à supprimer
+     * @param lastname  nom de la personne à supprimer
      */
-    public Integer deletePerson(String firstname, String lastname)
-    {
-        Optional<Person> personOptional = this.getPersonByFirstNameAndLastName(firstname,lastname);
+    public Integer deletePerson(String firstname, String lastname) {
+        Optional<Person> personOptional = this.getPersonByFirstNameAndLastName(firstname, lastname);
         if (personOptional.isPresent()) {
             try {
                 return personRepository.deletePersonByFirstNameAndLastNameAllIgnoreCase(firstname, lastname);
@@ -148,15 +143,36 @@ public class PersonService {
                 logger.error("Erreur lors de la suppression d'une personne :" + exception.getMessage() + " StackTrace : " + exception.getStackTrace());
                 return null;
             }
-        }
-        else
-        {
+        } else {
             logger.error("Erreur lors de la suppression d'une personne inexistante");
             return null;
         }
     }
 
-
-
-
+    /**
+     * Récupère la liste de tous les emails des personnes
+     *
+     * @return liste des emails
+     */
+    public List<String> getAllEmailsForCity(String city) {
+        if (city != null) {
+            try {
+                List<Person> personList = personRepository.findAllByCityIgnoreCase(city);
+                if (personList != null) {
+                    //TODO : faut-il dédoublonner les emails éventuellement en double ?
+                    //Si oui : ajouter .distinct après el .map et avant le collect
+                    return personList.stream().filter(personIteratorFilter -> personIteratorFilter.getEmail() != null).
+                            map(personIterator -> personIterator.getEmail()).collect(Collectors.toList());
+                } else {
+                    logger.info("Récupération d'une liste nulle de personnes.");
+                    return null;
+                }
+            } catch (Exception exception) {
+                logger.error("Erreur lors de la récupération de la liste des personnes : " + exception.getMessage() + " Stack Trace + " + exception.getStackTrace());
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
 }

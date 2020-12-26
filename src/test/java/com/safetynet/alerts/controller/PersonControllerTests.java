@@ -8,6 +8,7 @@ import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.service.PersonService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.scheduling.ScheduledTasksEndpointAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -206,6 +207,40 @@ public class PersonControllerTests {
                 {
                     assertThat(mvcResult.getResolvedException()).isInstanceOf(FunctionalException.class);
                     assertThat(mvcResult.getResolvedException().getMessage()).isEqualTo("person.delete.error");
+                });
+    }
+
+    @Test
+    public void getCommunityEmailValidTest() throws Exception {
+
+        List<String> emailslist = new ArrayList<>();
+        emailslist.add("myFirstEmail");
+        emailslist.add("mySecondEmail");
+
+        when(personServiceMock.getAllEmailsForCity(any(String.class))).thenReturn(emailslist);
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/communityEmail").
+                contentType(MediaType.APPLICATION_JSON).param("city","myCity");
+
+        mockMvc.perform(builder).
+                andExpect(status().isOk()).
+                andExpect(jsonPath("$").isArray());
+    }
+
+    @Test
+    public void getCommunityEmailWithException() throws Exception {
+
+        when(personServiceMock.getAllEmailsForCity(any(String.class))).thenReturn(null);
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/communityEmail").
+                contentType(MediaType.APPLICATION_JSON).param("city","myCity");
+
+        mockMvc.perform(builder).
+                andExpect(status().isBadRequest()).
+                andExpect(mvcResult ->
+                {
+                    assertThat(mvcResult.getResolvedException()).isInstanceOf(FunctionalException.class);
+                    assertThat(mvcResult.getResolvedException().getMessage()).isEqualTo("communityEmail.get.error");
                 });
     }
 }

@@ -18,6 +18,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyIterable;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -265,5 +266,57 @@ public class PersonServiceTests {
         assertThat(personService.deletePerson(person.getFirstName(), person.getLastName())).isNull();
         verify(personRepositoryMock, Mockito.times(1)).deletePersonByFirstNameAndLastNameAllIgnoreCase(person.getFirstName(), person.getLastName());
     }
+
+    @Test
+    public void getAllEmailsForCityWithNullParameter()
+    {
+        assertThat(personService.getAllEmailsForCity(null)).isNull();
+    }
+
+    @Test
+    public void getAllEmailsForCityReturnNull()
+    {
+        when(personRepositoryMock.findAllByCityIgnoreCase("myCity")).thenReturn(null);
+        assertThat(personService.getAllEmailsForCity("myCity")).isNull();
+    }
+
+    @Test
+    public void getAllEmailsForCityReturnEmptyList()
+    {
+        when(personRepositoryMock.findAllByCityIgnoreCase(any(String.class))).thenReturn(new ArrayList<Person>());
+        assertThat(personService.getAllEmailsForCity("myCity")).isEmpty();
+    }
+
+    @Test
+    public void getAllEmailsForCityReturnListofEmail()
+    {
+        List<Person> personList = new ArrayList<>();
+        Person secondPerson = new Person();
+        secondPerson.setEmail("mySecondEmail");
+
+        Person thirdPerson = new Person();
+        thirdPerson.setEmail(null);
+
+        personList.add(person);
+        personList.add(secondPerson);
+        personList.add(thirdPerson);
+
+        when(personRepositoryMock.findAllByCityIgnoreCase(any(String.class))).thenReturn(personList);
+
+        List<String> emailsList  =personService.getAllEmailsForCity("myCity");
+        assertThat(emailsList).size().isEqualTo(2);
+        assertThat(emailsList).contains("mySecondEmail");
+    }
+
+    @Test
+    public void getAllEmailsForCityWIthException()
+    {
+        given(personRepositoryMock.findAllByCityIgnoreCase(any(String.class))).
+                willAnswer(invocation -> { throw new Exception();});
+
+        assertThat(personService.getAllEmailsForCity(anyString())).isNull();
+        verify(personRepositoryMock, Mockito.times(1)).findAllByCityIgnoreCase(anyString());
+    }
+
 
 }

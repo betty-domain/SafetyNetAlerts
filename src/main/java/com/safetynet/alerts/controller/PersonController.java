@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class PersonController {
 
@@ -50,37 +52,44 @@ public class PersonController {
     }
 
     @PutMapping("/person")
-    public Person updatePerson(@RequestBody Person person)
-    {
+    public Person updatePerson(@RequestBody Person person) {
         logger.info("Requête Put sur le endpoint 'person' reçue");
 
         Person updatedPerson = personService.updatePerson(person);
-        if (updatedPerson!=null )
-        {
+        if (updatedPerson != null) {
             logger.info("Réponse suite au Put sur le endpoint 'person' envoyée");
             return updatedPerson;
-        }
-        else
-        {
+        } else {
             throw new FunctionalException("person.update.error");
         }
     }
 
     @DeleteMapping("/person")
-    public Integer deletePerson(@RequestParam String firstname, @RequestParam String lastname)
-    {
+    public Integer deletePerson(@RequestParam String firstname, @RequestParam String lastname) {
         logger.info("Requête Delete sur le endpoint 'person' reçue avec les paramètres firstname :" + firstname + " et lastname : " + lastname + " reçue");
 
-        Integer deleteResult = personService.deletePerson(firstname,lastname);
-        if (deleteResult!=null) {
+        Integer deleteResult = personService.deletePerson(firstname, lastname);
+        if (deleteResult != null) {
             logger.info("Réponse suite au Delete sur le endpoint 'person' reçue avec les paramètres firstname :" + firstname + " et lastname : " + lastname + " envoyée");
             return deleteResult;
-        }
-        else
-        {
+        } else {
             throw new FunctionalException("person.delete.error");
         }
     }
 
+    @GetMapping("/communityEmail")
+    public Iterable<String> getCommunityEmail(@RequestParam String city) {
+        logger.info("Requête Get sur le endpoint 'communityEmail' reçue");
+
+        List<String> emailList = personService.getAllEmailsForCity(city);
+        if (emailList != null) {
+            logger.info("Réponse suite à la requête Get sur le endpoint communityEmail transmise");
+            return emailList;
+        }
+        else
+        {
+            throw new FunctionalException("communityEmail.get.error");
+        }
+    }
 
 }
