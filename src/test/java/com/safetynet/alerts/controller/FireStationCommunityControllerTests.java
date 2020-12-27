@@ -12,6 +12,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -55,6 +58,41 @@ public class FireStationCommunityControllerTests {
         when(fireStationCommunityServiceMock.getFireStationCommunity(any(Integer.class))).thenReturn(fireStationCommunityDTO);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/fireStation").
+                param("stationNumber","1").
+                contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(builder).
+                andExpect(status().isOk());
+    }
+
+    @Test
+    public void getPhoneListByFireStationWithException() throws Exception{
+
+        when(fireStationCommunityServiceMock.getPhoneListByStationNumber(any(Integer.class))).thenReturn(null);
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/phoneAlert").
+                param("stationNumber","1").
+                contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(builder).
+                andExpect(status().isBadRequest()).
+                andExpect(mvcResult ->
+                {
+                    assertThat(mvcResult.getResolvedException()).isInstanceOf(FunctionalException.class);
+                    assertThat(mvcResult.getResolvedException().getMessage()).isEqualTo("phoneAlert.get.error");
+                });
+    }
+
+    @Test
+    public void getPhoneListByFireStationValidTest() throws Exception{
+
+        List<String> phoneList = new ArrayList<>();
+        phoneList.add("phone1");
+        phoneList.add("phone2");
+
+        when(fireStationCommunityServiceMock.getPhoneListByStationNumber(1)).thenReturn(phoneList);
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/phoneAlert").
                 param("stationNumber","1").
                 contentType(MediaType.APPLICATION_JSON);
 

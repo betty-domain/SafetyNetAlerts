@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class FireStationCommunityController {
 
@@ -32,6 +34,20 @@ public class FireStationCommunityController {
             return fireStationCommunityDTO;
         } else {
             throw new FunctionalException("fireStationCommunity.getFireStationCommunity.error");
+        }
+    }
+
+    @GetMapping("/phoneAlert")
+    public List<String> getPhoneListByFireStation(@RequestParam Integer stationNumber)
+    {//TODO : est ce que c'est bien par numéro de station de feu qu'on doit récupérer les éléments ?
+        logger.info("Requête Get sur le endpoint 'phoneAlert' avec stationNumber : {" + stationNumber.toString() + "} reçue");
+
+        List<String> phoneList = fireStationCommunityService.getPhoneListByStationNumber(stationNumber);
+        if (phoneList != null) {
+            logger.info("Réponse suite au Get sur le endpoint 'phoneAlert' avec stationNumber : {" +stationNumber.toString() + "} transmise");
+            return phoneList;
+        } else {
+            throw new FunctionalException("phoneAlert.get.error");
         }
     }
 }

@@ -24,13 +24,15 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(properties = {
         "application.runner.enabled=false" })
 public class FireStationCommunityServiceTests {
-
 
     @MockBean
     private PersonRepository personRepositoryMock;
@@ -48,10 +50,6 @@ public class FireStationCommunityServiceTests {
     private FireStationCommunityService fireStationCommunityService;
 
     private Person person;
-
-    private List<Person> personList;
-
-    private List<MedicalRecord> medicalRecordList;
 
     @BeforeAll
     private static void setUpAllTest() {
@@ -79,7 +77,6 @@ public class FireStationCommunityServiceTests {
         }
     }
 
-
     @Test
     public void getFireStationCommunityWithNullValues() {
         assertThat(fireStationCommunityService.getFireStationCommunity(null)).isNull();
@@ -101,7 +98,7 @@ public class FireStationCommunityServiceTests {
         personList.add(person);
 
         MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setBirthDate(LocalDate.of(1910,10,10));
+        medicalRecord.setBirthDate(LocalDate.of(1910, 10, 10));
 
         when(fireStationRepositoryMock.findDistinctByStation(1)).thenReturn(fireStationList);
         when(personRepositoryMock.findAllByAddressInOrderByAddress(any())).thenReturn(personList);
@@ -130,11 +127,50 @@ public class FireStationCommunityServiceTests {
         when(personRepositoryMock.findAllByAddressInOrderByAddress(any())).thenReturn(personList);
         when(medicalRecordRepositoryMock.findByFirstNameAndLastNameAllIgnoreCase(any(String.class), any(String.class))).thenReturn(Optional.empty());
 
-        FireStationCommunityDTO fireStationCommunityDTO =fireStationCommunityService.getFireStationCommunity(1);
+        FireStationCommunityDTO fireStationCommunityDTO = fireStationCommunityService.getFireStationCommunity(1);
 
         assertThat(fireStationCommunityDTO.getAdultsCount()).isEqualTo(1);
         assertThat(fireStationCommunityDTO.getChildrenCount()).isEqualTo(0);
         assertThat(fireStationCommunityDTO.getCommunityMemberDTOList()).size().isEqualTo(1);
 
     }
+
+    @Test
+    public void getPhoneListByStationNumberWithNullValues() {
+        assertThat(fireStationCommunityService.getPhoneListByStationNumber(null)).isNull();
+    }
+
+    @Test
+    public void getPhoneListByStationNumberWithException() {
+        given(fireStationRepositoryMock.findDistinctByStation(any(Integer.class))).willAnswer(invocation -> {
+            throw new Exception();
+        });
+        assertThat(fireStationCommunityService.getPhoneListByStationNumber(1)).isNull();
+    }
+
+    @Test
+    public void getPhoneListByStationNumberWithEmptyFireStationList() {
+        when(fireStationRepositoryMock.findDistinctByStation(any(Integer.class))).thenReturn(new ArrayList<>());
+        when(personRepositoryMock.findAllByAddressInOrderByAddress(anyList())).thenReturn(new ArrayList<>());
+        assertThat(fireStationCommunityService.getPhoneListByStationNumber(1)).isEmpty();
+    }
+
+    @Test
+    public void getPhoneListByStationNumberReturnListOfString() {
+
+        Person secondPerson = new Person();
+        secondPerson.setPhone("secondPhone");
+
+        Person thirdPerson  = new Person();
+
+        List<Person> personList = new ArrayList<>();
+        personList.add(person);
+        personList.add(secondPerson);
+        personList.add(thirdPerson);
+
+        when(fireStationRepositoryMock.findDistinctByStation(any(Integer.class))).thenReturn(new ArrayList<>());
+        when(personRepositoryMock.findAllByAddressInOrderByAddress(anyList())).thenReturn(personList);
+        assertThat(fireStationCommunityService.getPhoneListByStationNumber(1)).size().isEqualTo(2);
+    }
+
 }

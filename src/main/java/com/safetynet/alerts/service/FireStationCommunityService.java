@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FireStationCommunityService {
@@ -40,18 +41,9 @@ public class FireStationCommunityService {
      * @return Objet consolidant la liste des personnes et le nb d'adultes et d'enfants
      */
     public FireStationCommunityDTO getFireStationCommunity(Integer stationNumber) {
-        if (stationNumber != null) {
-            //on récupère la liste des stations
-            List<FireStation> fireStationList = fireStationRepository.findDistinctByStation(stationNumber);
 
-            //extraction de la liste des adresses des stations
-            List<String> addressList = new ArrayList<>();
-            fireStationList.forEach(fireStationIterator ->
-                    addressList.add(fireStationIterator.getAddress()));
-
-            //on récupère la liste des personnes rattachées à la liste des adresses
-            List<Person> personList = personRepository.findAllByAddressInOrderByAddress(addressList);
-
+        List<Person> personList = getPersonsByStationNumber(stationNumber);
+        if (personList != null) {
             List<CommunityMemberDTO> communityMemberDTOList = new ArrayList<>();
 
             //on construit les données à retourner en récupérant l'âge sur le medicalRecord de la personne parcourue dans la liste
@@ -63,8 +55,7 @@ public class FireStationCommunityService {
                     communityMemberDTOList.add(
                             Mappers.getMapper(CommunityMemberDTOMapper.class).
                                     personToCommunityMemberDTO(personIterator, optionalMedicalRecord.get()));
-                }
-                else {
+                } else {
                     communityMemberDTOList.add(
                             Mappers.getMapper(CommunityMemberDTOMapper.class).
                                     personToCommunityMemberDTO(personIterator, new MedicalRecord()));
@@ -76,6 +67,51 @@ public class FireStationCommunityService {
 
             return fireStationCommunityDTO;
 
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Retourne la liste des téléphones des résidents rattachés au numéro de station de feu fourni
+     *
+     * @param stationNumber numéro des stations de feu
+     * @return liste des numéro de téléphone des résidents rattachés au numéro fourni (correspondant à plusieurs stations de feu)
+     */
+    public List<String> getPhoneListByStationNumber(Integer stationNumber) {
+
+        List<Person> personList = getPersonsByStationNumber(stationNumber);
+        if (personList != null) {
+            return personList.stream().filter(personIteratorFilter -> personIteratorFilter.getPhone() != null && !personIteratorFilter.getPhone().isEmpty()).
+                    map(personIterator -> personIterator.getPhone()).collect(Collectors.toList());
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * récupère la liste des personnes associées aux station de feu représentées par un numéro
+     *
+     * @param stationNumber numéro des stations de feu souhaitées
+     * @return liste des personnes associées aux stations demandées
+     */
+    private List<Person> getPersonsByStationNumber(Integer stationNumber) {
+        if (stationNumber != null) {
+            try {
+                //on récupère la liste des stations
+                List<FireStation> fireStationList = fireStationRepository.findDistinctByStation(stationNumber);
+
+                //extraction de la liste des adresses des stations
+                List<String> addressList = new ArrayList<>();
+                fireStationList.forEach(fireStationIterator ->
+                        addressList.add(fireStationIterator.getAddress()));
+
+                //on récupère la liste des personnes rattachées à la liste des adresses
+                return personRepository.findAllByAddressInOrderByAddress(addressList);
+            } catch (Exception exception) {
+                logger.error("Erreur lors de la récupération des personnes liées à une station de feu : " + exception.getMessage() + " Stack Trace : " + exception.getStackTrace());
+                return null;
+            }
         } else {
             return null;
         }
