@@ -161,7 +161,7 @@ public class PersonService {
                 if (personList != null) {
                     //TODO : faut-il dédoublonner les emails éventuellement en double ?
                     //Si oui : ajouter .distinct après el .map et avant le collect
-                    return personList.stream().filter(personIteratorFilter -> personIteratorFilter.getEmail() != null).
+                    return personList.stream().filter(personIteratorFilter -> personIteratorFilter.getEmail() != null && !personIteratorFilter.getEmail().isEmpty()).
                             map(personIterator -> personIterator.getEmail()).collect(Collectors.toList());
                 } else {
                     logger.info("Récupération d'une liste nulle de personnes.");
