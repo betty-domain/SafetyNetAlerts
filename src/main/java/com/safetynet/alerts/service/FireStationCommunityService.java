@@ -115,8 +115,11 @@ public class FireStationCommunityService {
 
                 //extraction de la liste des adresses des stations
                 List<String> addressList = new ArrayList<>();
-                fireStationList.forEach(fireStationIterator ->
-                        addressList.add(fireStationIterator.getAddress()));
+                fireStationList.forEach(fireStationIterator -> {
+                    if (fireStationIterator.getAddress()!=null && !fireStationIterator.getAddress().isEmpty()) {
+                        addressList.add(fireStationIterator.getAddress());
+                    }
+                });
 
                 //on récupère la liste des personnes rattachées à la liste des adresses
                 List<Person> personList = personRepository.findAllByAddressInOrderByAddress(addressList);
