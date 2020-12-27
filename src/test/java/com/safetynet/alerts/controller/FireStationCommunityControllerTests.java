@@ -71,7 +71,7 @@ public class FireStationCommunityControllerTests {
         when(fireStationCommunityServiceMock.getPhoneListByStationNumber(any(Integer.class))).thenReturn(null);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/phoneAlert").
-                param("stationNumber","1").
+                param("firestation","1").
                 contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder).
@@ -93,7 +93,7 @@ public class FireStationCommunityControllerTests {
         when(fireStationCommunityServiceMock.getPhoneListByStationNumber(1)).thenReturn(phoneList);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/phoneAlert").
-                param("stationNumber","1").
+                param("firestation","1").
                 contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder).
