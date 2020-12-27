@@ -2,6 +2,7 @@ package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.model.FunctionalException;
 import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
+import com.safetynet.alerts.model.dto.FloodInfoByStationDTO;
 import com.safetynet.alerts.service.FireStationCommunityService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +95,39 @@ public class FireStationCommunityControllerTests {
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/phoneAlert").
                 param("firestation","1").
+                contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(builder).
+                andExpect(status().isOk());
+    }
+
+    @Test
+    public void getFloodInfoByFireStationWithException() throws Exception{
+
+        when(fireStationCommunityServiceMock.getFloodInfoByStations(any(Integer.class))).thenReturn(null);
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/flood/stations").
+                param("stations","1").
+                contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(builder).
+                andExpect(status().isBadRequest()).
+                andExpect(mvcResult ->
+                {
+                    assertThat(mvcResult.getResolvedException()).isInstanceOf(FunctionalException.class);
+                    assertThat(mvcResult.getResolvedException().getMessage()).isEqualTo("flood.get.error");
+                });
+    }
+
+    @Test
+    public void getFloodInfoByFireStationValidTest() throws Exception{
+
+        List<FloodInfoByStationDTO> floodInfoByStationDTOList = new ArrayList<>();
+
+        when(fireStationCommunityServiceMock.getFloodInfoByStations(1)).thenReturn(floodInfoByStationDTOList);
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/flood/stations").
+                param("stations","1").
                 contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder).

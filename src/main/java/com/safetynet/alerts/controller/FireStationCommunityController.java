@@ -3,6 +3,7 @@ package com.safetynet.alerts.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.safetynet.alerts.model.FunctionalException;
 import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
+import com.safetynet.alerts.model.dto.FloodInfoByStationDTO;
 import com.safetynet.alerts.model.dto.Views;
 import com.safetynet.alerts.service.FireStationCommunityService;
 import org.apache.logging.log4j.LogManager;
@@ -48,6 +49,20 @@ public class FireStationCommunityController {
             return phoneList;
         } else {
             throw new FunctionalException("phoneAlert.get.error");
+        }
+    }
+
+    @GetMapping("/flood/stations")
+    public List<FloodInfoByStationDTO> getFloodInfoByFireStation(@RequestParam Integer stations)
+    {//TODO : est ce que c'est bien par numéro de station de feu qu'on doit récupérer les éléments ou une liste de numéro de stations?
+        logger.info("Requête Get sur le endpoint 'flood' reçue");
+
+        List<FloodInfoByStationDTO> floodInfoByStationDTOList = fireStationCommunityService.getFloodInfoByStations(stations);
+        if (floodInfoByStationDTOList != null) {
+            logger.info("Réponse suite au Get sur le endpoint 'flood' transmise");
+            return floodInfoByStationDTOList;
+        } else {
+            throw new FunctionalException("flood.get.error");
         }
     }
 
