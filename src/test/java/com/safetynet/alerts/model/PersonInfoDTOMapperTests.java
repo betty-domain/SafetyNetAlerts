@@ -130,7 +130,7 @@ public class PersonInfoDTOMapperTests {
     }
 
     @Test
-    public void communityMemberDTO_NullValues() {
+    public void personInfoDTO_NullValues() {
         assertThat(mapper.personToPersonInfoDTO(null, null)).isNull();
     }
 
