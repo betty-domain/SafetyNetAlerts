@@ -40,11 +40,11 @@ public class FireStationCommunityController {
     @GetMapping("/phoneAlert")
     public List<String> getPhoneListByFireStation(@RequestParam Integer firestation)
     {//TODO : est ce que c'est bien par numéro de station de feu qu'on doit récupérer les éléments ?
-        logger.info("Requête Get sur le endpoint 'phoneAlert' avec stationNumber : {" + stationNumber.toString() + "} reçue");
+        logger.info("Requête Get sur le endpoint 'phoneAlert' avec stationNumber : {" + firestation.toString() + "} reçue");
 
-        List<String> phoneList = fireStationCommunityService.getPhoneListByStationNumber(stationNumber);
+        List<String> phoneList = fireStationCommunityService.getPhoneListByStationNumber(firestation);
         if (phoneList != null) {
-            logger.info("Réponse suite au Get sur le endpoint 'phoneAlert' avec stationNumber : {" +stationNumber.toString() + "} transmise");
+            logger.info("Réponse suite au Get sur le endpoint 'phoneAlert' avec stationNumber : {" +firestation.toString() + "} transmise");
             return phoneList;
         } else {
             throw new FunctionalException("phoneAlert.get.error");
