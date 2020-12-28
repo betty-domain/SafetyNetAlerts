@@ -40,7 +40,7 @@ public class FireStationCommunityController {
 
     @GetMapping("/phoneAlert")
     public List<String> getPhoneListByFireStation(@RequestParam Integer firestation)
-    {//TODO : est ce que c'est bien par numéro de station de feu qu'on doit récupérer les éléments ?
+    {
         logger.info("Requête Get sur le endpoint 'phoneAlert' avec stationNumber : {" + firestation.toString() + "} reçue");
 
         List<String> phoneList = fireStationCommunityService.getPhoneListByStationNumber(firestation);
@@ -53,7 +53,7 @@ public class FireStationCommunityController {
     }
 
     @GetMapping("/flood/stations")
-    public List<StationFloodInfoDTO> getFloodInfoByFireStation(@RequestParam Integer stations)
+    public List<StationFloodInfoDTO> getFloodInfoByFireStation(@RequestParam List<Integer> stations)
     {//TODO : est ce que c'est bien par numéro de station de feu qu'on doit récupérer les éléments ou une liste de numéro de stations?
         logger.info("Requête Get sur le endpoint 'flood' reçue");
 

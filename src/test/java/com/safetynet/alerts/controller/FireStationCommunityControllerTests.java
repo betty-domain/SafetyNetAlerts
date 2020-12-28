@@ -18,6 +18,7 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -104,7 +105,7 @@ public class FireStationCommunityControllerTests {
     @Test
     public void getFloodInfoByFireStationWithException() throws Exception{
 
-        when(fireStationCommunityServiceMock.getFloodInfoByStations(any(Integer.class))).thenReturn(null);
+        when(fireStationCommunityServiceMock.getFloodInfoByStations(anyList())).thenReturn(null);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/flood/stations").
                 param("stations","1").
@@ -124,7 +125,11 @@ public class FireStationCommunityControllerTests {
 
         List<StationFloodInfoDTO> stationFloodInfoDTOList = new ArrayList<>();
 
-        when(fireStationCommunityServiceMock.getFloodInfoByStations(1)).thenReturn(stationFloodInfoDTOList);
+        List<Integer> stationsNumberList = new ArrayList<>();
+        stationsNumberList.add(1);
+        stationsNumberList.add(2);
+
+        when(fireStationCommunityServiceMock.getFloodInfoByStations(stationsNumberList)).thenReturn(stationFloodInfoDTOList);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/flood/stations").
                 param("stations","1").

@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -197,28 +198,29 @@ public class FireStationCommunityServiceTests {
 
     @Test
     public void getFloodInfoByStationsWithException() {
-        given(fireStationRepositoryMock.findDistinctByStation(any(Integer.class))).willAnswer(invocation -> {
+        given(fireStationRepositoryMock.findDistinctByStationIn(anyList())).willAnswer(invocation -> {
             throw new Exception();
         });
-        assertThat(fireStationCommunityService.getFloodInfoByStations(1)).isNull();
+
+        List<Integer> stationsList = new ArrayList<>();
+        stationsList.add(1);
+        assertThat(fireStationCommunityService.getFloodInfoByStations(stationsList)).isNull();
     }
 
     @Test
     public void getFloodInfoByStationsReturnListOfValues() {
         List<FireStation> fireStationList = new ArrayList<>();
+        List<Person> personList = new ArrayList<>();
+        List<Integer> stationsNumberList = new ArrayList<>();
 
+        personList.add(person);
+
+        //given une station de feu avec 2 personnes rattachée
         FireStation fireStation = new FireStation();
         fireStation.setStation(1);
         fireStation.setAddress(person.getAddress());
         fireStationList.add(fireStation);
-
-        FireStation fireStation1 = new FireStation();
-        fireStation1.setStation(1);
-        fireStation1.setAddress("fs1.address");
-        fireStationList.add(fireStation1);
-
-        List<Person> personList = new ArrayList<>();
-        personList.add(person);
+        stationsNumberList.add(fireStation.getStation());
 
         Person person1 = new Person();
         person1.setFirstName("firstname1");
@@ -226,11 +228,25 @@ public class FireStationCommunityServiceTests {
         person1.setAddress(person.getAddress());
         personList.add(person1);
 
+        //given une deuxième station de feu avec 1 personne rattachée
+        FireStation fireStation1 = new FireStation();
+        fireStation1.setStation(2);
+        fireStation1.setAddress("fs1.address");
+        fireStationList.add(fireStation1);
+        stationsNumberList.add(fireStation1.getStation());
+
         Person person2 = new Person();
         person2.setFirstName("firstname2");
         person2.setLastName("lastname2");
         person2.setAddress(fireStation1.getAddress());
         personList.add(person2);
+
+        //given une troisième station de feu sans personne rattachée à la même adresse
+        FireStation fireStation2 = new FireStation();
+        fireStation2.setStation(2);
+        fireStation2.setAddress("fs2.address");
+        fireStationList.add(fireStation2);
+        stationsNumberList.add(fireStation2.getStation());
 
         MedicalRecord medicalRecord = new MedicalRecord();
         List<String> allergiesList = new ArrayList<>();
@@ -242,14 +258,18 @@ public class FireStationCommunityServiceTests {
         medicalRecord.setMedications(medicationsList);
         medicalRecord.setBirthDate(LocalDate.of(1910, 10, 10));
 
-        when(fireStationRepositoryMock.findDistinctByStation(1)).thenReturn(fireStationList);
+        when(fireStationRepositoryMock.findDistinctByStationIn(anyList())).thenReturn(fireStationList);
         when(personRepositoryMock.findAllByAddressInOrderByAddress(anyList())).thenReturn(personList);
         when(medicalRecordRepositoryMock.findByFirstNameAndLastNameAllIgnoreCase(any(String.class), any(String.class))).thenReturn(Optional.of(medicalRecord));
 
-        List<StationFloodInfoDTO> stationFloodInfoDTOList = fireStationCommunityService.getFloodInfoByStations(1);
-        assertThat(stationFloodInfoDTOList.size()).isEqualTo(2);
-        assertThat(stationFloodInfoDTOList.get(0).getFloodInfoDTOList().size()).isEqualTo(2);
-        assertThat(stationFloodInfoDTOList.get(1).getFloodInfoDTOList().size()).isEqualTo(1);
+        List<StationFloodInfoDTO> stationFloodInfoDTOList = fireStationCommunityService.getFloodInfoByStations(stationsNumberList);
+        assertThat(stationFloodInfoDTOList.size()).isEqualTo(3);
+        assertThat(stationFloodInfoDTOList.stream().filter(
+                stationFloodInfoDTO -> stationFloodInfoDTO.getAddress().equalsIgnoreCase(fireStation.getAddress())
+        ).collect(Collectors.toList()).get(0).getFloodInfoDTOList().size()).isEqualTo(2);
+        assertThat(stationFloodInfoDTOList.stream().filter(
+                stationFloodInfoDTO -> stationFloodInfoDTO.getAddress().equalsIgnoreCase(fireStation1.getAddress())
+        ).collect(Collectors.toList()).get(0).getFloodInfoDTOList().size()).isEqualTo(1);
 
     }
 }

@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class FireStationCommunityService {
-//TOdO : refactoriser pour éviter la dépendance des 3 méthodes
+    //TOdO : refactoriser pour éviter la dépendance des 3 méthodes
     private static final Logger logger = LogManager.getLogger(FireStationCommunityService.class);
 
     @Autowired
@@ -53,10 +53,9 @@ public class FireStationCommunityService {
      */
     public FireStationCommunityDTO getFireStationCommunity(Integer stationNumber) {
 
-        Map<String, List<Person>> mapPersonByFireStationAddress = getPersonsByStationNumber(stationNumber);
+        List<Person> personList = getPersonListByStationNumber(stationNumber);
 
-        if (mapPersonByFireStationAddress != null) {
-            List<Person> personList = convertToListOfPerson(mapPersonByFireStationAddress.values());
+        if (personList != null) {
             List<CommunityMemberDTO> communityMemberDTOList = new ArrayList<>();
 
             //on construit les données à retourner en récupérant l'âge sur le medicalRecord de la personne parcourue dans la liste
@@ -89,11 +88,9 @@ public class FireStationCommunityService {
      */
     public List<String> getPhoneListByStationNumber(Integer stationNumber) {
 
-        Map<String, List<Person>> mapPersonByFireStationAddress = getPersonsByStationNumber(stationNumber);
+        List<Person> personList = getPersonListByStationNumber(stationNumber);
 
-        if (mapPersonByFireStationAddress != null) {
-            List<Person> personList = convertToListOfPerson(mapPersonByFireStationAddress.values());
-
+        if (personList != null) {
             return personList.stream().filter(personIteratorFilter -> personIteratorFilter.getPhone() != null && !personIteratorFilter.getPhone().isEmpty()).
                     map(personIterator -> personIterator.getPhone()).collect(Collectors.toList());
         } else {
@@ -107,37 +104,18 @@ public class FireStationCommunityService {
      * @param stationNumber numéro des stations de feu souhaitées
      * @return liste des personnes associées aux stations demandées
      */
-    private Map<String, List<Person>> getPersonsByStationNumber(Integer stationNumber) {
-        //TODO : voir si c'est opportun d'utiliser cette fonction dans les 3 endpoint gérés par ce service
+    private List<Person> getPersonListByStationNumber(Integer stationNumber) {
         if (stationNumber != null) {
             try {
                 //on récupère la liste des stations
                 List<FireStation> fireStationList = fireStationRepository.findDistinctByStation(stationNumber);
 
                 //extraction de la liste des adresses des stations
-                List<String> addressList = new ArrayList<>();
-                fireStationList.forEach(fireStationIterator -> {
-                    if (fireStationIterator.getAddress() != null && !fireStationIterator.getAddress().isEmpty()) {
-                        addressList.add(fireStationIterator.getAddress());
-                    }
-                });
+                List<String> addressList = getAddressListFromFireStationList(fireStationList);
 
                 //on récupère la liste des personnes rattachées à la liste des adresses
-                List<Person> personList = personRepository.findAllByAddressInOrderByAddress(addressList);
+                return personRepository.findAllByAddressInOrderByAddress(addressList);
 
-                Map<String, List<Person>> mapPersonByStationAddress = new HashMap<>();
-
-                addressList.forEach(addressIterator ->
-                        {
-                            List<Person> personListByAdress = personList.stream().filter(person -> person.getAddress().equalsIgnoreCase(addressIterator)).collect(Collectors.toList());
-                            if (mapPersonByStationAddress.containsKey(addressIterator)) {
-                                mapPersonByStationAddress.get(addressIterator).addAll(personListByAdress);
-                            } else {
-                                mapPersonByStationAddress.put(addressIterator, personListByAdress);
-                            }
-                        }
-                );
-                return mapPersonByStationAddress;
             } catch (Exception exception) {
                 logger.error("Erreur lors de la récupération des personnes liées à une station de feu : " + exception.getMessage() + " Stack Trace : " + exception.getStackTrace());
                 return null;
@@ -148,15 +126,21 @@ public class FireStationCommunityService {
     }
 
     /**
-     * Convertit une liste de liste de personnes en une seule liste fusionnée
+     * Récupère la liste des adresses d'une liste de stations de feu
      *
-     * @param collectionOfPersonList liste de liste de personnes
-     * @return liste unique de personnes
+     * @param fireStationList liste de stations de feu
+     * @return liste des adresses dédoublonnée
      */
-    private List<Person> convertToListOfPerson(Collection<List<Person>> collectionOfPersonList) {
-        List<Person> personList = new ArrayList<>();
-        collectionOfPersonList.forEach(peopleList -> personList.addAll(peopleList));
-        return personList;
+    private List<String> getAddressListFromFireStationList(List<FireStation> fireStationList) {
+        List<String> addressList = new ArrayList<>();
+        if (fireStationList != null) {
+            fireStationList.forEach(fireStationIterator -> {
+                if (fireStationIterator.getAddress() != null && !fireStationIterator.getAddress().isEmpty()) {
+                    addressList.add(fireStationIterator.getAddress());
+                }
+            });
+        }
+        return addressList.stream().distinct().collect(Collectors.toList());
     }
 
     /**
@@ -165,7 +149,7 @@ public class FireStationCommunityService {
      * @param stations numéro de la station de feu
      * @return liste des foyers rattachés à la station de feu
      */
-    public List<StationFloodInfoDTO> getFloodInfoByStations(Integer stations) {
+    public List<StationFloodInfoDTO> getFloodInfoByStations(List<Integer> stations) {
         if (stations != null) {
             try {
                 Map<String, List<Person>> mapPersonByFireStationAddress = getPersonsByStationNumber(stations);
@@ -207,4 +191,45 @@ public class FireStationCommunityService {
         }
         return null;
     }
+
+    /**
+     * récupère la liste des personnes associées aux station de feu représentées par des numéros de stations
+     *
+     * @param stationsNumberList liste des numéros des stations de feu souhaitées
+     * @return liste des personnes associées aux stations demandées, regroupées par adresse
+     */
+    private Map<String, List<Person>> getPersonsByStationNumber(List<Integer> stationsNumberList) {
+        if (stationsNumberList != null) {
+            try {
+                //on récupère la liste des stations
+                List<FireStation> fireStationList = fireStationRepository.findDistinctByStationIn(stationsNumberList.stream().distinct().collect(Collectors.toList()));
+
+                //extraction de la liste des adresses des stations
+                List<String> addressList = getAddressListFromFireStationList(fireStationList);
+
+                //on récupère la liste des personnes rattachées à la liste des adresses
+                List<Person> personList = personRepository.findAllByAddressInOrderByAddress(addressList);
+
+                Map<String, List<Person>> mapPersonByStationAddress = new HashMap<>();
+
+                addressList.forEach(addressIterator ->
+                        {
+                            List<Person> personListByAdress = personList.stream().filter(person -> person.getAddress().equalsIgnoreCase(addressIterator)).collect(Collectors.toList());
+                            if (mapPersonByStationAddress.containsKey(addressIterator)) {
+                                mapPersonByStationAddress.get(addressIterator).addAll(personListByAdress);
+                            } else {
+                                mapPersonByStationAddress.put(addressIterator, personListByAdress);
+                            }
+                        }
+                );
+                return mapPersonByStationAddress;
+            } catch (Exception exception) {
+                logger.error("Erreur lors de la récupération des personnes liées à une station de feu : " + exception.getMessage() + " Stack Trace : " + exception.getStackTrace());
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
 }
