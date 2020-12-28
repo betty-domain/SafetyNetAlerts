@@ -13,6 +13,8 @@ public interface MedicalRecordRepository extends CrudRepository<MedicalRecord,Lo
 
     List<MedicalRecord> findAllByLastNameAllIgnoreCase(String lastname);
 
+    List<MedicalRecord> findAllByLastNameInAllIgnoreCase(List<String> lastname);
+
     Optional<MedicalRecord> findByFirstNameAndLastNameAllIgnoreCase(String firstname, String lastname);
 
     @Transactional
