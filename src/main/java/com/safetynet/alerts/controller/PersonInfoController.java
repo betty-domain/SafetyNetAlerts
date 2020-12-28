@@ -1,9 +1,6 @@
 package com.safetynet.alerts.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.safetynet.alerts.model.FunctionalException;
-import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
-import com.safetynet.alerts.model.dto.Views;
 import com.safetynet.alerts.service.PersonInfoService;
 import com.safetynet.alerts.model.dto.PersonInfoDTO;
 import org.apache.logging.log4j.LogManager;
