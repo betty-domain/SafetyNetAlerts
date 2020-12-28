@@ -158,30 +158,33 @@ public class FireStationCommunityService {
 
                 for (String fireStationAddress : mapPersonByFireStationAddress.keySet()) {
 
-                    if (fireStationAddress != null && !fireStationAddress.isEmpty()) {
-                        StationFloodInfoDTO stationFloodInfoDTO = new StationFloodInfoDTO();
-                        stationFloodInfoDTO.setAddress(fireStationAddress);
+                    StationFloodInfoDTO stationFloodInfoDTO = new StationFloodInfoDTO();
+                    stationFloodInfoDTO.setAddress(fireStationAddress);
 
-                        //extraction de la liste des personnes liées à la station de feu à partir de l'adresse de celle-ci
-                        List<Person> personLinkedToFireStation = mapPersonByFireStationAddress.get(fireStationAddress);
-                        if (personLinkedToFireStation != null) {
-                            List<FloodInfoDTO> floodInfoDTOList = new ArrayList<>();
+                    //extraction de la liste des personnes liées à la station de feu à partir de l'adresse de celle-ci
+                    List<Person> personLinkedToFireStation = mapPersonByFireStationAddress.get(fireStationAddress);
 
-                            //on construit les données à retourner en récupérant l'âge sur le medicalRecord de la personne parcourue dans la liste
-                            personLinkedToFireStation.forEach(personIterator -> {
-                                Optional<MedicalRecord> optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastNameAllIgnoreCase(personIterator.getFirstName(), personIterator.getLastName()
-                                );
+                    if (personLinkedToFireStation != null) {
+                        List<FloodInfoDTO> floodInfoDTOList = new ArrayList<>();
 
-                                if (optionalMedicalRecord.isPresent()) {
-                                    floodInfoDTOList.add(floodInfoDTOMapper.convertToFloodInfoDTO(personIterator, optionalMedicalRecord.get()));
-                                } else {
-                                    floodInfoDTOList.add(floodInfoDTOMapper.convertToFloodInfoDTO(personIterator, new MedicalRecord()));
-                                }
-                            });
-                            stationFloodInfoDTO.setFloodInfoDTOList(floodInfoDTOList);
-                            stationFloodInfoDTOList.add(stationFloodInfoDTO);
-                        }
+                        //récupération de la liste des dossiers médicaux liées aux personnes
+                        List<MedicalRecord> medicalRecordListLinkedToPersonList = medicalRecordRepository.findAllByLastNameIn(UtilsService.getLastNameList(personLinkedToFireStation));
+
+                        //on construit les données à retourner en récupérant l'âge sur le medicalRecord de la personne parcourue dans la liste
+                        personLinkedToFireStation.forEach(personIterator -> {
+                            Optional<MedicalRecord> optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastNameAllIgnoreCase(personIterator.getFirstName(), personIterator.getLastName()
+                            );
+
+                            if (optionalMedicalRecord.isPresent()) {
+                                floodInfoDTOList.add(floodInfoDTOMapper.convertToFloodInfoDTO(personIterator, optionalMedicalRecord.get()));
+                            } else {
+                                floodInfoDTOList.add(floodInfoDTOMapper.convertToFloodInfoDTO(personIterator, new MedicalRecord()));
+                            }
+                        });
+                        stationFloodInfoDTO.setFloodInfoDTOList(floodInfoDTOList);
+                        stationFloodInfoDTOList.add(stationFloodInfoDTO);
                     }
+
                 }
                 return stationFloodInfoDTOList;
             } catch (Exception exception) {
@@ -204,7 +207,7 @@ public class FireStationCommunityService {
                 //on récupère la liste des stations
                 List<FireStation> fireStationList = fireStationRepository.findDistinctByStationIn(stationsNumberList.stream().distinct().collect(Collectors.toList()));
 
-                //extraction de la liste des adresses des stations
+                //extraction de la liste distincte des adresses des stations
                 List<String> addressList = getAddressListFromFireStationList(fireStationList);
 
                 //on récupère la liste des personnes rattachées à la liste des adresses
@@ -215,11 +218,7 @@ public class FireStationCommunityService {
                 addressList.forEach(addressIterator ->
                         {
                             List<Person> personListByAdress = personList.stream().filter(person -> person.getAddress().equalsIgnoreCase(addressIterator)).collect(Collectors.toList());
-                            if (mapPersonByStationAddress.containsKey(addressIterator)) {
-                                mapPersonByStationAddress.get(addressIterator).addAll(personListByAdress);
-                            } else {
-                                mapPersonByStationAddress.put(addressIterator, personListByAdress);
-                            }
+                            mapPersonByStationAddress.put(addressIterator, personListByAdress);
                         }
                 );
                 return mapPersonByStationAddress;

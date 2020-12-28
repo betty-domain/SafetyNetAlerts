@@ -11,6 +11,7 @@ import com.safetynet.alerts.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,29 +43,23 @@ public class ChildAlertService {
 
             List<Person> personList = personRepository.findAllByAddressIgnoreCase(address);
 
-            List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAllByLastNameIn(getLastNameList(personList));
+            List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAllByLastNameIn(UtilsService.getLastNameList(personList));
 
             List<ChildAlertDTO> childAlertDTOList = new ArrayList<>();
 
             //on parcourt la liste des personnes pour constituer les DTO à retourner, uniquement s'ils ont un dossier médical existant (sinon impossible de calculer leur âge)
             personList.forEach(personIterator -> {
 
-                //on cherche le dossier médical de la personne
-                Optional<MedicalRecord> medicalRecordLinkedToPersonIterator = medicalRecordList.stream().filter(medicalRecord ->
-                        medicalRecord.getFirstName().equalsIgnoreCase(personIterator.getFirstName())
-                                && medicalRecord.getLastName().equalsIgnoreCase(personIterator.getLastName())
-                ).findFirst();
+                Optional<MedicalRecord> medicalRecordLinkedToPersonIterator = UtilsService.findMedicalRecord(medicalRecordList,personIterator);
 
                 if (medicalRecordLinkedToPersonIterator.isPresent()) {
                     // si le dossier médical existe, on peut créer le DTO correspondant à cette personne et ce dossier médical
 
                     ChildAlertDTO childAlertDTO = childAlertDTOMapper.convertToChildAlertDTO(personIterator, medicalRecordLinkedToPersonIterator.get());
 
-                    //on récupère les membres du foyer pour la personne en cours (on suppose que même foyer = même adresse)
-                    List<Person> personFamilyMembers = personList.stream().
-                            filter(person -> person.getAddress().equalsIgnoreCase(personIterator.getAddress()) &&
-                                    !(person.getFirstName().equalsIgnoreCase(personIterator.getFirstName()) && person.getLastName().equalsIgnoreCase(personIterator.getLastName()))).
-                            collect(Collectors.toList());
+                    //on récupère les membres du foyer pour la personne en cours
+                    List<Person> personFamilyMembers = findFamilyMembers(personList,personIterator);
+
                     childAlertDTO.setFamilyMembers(familyMemberDTOMapper.personListToFamilyMemberDTOList(personFamilyMembers));
 
                     childAlertDTOList.add(childAlertDTO);
@@ -80,16 +75,17 @@ public class ChildAlertService {
     }
 
     /**
-     * Extrait la liste des noms de famille d'une liste de persones
-     *
-     * @param personList
-     * @return
+     * Recherche les membres du foyer (même adresse) d'une personne donnée dans une liste de personne
+     * @param personList liste de personnes à parcourir
+     * @param person personne pour laquelle on cherche les membres de la famille
+     * @return membres de la famille de la personne recherchée
      */
-    private List<String> getLastNameList(List<Person> personList) {
-        if (personList != null) {
-            return personList.stream().map(person -> person.getLastName()).distinct().collect(Collectors.toList());
-        } else {
-            return new ArrayList<>();
-        }
+    private List<Person> findFamilyMembers(List<Person> personList, Person person)
+    {
+        return personList.stream().
+                filter(personIterator -> personIterator.getAddress().equalsIgnoreCase(person.getAddress()) &&
+                        !(personIterator.getFirstName().equalsIgnoreCase(person.getFirstName()) && personIterator.getLastName().equalsIgnoreCase(person.getLastName()))).
+                collect(Collectors.toList());
     }
+
 }
