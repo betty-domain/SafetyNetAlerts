@@ -65,7 +65,7 @@ public class FireStationService {
                 return null;
             } else {
                 try {
-                    fireStation = fireStationRepository.save(fireStation);
+                    fireStation.setId(fireStationRepository.save(fireStation).getId());
                 } catch (Exception exception) {
                     logger.error("Erreur lors de l'ajout d'une station de feu : " + exception.getMessage() + " Stack Trace : " + exception.getStackTrace());
                     return null;

@@ -71,8 +71,6 @@ public class FireStationController {
         }
     }
 
-    //TODO : impossible de mettre des requestPAram sur le même endpoint
-
     @DeleteMapping("/firestation/{address}")
     public Integer deleteFireStation(@PathVariable String address)
     {
