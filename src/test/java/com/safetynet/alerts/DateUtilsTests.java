@@ -1,7 +1,6 @@
 package com.safetynet.alerts;
 
 import com.safetynet.alerts.utils.DateUtils;
-import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +30,13 @@ public class DateUtilsTests {
         nowLocalDateMock = LocalDate.of(2015,10,5);
         when(dateUtils.getNowLocalDate()).thenReturn(nowLocalDateMock);
     }
+
+    @Test
+    public void getAgeTestDateBirthWithNullValues()
+    {
+        assertThat(dateUtils.getAge(null)).isEqualTo(Integer.MIN_VALUE);
+    }
+
 
     @Test
     public void getAgeTestDateBirthInFutur()

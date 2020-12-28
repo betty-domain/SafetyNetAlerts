@@ -100,7 +100,7 @@ public class CommunityMemberDTOMapperTests {
         assertThat(communityMemberDTO.getFirstName()).isEqualTo(person.getFirstName());
         assertThat(communityMemberDTO.getLastName()).isEqualTo(person.getLastName());
         assertThat(communityMemberDTO.getPhone()).isEqualTo(person.getPhone());
-        assertThat(communityMemberDTO.getAge()).isEqualTo(0);
+        assertThat(communityMemberDTO.getAge()).isEqualTo(Integer.MIN_VALUE);
 
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
 public class FloodInfoDTO {
     private String lastname;
     private String phone;
-    private int age;
+    private int age= Integer.MIN_VALUE;
     private List<String> medicationList = new ArrayList<>();
     private List<String> allergiesList = new ArrayList<>();
 }

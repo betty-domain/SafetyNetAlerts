@@ -122,7 +122,7 @@ public class FloodInfoDTOMapperTests {
         assertThat(floodInfoDTO.getPhone()).isEqualTo(person.getPhone());
         assertThat(floodInfoDTO.getAllergiesList()).isEmpty();
         assertThat(floodInfoDTO.getMedicationList()).isEmpty();
-        assertThat(floodInfoDTO.getAge()).isEqualTo(0);
+        assertThat(floodInfoDTO.getAge()).isEqualTo(Integer.MIN_VALUE);
     }
 
     @Test

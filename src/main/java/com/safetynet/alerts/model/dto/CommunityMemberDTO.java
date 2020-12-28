@@ -19,6 +19,6 @@ public class CommunityMemberDTO {
     private String phone;
 
     @JsonView(Views.Private.class)
-    private int age;
+    private int age = Integer.MIN_VALUE;
 
 }

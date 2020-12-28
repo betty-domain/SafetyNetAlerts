@@ -124,7 +124,7 @@ public class PersonInfoDTOMapperTests {
         assertThat(personInfoDTO.getMail()).isEqualTo(person.getEmail());
         assertThat(personInfoDTO.getAllergiesList()).isEmpty();
         assertThat(personInfoDTO.getMedicationList()).isEmpty();
-        assertThat(personInfoDTO.getAge()).isEqualTo(0);
+        assertThat(personInfoDTO.getAge()).isEqualTo(Integer.MIN_VALUE);
 
     }
 

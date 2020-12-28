@@ -9,7 +9,7 @@ import java.util.List;
 public class PersonInfoDTO {
     private String lastname;
     private String address;
-    private int age;
+    private int age = Integer.MIN_VALUE;
     private String mail;
     private List<String> medicationList = new ArrayList<>();
     private List<String> allergiesList = new ArrayList<>();
