@@ -1,11 +1,14 @@
 package com.safetynet.alerts.utils;
 
+import org.springframework.stereotype.Component;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 
+@Component
 public class DateUtils {
 
     /**
@@ -27,7 +30,7 @@ public class DateUtils {
         if (birthDate != null) {
             return Period.between(birthDate, this.getNowLocalDate()).getYears();
         } else {
-            return Integer.MAX_VALUE;
+            return Integer.MIN_VALUE;
         }
     }
 }

@@ -14,7 +14,6 @@ import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +39,12 @@ public class FireStationCommunityService {
     @Autowired
     private FireStationRepository fireStationRepository;
 
+    @Autowired
+    private CommunityMemberDTOMapper communityMemberDTOMapper;
+
+    @Autowired
+    private FloodInfoDTOMapper floodInfoDTOMapper;
+
     /**
      * Récupérer les personnes rattachées à une station du feu ainsi que le nb d'adultes et d'enfants parmi cette liste
      *
@@ -60,13 +65,9 @@ public class FireStationCommunityService {
                 );
 
                 if (optionalMedicalRecord.isPresent()) {
-                    communityMemberDTOList.add(
-                            Mappers.getMapper(CommunityMemberDTOMapper.class).
-                                    personToCommunityMemberDTO(personIterator, optionalMedicalRecord.get()));
+                    communityMemberDTOList.add(communityMemberDTOMapper.personToCommunityMemberDTO(personIterator, optionalMedicalRecord.get()));
                 } else {
-                    communityMemberDTOList.add(
-                            Mappers.getMapper(CommunityMemberDTOMapper.class).
-                                    personToCommunityMemberDTO(personIterator, new MedicalRecord()));
+                    communityMemberDTOList.add(communityMemberDTOMapper.personToCommunityMemberDTO(personIterator, new MedicalRecord()));
                 }
             });
 
@@ -116,7 +117,7 @@ public class FireStationCommunityService {
                 //extraction de la liste des adresses des stations
                 List<String> addressList = new ArrayList<>();
                 fireStationList.forEach(fireStationIterator -> {
-                    if (fireStationIterator.getAddress()!=null && !fireStationIterator.getAddress().isEmpty()) {
+                    if (fireStationIterator.getAddress() != null && !fireStationIterator.getAddress().isEmpty()) {
                         addressList.add(fireStationIterator.getAddress());
                     }
                 });
@@ -188,13 +189,9 @@ public class FireStationCommunityService {
                                 );
 
                                 if (optionalMedicalRecord.isPresent()) {
-                                    floodInfoDTOList.add(
-                                            Mappers.getMapper(FloodInfoDTOMapper.class).
-                                                    convertToFloodInfoDTO(personIterator, optionalMedicalRecord.get()));
+                                    floodInfoDTOList.add(floodInfoDTOMapper.convertToFloodInfoDTO(personIterator, optionalMedicalRecord.get()));
                                 } else {
-                                    floodInfoDTOList.add(
-                                            Mappers.getMapper(FloodInfoDTOMapper.class).
-                                                    convertToFloodInfoDTO(personIterator, new MedicalRecord()));
+                                    floodInfoDTOList.add(floodInfoDTOMapper.convertToFloodInfoDTO(personIterator, new MedicalRecord()));
                                 }
                             });
                             stationFloodInfoDTO.setFloodInfoDTOList(floodInfoDTOList);

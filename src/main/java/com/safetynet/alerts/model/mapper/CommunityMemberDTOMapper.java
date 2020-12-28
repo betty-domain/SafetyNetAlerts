@@ -5,32 +5,32 @@ import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.model.dto.CommunityMemberDTO;
 import com.safetynet.alerts.utils.DateUtils;
 
-import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
-import java.util.List;
+
 
 @Mapper(componentModel = "spring")
-public interface CommunityMemberDTOMapper {
+public abstract class CommunityMemberDTOMapper {
 
-    DateUtils dateUtils = new DateUtils();
+    @Autowired
+    DateUtils dateUtils;
 
     @Mappings({
-            @Mapping(target="firstName", source="person.firstName"),
-            @Mapping(target="lastName", source="person.lastName"),
-            @Mapping(target="address", source="person.address"),
-            @Mapping(target="phone", source="person.phone"),
-            @Mapping(target="age", source="medicalRecord.birthDate", qualifiedByName="calculateAge")
+            @Mapping(target = "firstName", source = "person.firstName"),
+            @Mapping(target = "lastName", source = "person.lastName"),
+            @Mapping(target = "address", source = "person.address"),
+            @Mapping(target = "phone", source = "person.phone"),
+            @Mapping(target = "age", source = "medicalRecord.birthDate", qualifiedByName = "calculateAge")
     })
-    CommunityMemberDTO personToCommunityMemberDTO(Person person, MedicalRecord medicalRecord);
-
+    public abstract CommunityMemberDTO personToCommunityMemberDTO(Person person, MedicalRecord medicalRecord);
 
     @Named("calculateAge")
-    public static int getAge(LocalDate birthDate) {
+    public int getAge(LocalDate birthDate) {
         return dateUtils.getAge(birthDate);
     }
 }

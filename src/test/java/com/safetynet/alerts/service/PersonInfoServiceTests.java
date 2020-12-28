@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -36,8 +37,8 @@ public class PersonInfoServiceTests {
     @MockBean
     private MedicalRecordRepository medicalRecordRepositoryMock;
 
-    @MockBean
-    private DateUtils dateUtilsMock;
+    @SpyBean
+    private DateUtils dateUtilsSpy;
 
     @Autowired
     private PersonInfoService personInfoService;
@@ -79,7 +80,10 @@ public class PersonInfoServiceTests {
         MedicalRecord medicalRecord = new MedicalRecord();
         medicalRecord.setFirstName(person.getFirstName());
         medicalRecord.setLastName(person.getLastName());
-        medicalRecord.setBirthDate(LocalDate.of(2000, 5, 14));
+
+        LocalDate birthDate = LocalDate.of(2000, 5, 14);
+
+        medicalRecord.setBirthDate(birthDate);
         List<String> allergiesList = new ArrayList<>();
         allergiesList.add("Allergie 1");
         allergiesList.add("Allergie 2");
@@ -131,8 +135,8 @@ public class PersonInfoServiceTests {
 
         when(personRepositoryMock.findAllByLastNameAllIgnoreCase(person.getLastName())).thenReturn(personList);
         when(medicalRecordRepositoryMock.findAllByLastNameAllIgnoreCase(person.getLastName())).thenReturn(medicalRecordList);
-        LocalDate nowMockLocalDate = LocalDate.of(2020, 12, 31);
-        when(dateUtilsMock.getNowLocalDate()).thenReturn(nowMockLocalDate);
+        LocalDate nowMockLocalDate = LocalDate.of(2010, 12, 31);
+        when(dateUtilsSpy.getNowLocalDate()).thenReturn(nowMockLocalDate);
 
         List<PersonInfoDTO> personInfosListDTO = personInfoService.getPersonsInfo(person.getFirstName(), person.getLastName());
 

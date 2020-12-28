@@ -5,9 +5,9 @@ import com.safetynet.alerts.model.mapper.FloodInfoDTOMapper;
 
 import com.safetynet.alerts.utils.DateUtils;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -20,10 +20,12 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(properties = {
         "application.runner.enabled=false" })
 public class FloodInfoDTOMapperTests {
-    @MockBean
-    private DateUtils dateUtils;
 
-    private FloodInfoDTOMapper mapper = Mappers.getMapper(FloodInfoDTOMapper.class);
+    @SpyBean
+    private DateUtils dateUtilsSpy;
+
+    @Autowired
+    private FloodInfoDTOMapper floodInfoDTOMapper;
 
     @Test
     public void floodInfoDTO_MapsCorrect() {
@@ -39,7 +41,7 @@ public class FloodInfoDTOMapperTests {
         MedicalRecord medicalRecord = new MedicalRecord();
         medicalRecord.setLastName("medicalRecordLastName");
         medicalRecord.setFirstName("medicalRecordFirstNAme");
-        medicalRecord.setBirthDate(LocalDate.of(200, 01, 01));
+        medicalRecord.setBirthDate(LocalDate.of(2000, 01, 01));
         List<String> allergiesList = new ArrayList<>();
         allergiesList.add("Allergie 1");
         allergiesList.add("Allergie 2");
@@ -52,10 +54,10 @@ public class FloodInfoDTOMapperTests {
 
         medicalRecord.setMedications(medicamentList);
 
-        LocalDate nowLocalDateMock = LocalDate.of(2020, 12, 31);
-        when(dateUtils.getNowLocalDate()).thenReturn(nowLocalDateMock);
+        LocalDate nowLocalDateMock = LocalDate.of(2010, 12, 31);
+        when(dateUtilsSpy.getNowLocalDate()).thenReturn(nowLocalDateMock);
 
-        FloodInfoDTO floodInfoDTO = mapper.convertToFloodInfoDTO(person, medicalRecord);
+        FloodInfoDTO floodInfoDTO = floodInfoDTOMapper.convertToFloodInfoDTO(person, medicalRecord);
 
         assertThat(floodInfoDTO.getLastname()).isEqualTo(person.getLastName());
         assertThat(floodInfoDTO.getPhone()).isEqualTo(person.getPhone());
@@ -72,7 +74,7 @@ public class FloodInfoDTOMapperTests {
         MedicalRecord medicalRecord = new MedicalRecord();
         medicalRecord.setLastName("medicalRecordLastName");
         medicalRecord.setFirstName("medicalRecordFirstNAme");
-        medicalRecord.setBirthDate(LocalDate.of(200, 01, 01));
+        medicalRecord.setBirthDate(LocalDate.of(2000, 01, 01));
         List<String> allergiesList = new ArrayList<>();
         allergiesList.add("Allergie 1");
         allergiesList.add("Allergie 2");
@@ -85,10 +87,10 @@ public class FloodInfoDTOMapperTests {
 
         medicalRecord.setMedications(medicamentList);
 
-        LocalDate nowLocalDateMock = LocalDate.of(2020, 12, 31);
-        when(dateUtils.getNowLocalDate()).thenReturn(nowLocalDateMock);
+        LocalDate nowLocalDateMock = LocalDate.of(2010, 12, 31);
+        when(dateUtilsSpy.getNowLocalDate()).thenReturn(nowLocalDateMock);
 
-        FloodInfoDTO floodInfoDTO = mapper.convertToFloodInfoDTO(person, medicalRecord);
+        FloodInfoDTO floodInfoDTO = floodInfoDTOMapper.convertToFloodInfoDTO(person, medicalRecord);
 
         assertThat(floodInfoDTO.getLastname()).isNull();
         assertThat(floodInfoDTO.getPhone()).isNull();
@@ -111,10 +113,10 @@ public class FloodInfoDTOMapperTests {
 
         MedicalRecord medicalRecord = null;
 
-        LocalDate nowLocalDateMock = LocalDate.of(2020, 12, 31);
-        when(dateUtils.getNowLocalDate()).thenReturn(nowLocalDateMock);
+        LocalDate nowLocalDateMock = LocalDate.of(2010, 12, 31);
+        when(dateUtilsSpy.getNowLocalDate()).thenReturn(nowLocalDateMock);
 
-        FloodInfoDTO floodInfoDTO = mapper.convertToFloodInfoDTO(person, medicalRecord);
+        FloodInfoDTO floodInfoDTO = floodInfoDTOMapper.convertToFloodInfoDTO(person, medicalRecord);
 
         assertThat(floodInfoDTO.getLastname()).isEqualTo(person.getLastName());
         assertThat(floodInfoDTO.getPhone()).isEqualTo(person.getPhone());
@@ -125,7 +127,7 @@ public class FloodInfoDTOMapperTests {
 
     @Test
     public void floodInfoDTO_NullValues() {
-        assertThat(mapper.convertToFloodInfoDTO(null, null)).isNull();
+        assertThat(floodInfoDTOMapper.convertToFloodInfoDTO(null, null)).isNull();
     }
 
 }

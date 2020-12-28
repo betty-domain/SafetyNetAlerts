@@ -22,7 +22,7 @@ public class FireStationCommunityDTO {
     }
 
     public long getChildrenCount() {
-        childrenCount = communityMemberDTOList.stream().filter(communityMemberDTO -> communityMemberDTO.getAge() <= 18).count();
+        childrenCount = communityMemberDTOList.stream().filter(communityMemberDTO -> communityMemberDTO.getAge() <= 18 && communityMemberDTO.getAge()>=0).count();
         return childrenCount;
     }
 }

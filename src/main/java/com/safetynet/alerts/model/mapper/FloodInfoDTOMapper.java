@@ -9,12 +9,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
 @Mapper(componentModel = "spring")
-public interface FloodInfoDTOMapper {
-    DateUtils dateUtils = new DateUtils();
+public abstract class FloodInfoDTOMapper {
+    @Autowired
+    DateUtils dateUtils;
 
     @Mappings({
             @Mapping(target="lastname", source="person.lastName"),
@@ -23,11 +25,11 @@ public interface FloodInfoDTOMapper {
             @Mapping(target="allergiesList", source="medicalRecord.allergies"),
             @Mapping(target="age", source="medicalRecord.birthDate", qualifiedByName="calculateAge")
     })
-    FloodInfoDTO convertToFloodInfoDTO(Person person, MedicalRecord medicalRecord);
+    public abstract FloodInfoDTO convertToFloodInfoDTO(Person person, MedicalRecord medicalRecord);
 
 
     @Named("calculateAge")
-    public static int getAge(LocalDate birthDate) {
+    public int getAge(LocalDate birthDate) {
         return dateUtils.getAge(birthDate);
     }
 }

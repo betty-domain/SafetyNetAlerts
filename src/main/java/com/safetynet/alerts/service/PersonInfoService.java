@@ -27,6 +27,8 @@ public class PersonInfoService {
     @Autowired
     private PersonRepository personRepository;
 
+    @Autowired
+    private PersonInfoDTOMapper personInfoDTOMapper;
 
     /**
      * Récupère les informations des personnes selon leur nom et prénoms
@@ -49,14 +51,9 @@ public class PersonInfoService {
                 ).findFirst();
 
                 if (medicalRecordForPerson.isPresent()) {
-                    personInfoDTOList.add(
-                            Mappers.getMapper(PersonInfoDTOMapper.class).
-                                    personToPersonInfoDTO(personIterator, medicalRecordForPerson.get()));
-                } else
-                {
-                    personInfoDTOList.add(
-                            Mappers.getMapper(PersonInfoDTOMapper.class).
-                                    personToPersonInfoDTO(personIterator, new MedicalRecord()));
+                    personInfoDTOList.add(personInfoDTOMapper.personToPersonInfoDTO(personIterator, medicalRecordForPerson.get()));
+                } else {
+                    personInfoDTOList.add(personInfoDTOMapper.personToPersonInfoDTO(personIterator, new MedicalRecord()));
                 }
             });
 

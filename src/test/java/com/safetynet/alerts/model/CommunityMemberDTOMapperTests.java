@@ -4,10 +4,10 @@ import com.safetynet.alerts.model.dto.CommunityMemberDTO;
 import com.safetynet.alerts.model.mapper.CommunityMemberDTOMapper;
 import com.safetynet.alerts.utils.DateUtils;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -19,10 +19,11 @@ import static org.mockito.Mockito.when;
         "application.runner.enabled=false" })
 public class CommunityMemberDTOMapperTests {
 
-    @MockBean
-    private DateUtils dateUtils;
+    @SpyBean
+    private DateUtils dateUtilsSpy;
 
-    private CommunityMemberDTOMapper mapper = Mappers.getMapper(CommunityMemberDTOMapper.class);
+    @Autowired
+    private CommunityMemberDTOMapper mapper;
 
     @Test
     public void communityMemberDTO_MapsCorrect() {
@@ -40,8 +41,8 @@ public class CommunityMemberDTOMapperTests {
         medicalRecord.setFirstName("medicalRecordFirstNAme");
         medicalRecord.setBirthDate(LocalDate.of(2000,01,01));
 
-        LocalDate nowLocalDateMock = LocalDate.of(2020,12,31);
-        when(dateUtils.getNowLocalDate()).thenReturn(nowLocalDateMock);
+        LocalDate nowLocalDateMock = LocalDate.of(2010,12,31);
+        when(dateUtilsSpy.getNowLocalDate()).thenReturn(nowLocalDateMock);
 
         CommunityMemberDTO communityMemberDTO = mapper.personToCommunityMemberDTO(person,medicalRecord);
 
@@ -64,7 +65,7 @@ public class CommunityMemberDTOMapperTests {
         medicalRecord.setBirthDate(LocalDate.of(200,01,01));
 
         LocalDate nowLocalDateMock = LocalDate.of(2020,12,31);
-        when(dateUtils.getNowLocalDate()).thenReturn(nowLocalDateMock);
+        when(dateUtilsSpy.getNowLocalDate()).thenReturn(nowLocalDateMock);
 
         CommunityMemberDTO communityMemberDTO = mapper.personToCommunityMemberDTO(person,medicalRecord);
 
@@ -91,7 +92,7 @@ public class CommunityMemberDTOMapperTests {
         MedicalRecord medicalRecord = null;
 
         LocalDate nowLocalDateMock = LocalDate.of(2020,12,31);
-        when(dateUtils.getNowLocalDate()).thenReturn(nowLocalDateMock);
+        when(dateUtilsSpy.getNowLocalDate()).thenReturn(nowLocalDateMock);
 
         CommunityMemberDTO communityMemberDTO = mapper.personToCommunityMemberDTO(person,medicalRecord);
 

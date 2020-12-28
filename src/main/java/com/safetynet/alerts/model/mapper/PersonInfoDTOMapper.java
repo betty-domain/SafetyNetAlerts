@@ -2,20 +2,21 @@ package com.safetynet.alerts.model.mapper;
 
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.model.dto.CommunityMemberDTO;
 import com.safetynet.alerts.model.dto.PersonInfoDTO;
 import com.safetynet.alerts.utils.DateUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
 @Mapper(componentModel = "spring")
-public interface PersonInfoDTOMapper {
+public abstract class PersonInfoDTOMapper {
 
-    DateUtils dateUtils = new DateUtils();
+    @Autowired
+    DateUtils dateUtils;
 
     @Mappings({
             @Mapping(target="lastname", source="person.lastName"),
@@ -25,11 +26,11 @@ public interface PersonInfoDTOMapper {
             @Mapping(target="medicationList", source="medicalRecord.medications"),
             @Mapping(target="allergiesList", source="medicalRecord.allergies")
     })
-    PersonInfoDTO personToPersonInfoDTO(Person person, MedicalRecord medicalRecord);
+    public abstract PersonInfoDTO personToPersonInfoDTO(Person person, MedicalRecord medicalRecord);
 
 
     @Named("calculateAge")
-    public static int getAge(LocalDate birthDate) {
+    public int getAge(LocalDate birthDate) {
         return dateUtils.getAge(birthDate);
     }
 }

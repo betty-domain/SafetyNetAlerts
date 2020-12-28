@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -43,8 +44,8 @@ public class FireStationCommunityServiceTests {
     @MockBean
     private FireStationRepository fireStationRepositoryMock;
 
-    @MockBean
-    private DateUtils dateUtilsMock;
+    @SpyBean
+    private DateUtils dateUtilsSpy;
 
     @Autowired
     private FireStationCommunityService fireStationCommunityService;
@@ -58,6 +59,7 @@ public class FireStationCommunityServiceTests {
 
     @BeforeEach
     private void setUpEachTest() {
+
         person = new Person();
         person.setZip("12345");
         person.setEmail("myEmail");
@@ -97,16 +99,22 @@ public class FireStationCommunityServiceTests {
         List<Person> personList = new ArrayList<>();
         personList.add(person);
 
+        LocalDate birthDate = LocalDate.of(1910, 10, 10);
+
         MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setBirthDate(LocalDate.of(1910, 10, 10));
+        medicalRecord.setBirthDate(birthDate);
+
+        when(dateUtilsSpy.getNowLocalDate()).thenReturn(birthDate.plusYears(5));
 
         when(fireStationRepositoryMock.findDistinctByStation(1)).thenReturn(fireStationList);
         when(personRepositoryMock.findAllByAddressInOrderByAddress(any())).thenReturn(personList);
         when(medicalRecordRepositoryMock.findByFirstNameAndLastNameAllIgnoreCase(any(String.class), any(String.class))).thenReturn(Optional.of(medicalRecord));
 
-        assertThat(fireStationCommunityService.getFireStationCommunity(1).getAdultsCount()).isEqualTo(1);
-        assertThat(fireStationCommunityService.getFireStationCommunity(1).getChildrenCount()).isEqualTo(0);
-        assertThat(fireStationCommunityService.getFireStationCommunity(1).getCommunityMemberDTOList()).size().isEqualTo(1);
+        FireStationCommunityDTO fireStationCommunityDTO = fireStationCommunityService.getFireStationCommunity(1);
+
+        assertThat(fireStationCommunityDTO.getAdultsCount()).isEqualTo(0);
+        assertThat(fireStationCommunityDTO.getChildrenCount()).isEqualTo(1);
+        assertThat(fireStationCommunityDTO.getCommunityMemberDTOList()).size().isEqualTo(1);
 
     }
 
@@ -129,9 +137,10 @@ public class FireStationCommunityServiceTests {
 
         FireStationCommunityDTO fireStationCommunityDTO = fireStationCommunityService.getFireStationCommunity(1);
 
-        assertThat(fireStationCommunityDTO.getAdultsCount()).isEqualTo(1);
+        assertThat(fireStationCommunityDTO.getAdultsCount()).isEqualTo(0);
         assertThat(fireStationCommunityDTO.getChildrenCount()).isEqualTo(0);
         assertThat(fireStationCommunityDTO.getCommunityMemberDTOList()).size().isEqualTo(1);
+        assertThat(fireStationCommunityDTO.getCommunityMemberDTOList().get(0).getAge()).isEqualTo(Integer.MIN_VALUE);
 
     }
 
