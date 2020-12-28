@@ -14,8 +14,8 @@ public class AlertsApplicationRunnerController {
     @Autowired
     private JsonReaderService jsonReaderService;
 
-    public void LoadInitialData()
+    public void loadInitialData()
     {
-        jsonReaderService.ReadDataFromJsonFile();
+        jsonReaderService.readDataFromJsonFile();
     }
 }

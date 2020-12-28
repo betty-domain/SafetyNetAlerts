@@ -31,7 +31,6 @@ public class FireStationService {
                 return true;
             } catch (Exception exception) {
                 logger.error("Erreur lors de l'enregistrement de la liste des personnes " + exception.getMessage() + " , Stack Trace : " + exception.getStackTrace());
-                //TODO voir comment faire suivre l'exception et arrêter le programme éventuellement ?
 
             }
         }
@@ -118,7 +117,6 @@ public class FireStationService {
      */
     public Integer deleteFireStationByAddress(String address) {
         if (address != null) {
-            //TODO : faut(il faire uen vérification avant la suppression d'un élément?
             List<FireStation> existingFireStationList = fireStationRepository.findAllByAddressIgnoreCase(address);
             if (existingFireStationList.isEmpty()) {
                 logger.error("Erreur lors de la suppression d'une station de feu inexistante");
@@ -145,7 +143,6 @@ public class FireStationService {
      */
     public Integer deleteFireStationByAddressAndStation(String address, Integer station) {
         if (address != null && station != null) {
-            //TODO : faut-il faire une vérification avant la suppression d'un élément?
             Optional<FireStation> existingFireStationList = fireStationRepository.findFirstByAddressIgnoreCaseAndStation(address, station);
             if (existingFireStationList.isPresent()) {
                 try {

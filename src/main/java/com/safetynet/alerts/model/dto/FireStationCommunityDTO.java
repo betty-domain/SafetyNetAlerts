@@ -1,6 +1,7 @@
 package com.safetynet.alerts.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.safetynet.alerts.utils.Constants;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -17,12 +18,12 @@ public class FireStationCommunityDTO {
     private long childrenCount;
 
     public long getAdultsCount() {
-        adultsCount = communityMemberDTOList.stream().filter(communityMemberDTO -> communityMemberDTO.getAge() > 18).count();
+        adultsCount = communityMemberDTOList.stream().filter(communityMemberDTO -> communityMemberDTO.getAge() > Constants.AGE_MAX_CHILDREN).count();
         return adultsCount;
     }
 
     public long getChildrenCount() {
-        childrenCount = communityMemberDTOList.stream().filter(communityMemberDTO -> communityMemberDTO.getAge() <= 18 && communityMemberDTO.getAge()>=0).count();
+        childrenCount = communityMemberDTOList.stream().filter(communityMemberDTO -> communityMemberDTO.getAge() <= Constants.AGE_MAX_CHILDREN && communityMemberDTO.getAge()>=0).count();
         return childrenCount;
     }
 }

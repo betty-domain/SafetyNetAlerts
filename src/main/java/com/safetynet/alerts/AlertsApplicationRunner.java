@@ -21,6 +21,6 @@ public class AlertsApplicationRunner implements CommandLineRunner {
     @Override
     public void run(final String... args) throws Exception {
 
-        runnerController.LoadInitialData();
+        runnerController.loadInitialData();
     }
 }

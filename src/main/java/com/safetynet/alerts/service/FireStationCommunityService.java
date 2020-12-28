@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class FireStationCommunityService {
-
+//TOdO : refactoriser pour éviter la dépendance des 3 méthodes
     private static final Logger logger = LogManager.getLogger(FireStationCommunityService.class);
 
     @Autowired
@@ -108,7 +108,7 @@ public class FireStationCommunityService {
      * @return liste des personnes associées aux stations demandées
      */
     private Map<String, List<Person>> getPersonsByStationNumber(Integer stationNumber) {
-        //TODO : voir si c'est opportun d'utiliser cette fonction dans les 3 endspoint gérés par ce service
+        //TODO : voir si c'est opportun d'utiliser cette fonction dans les 3 endpoint gérés par ce service
         if (stationNumber != null) {
             try {
                 //on récupère la liste des stations

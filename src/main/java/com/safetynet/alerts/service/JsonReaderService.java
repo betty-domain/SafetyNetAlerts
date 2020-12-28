@@ -50,7 +50,7 @@ public class JsonReaderService {
         this.filePath = filePath;
     }
 
-    public void ReadDataFromJsonFile() {
+    public void readDataFromJsonFile() {
         logger.debug("Démarrage du chargement du fichier data.json");
 
         //TODO : voir si cette syntaxe est acceptable et valable pour les tests unitaires ou s'il faut utiliser une notation avec classpath
@@ -91,7 +91,6 @@ public class JsonReaderService {
                 personList.add(objectMapper.readValue(itemArray.toString(), Person.class));
             } catch (JsonProcessingException exception) {
                 logger.error("Error while parsing input json file - persons : " + exception.getMessage() + " Stack Strace : " + exception.getStackTrace());
-                //TODO : voir comment propager l'exception
             }
         });
 
@@ -108,11 +107,9 @@ public class JsonReaderService {
         {
             try {
                 fireStationList.add(objectMapper.readValue(itemArray.toString(), FireStation.class));
-
                 //TODO : problème d'une station de pompier en double dans le fichier de départ et donc dans la base de données
             } catch (JsonProcessingException exception) {
                 logger.error("Error while parsing input json file - firestations : " + exception.getMessage() + " Stack Strace : " + exception.getStackTrace());
-                //TODO : voir comment propager l'exception
             }
         });
 
@@ -131,7 +128,6 @@ public class JsonReaderService {
                 medicalRecordList.add(objectMapper.readValue(itemArray.toString(), MedicalRecord.class));
             } catch (JsonProcessingException exception) {
                 logger.error("Error while parsing input json file - medicalRecords : " + exception.getMessage() + " Stack Strace : " + exception.getStackTrace());
-                //TODO : voir comment propager l'exception
             }
         });
 
