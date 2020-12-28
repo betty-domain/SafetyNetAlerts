@@ -8,7 +8,6 @@ import com.safetynet.alerts.model.mapper.FamilyMemberDTOMapper;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.utils.Constants;
-import org.hibernate.event.internal.DefaultPersistOnFlushEventListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +42,7 @@ public class ChildAlertService {
 
             List<Person> personList = personRepository.findAllByAddressIgnoreCase(address);
 
-            List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAllByLastNameInAllIgnoreCase(getLastNameList(personList));
+            List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAllByLastNameIn(getLastNameList(personList));
 
             List<ChildAlertDTO> childAlertDTOList = new ArrayList<>();
 

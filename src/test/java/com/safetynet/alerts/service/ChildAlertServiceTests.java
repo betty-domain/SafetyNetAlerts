@@ -7,7 +7,6 @@ import com.safetynet.alerts.model.dto.FamilyMemberDTO;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.utils.DateUtils;
-import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,7 +57,7 @@ public class ChildAlertServiceTests {
     public void getChildAlertDTOListWithNullValues() {
         assertThat(childAlertService.getChildAlertDTOListFromAddress(null)).isNull();
         verify(personRepositoryMock, Mockito.times(0)).findAllByAddressIgnoreCase(any(String.class));
-        verify(medicalRecordRepositoryMock, Mockito.times(0)).findAllByLastNameInAllIgnoreCase(anyList());
+        verify(medicalRecordRepositoryMock, Mockito.times(0)).findAllByLastNameIn(anyList());
     }
 
     @Test
@@ -135,7 +134,7 @@ public class ChildAlertServiceTests {
 
         //mock des appels aux repository
         when(personRepositoryMock.findAllByAddressIgnoreCase(anyString())).thenReturn(personList);
-        when(medicalRecordRepositoryMock.findAllByLastNameInAllIgnoreCase(anyList())).thenReturn(medicalRecordList);
+        when(medicalRecordRepositoryMock.findAllByLastNameIn(anyList())).thenReturn(medicalRecordList);
 
         List<ChildAlertDTO> childAlertDTOList = childAlertService.getChildAlertDTOListFromAddress("address");
         assertThat(childAlertDTOList.size()).isEqualTo(3);
