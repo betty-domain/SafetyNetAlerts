@@ -20,7 +20,8 @@ public class UtilsService {
      */
     public static List<String> getLastNameList(List<Person> personList) {
         if (personList != null) {
-            return personList.stream().map(person -> person.getLastName()).distinct().collect(Collectors.toList());
+            return personList.stream().filter(person -> person.getLastName() != null && !person.getLastName().isEmpty())
+                    .map(person -> person.getLastName()).distinct().collect(Collectors.toList());
         } else {
             return new ArrayList<>();
         }
@@ -28,8 +29,9 @@ public class UtilsService {
 
     /**
      * Recherche d'un dossier médical d'une personne parmi une liste de dossiers médicaux
+     *
      * @param medicalRecordList liste de dossiers médicaux
-     * @param person personne pour laquelle on recherche un dossier
+     * @param person            personne pour laquelle on recherche un dossier
      * @return Optional de Dossier médical
      */
     public static Optional<MedicalRecord> findMedicalRecord(List<MedicalRecord> medicalRecordList, Person person) {
@@ -39,6 +41,5 @@ public class UtilsService {
                         && medicalRecord.getLastName().equalsIgnoreCase(person.getLastName())
         ).findFirst();
     }
-
 
 }
