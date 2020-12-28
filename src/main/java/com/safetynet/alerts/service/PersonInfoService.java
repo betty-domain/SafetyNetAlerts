@@ -45,10 +45,7 @@ public class PersonInfoService {
             List<PersonInfoDTO> personInfoDTOList = new ArrayList<>();
 
             personList.forEach(personIterator -> {
-                Optional<MedicalRecord> medicalRecordForPerson = medicalRecordList.stream().filter(medicalRecord ->
-                        medicalRecord.getFirstName().equalsIgnoreCase(personIterator.getFirstName())
-                                && medicalRecord.getLastName().equalsIgnoreCase(personIterator.getLastName())
-                ).findFirst();
+                Optional<MedicalRecord> medicalRecordForPerson = UtilsService.findMedicalRecord(medicalRecordList,personIterator);
 
                 if (medicalRecordForPerson.isPresent()) {
                     personInfoDTOList.add(personInfoDTOMapper.personToPersonInfoDTO(personIterator, medicalRecordForPerson.get()));

@@ -172,8 +172,7 @@ public class FireStationCommunityService {
 
                         //on construit les données à retourner en récupérant l'âge sur le medicalRecord de la personne parcourue dans la liste
                         personLinkedToFireStation.forEach(personIterator -> {
-                            Optional<MedicalRecord> optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastNameAllIgnoreCase(personIterator.getFirstName(), personIterator.getLastName()
-                            );
+                            Optional<MedicalRecord> optionalMedicalRecord = UtilsService.findMedicalRecord(medicalRecordListLinkedToPersonList,personIterator);
 
                             if (optionalMedicalRecord.isPresent()) {
                                 floodInfoDTOList.add(floodInfoDTOMapper.convertToFloodInfoDTO(personIterator, optionalMedicalRecord.get()));
