@@ -2,7 +2,7 @@ package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.model.FunctionalException;
 import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
-import com.safetynet.alerts.model.dto.FloodInfoByStationDTO;
+import com.safetynet.alerts.model.dto.StationFloodInfoDTO;
 import com.safetynet.alerts.service.FireStationCommunityService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,9 +122,9 @@ public class FireStationCommunityControllerTests {
     @Test
     public void getFloodInfoByFireStationValidTest() throws Exception{
 
-        List<FloodInfoByStationDTO> floodInfoByStationDTOList = new ArrayList<>();
+        List<StationFloodInfoDTO> stationFloodInfoDTOList = new ArrayList<>();
 
-        when(fireStationCommunityServiceMock.getFloodInfoByStations(1)).thenReturn(floodInfoByStationDTOList);
+        when(fireStationCommunityServiceMock.getFloodInfoByStations(1)).thenReturn(stationFloodInfoDTOList);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/flood/stations").
                 param("stations","1").

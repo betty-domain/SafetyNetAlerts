@@ -5,7 +5,7 @@ import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
-import com.safetynet.alerts.model.dto.FloodInfoByStationDTO;
+import com.safetynet.alerts.model.dto.StationFloodInfoDTO;
 import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
@@ -237,10 +237,10 @@ public class FireStationCommunityServiceTests {
         when(personRepositoryMock.findAllByAddressInOrderByAddress(anyList())).thenReturn(personList);
         when(medicalRecordRepositoryMock.findByFirstNameAndLastNameAllIgnoreCase(any(String.class), any(String.class))).thenReturn(Optional.of(medicalRecord));
 
-        List<FloodInfoByStationDTO> floodInfoByStationDTOList = fireStationCommunityService.getFloodInfoByStations(1);
-        assertThat(floodInfoByStationDTOList.size()).isEqualTo(2);
-        assertThat(floodInfoByStationDTOList.get(0).getFloodInfoDTOList().size()).isEqualTo(2);
-        assertThat(floodInfoByStationDTOList.get(1).getFloodInfoDTOList().size()).isEqualTo(1);
+        List<StationFloodInfoDTO> stationFloodInfoDTOList = fireStationCommunityService.getFloodInfoByStations(1);
+        assertThat(stationFloodInfoDTOList.size()).isEqualTo(2);
+        assertThat(stationFloodInfoDTOList.get(0).getFloodInfoDTOList().size()).isEqualTo(2);
+        assertThat(stationFloodInfoDTOList.get(1).getFloodInfoDTOList().size()).isEqualTo(1);
 
     }
 }

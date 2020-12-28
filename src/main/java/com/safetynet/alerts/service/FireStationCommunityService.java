@@ -5,7 +5,7 @@ import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.model.dto.CommunityMemberDTO;
 import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
-import com.safetynet.alerts.model.dto.FloodInfoByStationDTO;
+import com.safetynet.alerts.model.dto.StationFloodInfoDTO;
 import com.safetynet.alerts.model.dto.FloodInfoDTO;
 import com.safetynet.alerts.model.mapper.CommunityMemberDTOMapper;
 import com.safetynet.alerts.model.mapper.FloodInfoDTOMapper;
@@ -164,18 +164,18 @@ public class FireStationCommunityService {
      * @param stations numéro de la station de feu
      * @return liste des foyers rattachés à la station de feu
      */
-    public List<FloodInfoByStationDTO> getFloodInfoByStations(Integer stations) {
+    public List<StationFloodInfoDTO> getFloodInfoByStations(Integer stations) {
         if (stations != null) {
             try {
                 Map<String, List<Person>> mapPersonByFireStationAddress = getPersonsByStationNumber(stations);
 
-                List<FloodInfoByStationDTO> floodInfoByStationDTOList = new ArrayList<>();
+                List<StationFloodInfoDTO> stationFloodInfoDTOList = new ArrayList<>();
 
                 for (String fireStationAddress : mapPersonByFireStationAddress.keySet()) {
 
                     if (fireStationAddress != null && !fireStationAddress.isEmpty()) {
-                        FloodInfoByStationDTO floodInfoByStationDTO = new FloodInfoByStationDTO();
-                        floodInfoByStationDTO.setAddress(fireStationAddress);
+                        StationFloodInfoDTO stationFloodInfoDTO = new StationFloodInfoDTO();
+                        stationFloodInfoDTO.setAddress(fireStationAddress);
 
                         //extraction de la liste des personnes liées à la station de feu à partir de l'adresse de celle-ci
                         List<Person> personLinkedToFireStation = mapPersonByFireStationAddress.get(fireStationAddress);
@@ -197,12 +197,12 @@ public class FireStationCommunityService {
                                                     convertToFloodInfoDTO(personIterator, new MedicalRecord()));
                                 }
                             });
-                            floodInfoByStationDTO.setFloodInfoDTOList(floodInfoDTOList);
-                            floodInfoByStationDTOList.add(floodInfoByStationDTO);
+                            stationFloodInfoDTO.setFloodInfoDTOList(floodInfoDTOList);
+                            stationFloodInfoDTOList.add(stationFloodInfoDTO);
                         }
                     }
                 }
-                return floodInfoByStationDTOList;
+                return stationFloodInfoDTOList;
             } catch (Exception exception) {
                 logger.error("Erreur lors de la récupération des informations pour un dégât des eaux : " + exception.getMessage() + " Stack Trace : " + exception.getStackTrace());
                 return null;
