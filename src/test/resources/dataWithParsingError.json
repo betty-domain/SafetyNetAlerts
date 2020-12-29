@@ -1,0 +1,23 @@
+{
+  "persons": [
+    { "firsName":"John", "lastName":"Boyd", "address":"1509 Culver St", "city":"Culver", "zip":"97451", "phone":"841-874-6512", "email":"jaboyd@email.com" },
+    { "firstName":"Jacob", "lastname":"Boyd", "address":"1509 Culver St", "city":"Culver", "zip":"97451", "phone":"841-874-6513", "email":"drk@email.com" },
+    { "firstName":"Tenley", "lastName":"Boyd", "address":"1509 Culver St", "city":"Culver", "zip":"97451", "phone":"841-874-6512", "email":"tenz@email.com" },
+    { "firstName":"Roger", "lastName":"Boyd", "address":"1509 Culver St", "city":"Culver", "zip":"97451", "phone":"841-874-6512", "email":"jaboyd@email.com" }
+  ],
+  "firestations": [
+    { "adress":"1509 Culver St", "station":"3" },
+    { "address":"29 15th St", "statio":"2" },
+    { "address":"834 Binoc Ave", "station":"ANBCD" },
+    { "address":"834 Binoc Ave", "station":"4" }
+  ],
+  "medicalrecords": [
+    { "fistName":"John", "lastName":"Boyd", "birthdate":"03/06/1984", "medications":["aznol:350mg", "hydrapermazol:100mg"], "allergies":["nillacilan"] },
+    { "firstName":"Jacob", "lastame":"Boyd", "birthdate":"03/06/1989", "medications":["pharmacol:5000mg", "terazine:10mg", "noznazol:250mg"], "allergies":[] },
+    { "firstName":"Tenley", "lastName":"Boyd", "birthdate":"18/18/2012", "medications":[], "allergies":["peanut"] },
+    { "firstName":"Roger", "lastName":"Boyd", "birthdate":"09/06/2017", "medications":"aznol:300mg", "allergies":[] },
+    { "firstName":"Felicia", "lastName":"Boyd","birthdate":"01/08/1986", "medications":["tetracyclaz:650mg"], "allergies":"xilliathal" },
+    { "firstName":"Jonanathan", "lastName":"Marrack", "birthdate":"01/03/1989", "medications":["pharmacol:5000mg", "terazine:10mg", "noznazol:250mg"], "allergies":[] },
+    { "firstName":"Tessa", "lastName":"Carman", "birthdate":"02/18/2012", "medications":[], "allergies":[] }
+    ]
+}
