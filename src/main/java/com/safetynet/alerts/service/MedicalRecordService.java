@@ -31,7 +31,6 @@ public class MedicalRecordService {
                 return true;
             } catch (Exception exception) {
                 logger.error("Erreur lors de l'enregistrement de la liste des données médicales " + exception.getMessage() + " , Stack Trace : " + exception.getStackTrace());
-                //TODO voir comment faire suivre l'exception et arrêter le programme éventuellement ?
             }
         }
         return false;

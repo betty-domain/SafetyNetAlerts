@@ -201,9 +201,8 @@ public class FireStationServiceTests {
     @Test
     public void deleteFireStationByAddressWithNullFireStation()
     {
-
         List<FireStation> fireStationList = new ArrayList<>();
-//TODO voir si ce mock est utile dans ce test
+
         when(fireStationRepositoryMock.findDistinctByAddressIgnoreCase(null)).thenReturn(fireStationList);
 
         verify(fireStationRepositoryMock, Mockito.times(0)).deleteByAddressIgnoreCase(any(String.class));
@@ -213,10 +212,8 @@ public class FireStationServiceTests {
     @Test
     public void deleteFireStationByAddressAndStationWithNullFireStation()
     {
-
         List<FireStation> fireStationList = new ArrayList<>();
 
-//TODO voir si ce mock est utile dans ce test
         when(fireStationRepositoryMock.findFirstByAddressIgnoreCaseAndStation(null,null)).thenReturn(null);
 
         verify(fireStationRepositoryMock, Mockito.times(0)).deleteByAddressIgnoreCaseAndStation(any(String.class), any(Integer.class));
