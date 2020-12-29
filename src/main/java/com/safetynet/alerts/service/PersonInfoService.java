@@ -32,11 +32,10 @@ public class PersonInfoService {
     /**
      * Récupère les informations des personnes selon leur nom et prénoms
      *
-     * @param firstname prénom
      * @param lastname  nom
      * @return liste des personnes avec leurs informations
      */
-    public List<PersonInfoDTO> getPersonsInfo(String firstname, String lastname) {
+    public List<PersonInfoDTO> getPersonsInfo(String lastname) {
         if (lastname != null) {
             List<Person> personList = personRepository.findAllByLastNameAllIgnoreCase(lastname);
             List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAllByLastNameAllIgnoreCase(lastname);

@@ -1,10 +1,8 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.model.dto.PersonInfoDTO;
-import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.utils.DateUtils;
@@ -18,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +66,7 @@ public class PersonInfoServiceTests {
 
     @Test
     public void getPersonsInfoWithNullValues() {
-        assertThat(personInfoService.getPersonsInfo(null, null)).isNull();
+        assertThat(personInfoService.getPersonsInfo(null)).isNull();
         verify(personRepositoryMock, Mockito.times(0)).findAllByLastNameAllIgnoreCase(any(String.class));
         verify(medicalRecordRepositoryMock, Mockito.times(0)).findAllByLastNameAllIgnoreCase(any(String.class));
     }
@@ -138,7 +135,7 @@ public class PersonInfoServiceTests {
         LocalDate nowMockLocalDate = LocalDate.of(2010, 12, 31);
         when(dateUtilsSpy.getNowLocalDate()).thenReturn(nowMockLocalDate);
 
-        List<PersonInfoDTO> personInfosListDTO = personInfoService.getPersonsInfo(person.getFirstName(), person.getLastName());
+        List<PersonInfoDTO> personInfosListDTO = personInfoService.getPersonsInfo(person.getLastName());
 
         assertThat(personInfosListDTO).size().isEqualTo(3);
         }

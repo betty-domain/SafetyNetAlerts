@@ -1,8 +1,6 @@
 package com.safetynet.alerts.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.FunctionalException;
-import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
 import com.safetynet.alerts.model.dto.PersonInfoDTO;
 import com.safetynet.alerts.service.PersonInfoService;
 import org.junit.jupiter.api.Test;
@@ -46,7 +44,7 @@ public class PersonInfoControllerTests {
         List<PersonInfoDTO> personInfoDTOList = new ArrayList<>();
         personInfoDTOList.add(personInfoDTO);
 
-        when(personInfoServiceMock.getPersonsInfo("firstname", "lastname")).thenReturn(personInfoDTOList);
+        when(personInfoServiceMock.getPersonsInfo("lastname")).thenReturn(personInfoDTOList);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/personInfo").
                 param("firstname","firstname").
@@ -61,7 +59,7 @@ public class PersonInfoControllerTests {
     @Test
     public void getPersonsInfoWithException() throws Exception {
 
-        when(personInfoServiceMock.getPersonsInfo(any(String.class), any(String.class))).thenReturn(null);
+        when(personInfoServiceMock.getPersonsInfo(any(String.class))).thenReturn(null);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/personInfo").
                 param("firstname","firstname").

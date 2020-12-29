@@ -25,7 +25,7 @@ public class PersonInfoController {
 
         logger.info("Requête Get sur le endpoint 'personInfo' avec firstname : {" + firstname + "} et lastname  {" + lastname + "} reçue");
 
-        List<PersonInfoDTO> personInfoDTOIterable = personInfoService.getPersonsInfo(firstname, lastname);
+        List<PersonInfoDTO> personInfoDTOIterable = personInfoService.getPersonsInfo(lastname);
         if (personInfoDTOIterable != null) {
             logger.info("Réponse suite au Get sur le endpoint 'personInfo' avec firstname : {" + firstname + "} et lastname  {" + lastname + "} transmise");
             return personInfoDTOIterable;
