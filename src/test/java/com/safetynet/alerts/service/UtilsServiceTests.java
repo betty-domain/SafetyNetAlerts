@@ -1,7 +1,9 @@
 package com.safetynet.alerts.service;
 
+import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,4 +55,38 @@ public class UtilsServiceTests {
         assertThat(lastnameList.contains(person1.getLastName())).isTrue();
 
     }
+
+    @Test
+    public void getStationNumberListWithNullValues()
+    {
+        assertThat(UtilsService.getStationNumberList(null)).isNull();
+    }
+
+    @Test
+    public void getStationNumberListWithValidList()
+    {
+        List<FireStation> fireStationList = new ArrayList<>();
+        FireStation fireStation = new FireStation();
+        fireStation.setStation(1);
+        fireStation.setAddress("Address1");
+        fireStation.setId(10L);
+        fireStationList.add(fireStation);
+
+        FireStation fireStation1 = new FireStation();
+        fireStation1.setStation(2);
+        fireStation1.setAddress("Address1");
+        fireStation1.setId(20L);
+        fireStationList.add(fireStation1);
+
+        FireStation fireStation2 = new FireStation();
+        fireStation2.setId(30L);
+        fireStation2.setStation(3);
+        fireStationList.add(fireStation2);
+
+        List<Integer> stationsNumberList = UtilsService.getStationNumberList(fireStationList);
+        assertThat(stationsNumberList.size()).isEqualTo(2);
+        assertThat(stationsNumberList.contains(fireStation.getStation()));
+        assertThat(stationsNumberList.contains(fireStation1.getStation()));
+    }
+
 }
