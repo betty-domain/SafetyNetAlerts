@@ -43,14 +43,12 @@ public class ChildAlertService {
 
             List<Person> personList = personRepository.findAllByAddressIgnoreCase(address);
 
-            List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAllByLastNameIn(UtilsService.getLastNameList(personList));
-
             List<ChildAlertDTO> childAlertDTOList = new ArrayList<>();
 
             //on parcourt la liste des personnes pour constituer les DTO à retourner, uniquement s'ils ont un dossier médical existant (sinon impossible de calculer leur âge)
             personList.forEach(personIterator -> {
 
-                Optional<MedicalRecord> medicalRecordLinkedToPersonIterator = UtilsService.findMedicalRecord(medicalRecordList,personIterator);
+                Optional<MedicalRecord> medicalRecordLinkedToPersonIterator = medicalRecordRepository.findByFirstNameAndLastNameAllIgnoreCase(personIterator.getFirstName(), personIterator.getLastName());
 
                 if (medicalRecordLinkedToPersonIterator.isPresent()) {
                     // si le dossier médical existe, on peut créer le DTO correspondant à cette personne et ce dossier médical
