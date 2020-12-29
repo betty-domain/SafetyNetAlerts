@@ -19,11 +19,11 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -67,7 +67,6 @@ public class ChildAlertServiceTests {
         when(dateUtilsSpy.getNowLocalDate()).thenReturn(nowLocalDateMock);
 
         List<Person> personList = new ArrayList<>();
-        List<MedicalRecord> medicalRecordList = new ArrayList<>();
 
         //Given un enfant avec des autres membres d'un foyer
         Person child1 = new Person();
@@ -84,7 +83,9 @@ public class ChildAlertServiceTests {
         child1medRec.setLastName(child1.getLastName());
         child1medRec.setFirstName(child1.getFirstName());
         child1medRec.setBirthDate(nowLocalDateMock.minusYears(5));
-        medicalRecordList.add(child1medRec);
+
+        when(medicalRecordRepositoryMock.findByFirstNameAndLastNameAllIgnoreCase(child1.getFirstName(), child1.getLastName())).thenReturn(Optional.of(child1medRec));
+
 
         //given la mère de l'enfant avec un dossier médical
         Person mother = new Person();
@@ -97,7 +98,7 @@ public class ChildAlertServiceTests {
         motherMedRec.setLastName(mother.getLastName());
         motherMedRec.setFirstName(mother.getFirstName());
         motherMedRec.setBirthDate(nowLocalDateMock.minusYears(35));
-        medicalRecordList.add(motherMedRec);
+        when(medicalRecordRepositoryMock.findByFirstNameAndLastNameAllIgnoreCase(mother.getFirstName(), mother.getLastName())).thenReturn(Optional.of(motherMedRec));
 
         //given le père de l'enfant sans dossier médical
         Person father = new Person();
@@ -105,6 +106,8 @@ public class ChildAlertServiceTests {
         father.setLastName("fatherLastName");
         father.setAddress(child1.getAddress());
         personList.add(father);
+        when(medicalRecordRepositoryMock.findByFirstNameAndLastNameAllIgnoreCase(father.getFirstName(), father.getLastName())).thenReturn(Optional.empty());
+
 
         //given la soeur de l'enfant qui a 18 ans
         Person sister = new Person();
@@ -117,11 +120,11 @@ public class ChildAlertServiceTests {
         sisterMedRec.setLastName(sister.getLastName());
         sisterMedRec.setFirstName(sister.getFirstName());
         sisterMedRec.setBirthDate(nowLocalDateMock.minusYears(18));
-        medicalRecordList.add(sisterMedRec);
+        when(medicalRecordRepositoryMock.findByFirstNameAndLastNameAllIgnoreCase(sister.getFirstName(), sister.getLastName())).thenReturn(Optional.of(sisterMedRec));
 
         //given un deuxième enfant sans autres membres de la famille
         Person child2 = new Person();
-        child2.setAddress("myAddressChild2");
+        child2.setAddress("addressChild2");
         child2.setFirstName("firstNameChild2");
         child2.setLastName("lastNameChild2");
         personList.add(child2);
@@ -130,28 +133,31 @@ public class ChildAlertServiceTests {
         child2MedRec.setLastName(child2.getLastName());
         child2MedRec.setFirstName(child2.getFirstName());
         child2MedRec.setBirthDate(nowLocalDateMock.minusYears(10));
-        medicalRecordList.add(child2MedRec);
+        when(medicalRecordRepositoryMock.findByFirstNameAndLastNameAllIgnoreCase(child2.getFirstName(), child2.getLastName())).thenReturn(Optional.of(child2MedRec));
 
         //mock des appels aux repository
-        when(personRepositoryMock.findAllByAddressIgnoreCase(anyString())).thenReturn(personList);
-        when(medicalRecordRepositoryMock.findAllByLastNameIn(anyList())).thenReturn(medicalRecordList);
+        when(personRepositoryMock.findAllByAddressIgnoreCase(child1.getAddress())).thenReturn(personList);
 
-        List<ChildAlertDTO> childAlertDTOList = childAlertService.getChildAlertDTOListFromAddress("address");
+
+        List<ChildAlertDTO> childAlertDTOList = childAlertService.getChildAlertDTOListFromAddress(child1.getAddress());
+
+        //on vérifie qu'on récupèer bien 3 enfants au total
         assertThat(childAlertDTOList.size()).isEqualTo(3);
 
         ChildAlertDTO child1DTO = childAlertDTOList.get(0);
         List<FamilyMemberDTO> familyMembers = child1DTO.getFamilyMembers();
-        ChildAlertDTO sisterDTO = childAlertDTOList.get(1);
-        ChildAlertDTO child2DTO = childAlertDTOList.get(2);
 
-        assertThat(child1DTO.getFamilyMembers().size()).isEqualTo(sisterDTO.getFamilyMembers().size()).isEqualTo(3);
-        assertThat(familyMembers.stream().filter(familyMemberDTO -> familyMemberDTO.getFirstName().equalsIgnoreCase(mother.getFirstName()) ||
-                familyMemberDTO.getFirstName().equalsIgnoreCase(father.getFirstName()) ||
-                familyMemberDTO.getFirstName().equalsIgnoreCase(sister.getFirstName()))).size().isEqualTo(3);
-
+        assertThat(familyMembers.size()).isEqualTo(3);
         assertThat(child1DTO.getAge()).isEqualTo(5);
+
+        ChildAlertDTO sisterDTO = childAlertDTOList.get(1);
         assertThat(sisterDTO.getAge()).isEqualTo(18);
+        assertThat(child1DTO.getFamilyMembers().size()).isEqualTo(sisterDTO.getFamilyMembers().size()).isEqualTo(3);
+
+        ChildAlertDTO child2DTO = childAlertDTOList.get(2);
         assertThat(child2DTO.getFamilyMembers()).isEmpty();
+
+
 
     }
 }

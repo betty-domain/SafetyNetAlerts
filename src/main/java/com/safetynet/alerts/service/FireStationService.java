@@ -84,7 +84,7 @@ public class FireStationService {
      */
     public FireStation updateFireStation(FireStation fireStation) {
         if (fireStation != null) {
-            List<FireStation> existingFireStationList = fireStationRepository.findAllByAddressIgnoreCase(fireStation.getAddress());
+            List<FireStation> existingFireStationList = fireStationRepository.findDistinctByAddressIgnoreCase(fireStation.getAddress());
 
             if (existingFireStationList.isEmpty()) {
                 logger.error("Erreur lors de la mise à jour d'une station de feu inexistante");
@@ -117,7 +117,7 @@ public class FireStationService {
      */
     public Integer deleteFireStationByAddress(String address) {
         if (address != null) {
-            List<FireStation> existingFireStationList = fireStationRepository.findAllByAddressIgnoreCase(address);
+            List<FireStation> existingFireStationList = fireStationRepository.findDistinctByAddressIgnoreCase(address);
             if (existingFireStationList.isEmpty()) {
                 logger.error("Erreur lors de la suppression d'une station de feu inexistante");
                 return null;

@@ -169,7 +169,7 @@ public class FireStationServiceTests {
         List<FireStation> fireStationList = new ArrayList<>();
         fireStationList.add(fireStation);
 
-        when(fireStationRepositoryMock.findAllByAddressIgnoreCase(any(String.class))).thenReturn(fireStationList);
+        when(fireStationRepositoryMock.findDistinctByAddressIgnoreCase(any(String.class))).thenReturn(fireStationList);
         when(fireStationRepositoryMock.save(fireStation)).thenReturn(fireStation);
         assertThat(fireStationService.updateFireStation(fireStation)).isEqualTo(fireStation);
         verify(fireStationRepositoryMock, Mockito.times(1)).save(fireStation);
@@ -179,7 +179,7 @@ public class FireStationServiceTests {
     public void updateFireStationWithNonExistingFireStation()
     {
         List<FireStation> fireStationList = new ArrayList<>();
-        when(fireStationRepositoryMock.findAllByAddressIgnoreCase(any(String.class))).thenReturn(fireStationList);
+        when(fireStationRepositoryMock.findDistinctByAddressIgnoreCase(any(String.class))).thenReturn(fireStationList);
 
         assertThat(fireStationService.updateFireStation(fireStation)).isEqualTo(null);
         verify(fireStationRepositoryMock, Mockito.times(0)).save(any());
@@ -190,7 +190,7 @@ public class FireStationServiceTests {
     {
         List<FireStation> fireStationList = new ArrayList<>();
         fireStationList.add(fireStation);
-        when(fireStationRepositoryMock.findAllByAddressIgnoreCase(any(String.class))).thenReturn(fireStationList);
+        when(fireStationRepositoryMock.findDistinctByAddressIgnoreCase(any(String.class))).thenReturn(fireStationList);
 
         given(fireStationRepositoryMock.save(fireStation)).willAnswer(invocation -> { throw new Exception();});
 
@@ -204,7 +204,7 @@ public class FireStationServiceTests {
 
         List<FireStation> fireStationList = new ArrayList<>();
 //TODO voir si ce mock est utile dans ce test
-        when(fireStationRepositoryMock.findAllByAddressIgnoreCase(null)).thenReturn(fireStationList);
+        when(fireStationRepositoryMock.findDistinctByAddressIgnoreCase(null)).thenReturn(fireStationList);
 
         verify(fireStationRepositoryMock, Mockito.times(0)).deleteByAddressIgnoreCase(any(String.class));
         assertThat(fireStationService.deleteFireStationByAddress(null)).isNull();
@@ -229,7 +229,7 @@ public class FireStationServiceTests {
         List<FireStation> fireStationList = new ArrayList<>();
         fireStationList.add(fireStation);
 
-        when(fireStationRepositoryMock.findAllByAddressIgnoreCase(any(String.class))).thenReturn(fireStationList);
+        when(fireStationRepositoryMock.findDistinctByAddressIgnoreCase(any(String.class))).thenReturn(fireStationList);
         when(fireStationRepositoryMock.deleteByAddressIgnoreCase(any(String.class))).thenReturn(1);
         assertThat(fireStationService.deleteFireStationByAddress(fireStation.getAddress())).isEqualTo(1);
     }
@@ -246,7 +246,7 @@ public class FireStationServiceTests {
     @Test
     public void deleteFireStationByAddressWithNonExistingFireStation()
     {
-        when(fireStationRepositoryMock.findAllByAddressIgnoreCase(any(String.class))).thenReturn(new ArrayList<>());
+        when(fireStationRepositoryMock.findDistinctByAddressIgnoreCase(any(String.class))).thenReturn(new ArrayList<>());
 
         assertThat(fireStationService.deleteFireStationByAddress(fireStation.getAddress())).isEqualTo(null);
         verify(fireStationRepositoryMock, Mockito.times(0)).deleteByAddressIgnoreCase(any(String.class));
@@ -266,7 +266,7 @@ public class FireStationServiceTests {
     {
         List<FireStation> fireStationList = new ArrayList<>();
         fireStationList.add(fireStation);
-        when(fireStationRepositoryMock.findAllByAddressIgnoreCase(any(String.class))).
+        when(fireStationRepositoryMock.findDistinctByAddressIgnoreCase(any(String.class))).
                 thenReturn(fireStationList);
         given(fireStationRepositoryMock.deleteByAddressIgnoreCase(fireStation.getAddress())).
                 willAnswer(invocation -> { throw new Exception();});

@@ -8,7 +8,6 @@ import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.model.dto.PersonInfoDTO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,13 +44,10 @@ public class PersonInfoService {
             List<PersonInfoDTO> personInfoDTOList = new ArrayList<>();
 
             personList.forEach(personIterator -> {
-                Optional<MedicalRecord> medicalRecordForPerson = UtilsService.findMedicalRecord(medicalRecordList,personIterator);
 
-                if (medicalRecordForPerson.isPresent()) {
-                    personInfoDTOList.add(personInfoDTOMapper.personToPersonInfoDTO(personIterator, medicalRecordForPerson.get()));
-                } else {
-                    personInfoDTOList.add(personInfoDTOMapper.personToPersonInfoDTO(personIterator, new MedicalRecord()));
-                }
+                Optional<MedicalRecord> medicalRecordForPerson = UtilsService.findMedicalRecord(medicalRecordList, personIterator);
+                personInfoDTOList.add(personInfoDTOMapper.personToPersonInfoDTO(personIterator, medicalRecordForPerson.orElse(null)));
+
             });
 
             return personInfoDTOList;
