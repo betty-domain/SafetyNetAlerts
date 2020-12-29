@@ -4,6 +4,7 @@ import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.model.dto.CommunityMemberDTO;
+import com.safetynet.alerts.model.dto.FireDTO;
 import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
 import com.safetynet.alerts.model.dto.StationFloodInfoDTO;
 import com.safetynet.alerts.model.dto.FloodInfoDTO;
@@ -230,4 +231,12 @@ public class FireStationCommunityService {
         }
     }
 
+    /**
+     * Récupère les informations suite à un feu fonction de l'adresse fourni
+     * @param address addresse recherchés
+     * @return Liste des habitants vivant à l'adresse donnée ainsi que le numéro de la caserne de pompiers la desservant
+     */
+    public List<FireDTO> getFireInfoByAddress(final String address) {
+        return null;
+    }
 }
