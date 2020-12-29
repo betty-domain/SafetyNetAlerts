@@ -9,6 +9,7 @@ import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
 import com.safetynet.alerts.model.dto.StationFloodInfoDTO;
 import com.safetynet.alerts.model.dto.FloodInfoDTO;
 import com.safetynet.alerts.model.mapper.CommunityMemberDTOMapper;
+import com.safetynet.alerts.model.mapper.FireDTOMapper;
 import com.safetynet.alerts.model.mapper.FloodInfoDTOMapper;
 import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
@@ -19,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class FireStationCommunityService {
-    //TOdO : refactoriser pour éviter la dépendance des 3 méthodes
+
     private static final Logger logger = LogManager.getLogger(FireStationCommunityService.class);
 
     @Autowired
@@ -46,6 +46,9 @@ public class FireStationCommunityService {
     @Autowired
     private FloodInfoDTOMapper floodInfoDTOMapper;
 
+    @Autowired
+    private FireDTOMapper fireDTOMapper;
+
     /**
      * Récupérer les personnes rattachées à une station du feu ainsi que le nb d'adultes et d'enfants parmi cette liste
      *
@@ -61,21 +64,14 @@ public class FireStationCommunityService {
 
             //on construit les données à retourner en récupérant l'âge sur le medicalRecord de la personne parcourue dans la liste
             personList.forEach(personIterator -> {
-                Optional<MedicalRecord> optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastNameAllIgnoreCase(personIterator.getFirstName(), personIterator.getLastName()
-                );
-
-                if (optionalMedicalRecord.isPresent()) {
-                    communityMemberDTOList.add(communityMemberDTOMapper.personToCommunityMemberDTO(personIterator, optionalMedicalRecord.get()));
-                } else {
-                    communityMemberDTOList.add(communityMemberDTOMapper.personToCommunityMemberDTO(personIterator, new MedicalRecord()));
-                }
+                Optional<MedicalRecord> optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastNameAllIgnoreCase(personIterator.getFirstName(), personIterator.getLastName());
+                communityMemberDTOList.add(communityMemberDTOMapper.personToCommunityMemberDTO(personIterator, optionalMedicalRecord.orElse(null)));
             });
 
             FireStationCommunityDTO fireStationCommunityDTO = new FireStationCommunityDTO();
             fireStationCommunityDTO.setCommunityMemberDTOList(communityMemberDTOList);
 
             return fireStationCommunityDTO;
-
         } else {
             return null;
         }
@@ -168,23 +164,15 @@ public class FireStationCommunityService {
                     if (personLinkedToFireStation != null) {
                         List<FloodInfoDTO> floodInfoDTOList = new ArrayList<>();
 
-                        //récupération de la liste des dossiers médicaux liées aux personnes
-                        List<MedicalRecord> medicalRecordListLinkedToPersonList = medicalRecordRepository.findAllByLastNameIn(UtilsService.getLastNameList(personLinkedToFireStation));
-
                         //on construit les données à retourner en récupérant l'âge sur le medicalRecord de la personne parcourue dans la liste
                         personLinkedToFireStation.forEach(personIterator -> {
-                            Optional<MedicalRecord> optionalMedicalRecord = UtilsService.findMedicalRecord(medicalRecordListLinkedToPersonList,personIterator);
+                            Optional<MedicalRecord> optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastNameAllIgnoreCase(personIterator.getFirstName(), personIterator.getLastName());
+                            floodInfoDTOList.add(floodInfoDTOMapper.convertToFloodInfoDTO(personIterator, optionalMedicalRecord.orElse(null)));
 
-                            if (optionalMedicalRecord.isPresent()) {
-                                floodInfoDTOList.add(floodInfoDTOMapper.convertToFloodInfoDTO(personIterator, optionalMedicalRecord.get()));
-                            } else {
-                                floodInfoDTOList.add(floodInfoDTOMapper.convertToFloodInfoDTO(personIterator, new MedicalRecord()));
-                            }
                         });
                         stationFloodInfoDTO.setFloodInfoDTOList(floodInfoDTOList);
                         stationFloodInfoDTOList.add(stationFloodInfoDTO);
                     }
-
                 }
                 return stationFloodInfoDTOList;
             } catch (Exception exception) {
@@ -202,41 +190,70 @@ public class FireStationCommunityService {
      * @return liste des personnes associées aux stations demandées, regroupées par adresse
      */
     private Map<String, List<Person>> getPersonsByStationNumber(List<Integer> stationsNumberList) {
-        if (stationsNumberList != null) {
-            try {
-                //on récupère la liste des stations
-                List<FireStation> fireStationList = fireStationRepository.findDistinctByStationIn(stationsNumberList.stream().distinct().collect(Collectors.toList()));
 
-                //extraction de la liste distincte des adresses des stations
-                List<String> addressList = getAddressListFromFireStationList(fireStationList);
+        try {
+            //on récupère la liste des stations
+            List<FireStation> fireStationList = fireStationRepository.findDistinctByStationIn(stationsNumberList.stream().distinct().collect(Collectors.toList()));
 
-                //on récupère la liste des personnes rattachées à la liste des adresses
-                List<Person> personList = personRepository.findAllByAddressInOrderByAddress(addressList);
+            //extraction de la liste distincte des adresses des stations
+            List<String> addressList = getAddressListFromFireStationList(fireStationList);
 
-                Map<String, List<Person>> mapPersonByStationAddress = new HashMap<>();
+            //on récupère la liste des personnes rattachées à la liste des adresses
+            List<Person> personList = personRepository.findAllByAddressInOrderByAddress(addressList);
 
-                addressList.forEach(addressIterator ->
-                        {
-                            List<Person> personListByAdress = personList.stream().filter(person -> person.getAddress().equalsIgnoreCase(addressIterator)).collect(Collectors.toList());
-                            mapPersonByStationAddress.put(addressIterator, personListByAdress);
-                        }
-                );
-                return mapPersonByStationAddress;
-            } catch (Exception exception) {
-                logger.error("Erreur lors de la récupération des personnes liées à une station de feu : " + exception.getMessage() + " Stack Trace : " + exception.getStackTrace());
-                return null;
-            }
-        } else {
+            Map<String, List<Person>> mapPersonByStationAddress = new HashMap<>();
+
+            addressList.forEach(addressIterator ->
+                    {
+                        List<Person> personListByAdress = personList.stream().filter(person -> person.getAddress().equalsIgnoreCase(addressIterator)).collect(Collectors.toList());
+                        mapPersonByStationAddress.put(addressIterator, personListByAdress);
+                    }
+            );
+            return mapPersonByStationAddress;
+        } catch (Exception exception) {
+            logger.error("Erreur lors de la récupération des personnes liées à une station de feu : " + exception.getMessage() + " Stack Trace : " + exception.getStackTrace());
             return null;
         }
     }
 
     /**
      * Récupère les informations suite à un feu fonction de l'adresse fourni
+     *
      * @param address addresse recherchés
      * @return Liste des habitants vivant à l'adresse donnée ainsi que le numéro de la caserne de pompiers la desservant
      */
-    public List<FireDTO> getFireInfoByAddress(final String address) {
+    public List<FireDTO> getFireInfoByAddress(String address) {
+
+        if (address != null) {
+            try {
+                //on récupère la liste des casernes de pompiers qui desservent cette addresse
+                List<FireStation> fireStation = fireStationRepository.findDistinctByAddressIgnoreCase(address);
+                List<Integer> fireStationNumberList = UtilsService.getStationNumberList(fireStation);
+
+                //on récupère la liste des personnes qui vivent à cette adresse
+                List<Person> personList = personRepository.findAllByAddressIgnoreCase(address);
+
+                List<FireDTO> fireDTOList = new ArrayList<>();
+
+                //on fait le mapping des informations pour chaque personne de la liste
+                personList.forEach(personIterator -> {
+                    FireDTO fireDTO = null;
+                    Optional<MedicalRecord> medicalRecord = medicalRecordRepository.findByFirstNameAndLastNameAllIgnoreCase(personIterator.getFirstName(), personIterator.getLastName());
+
+                    fireDTO = fireDTOMapper.convertToFireDTO(personIterator, medicalRecord.orElse(null));
+
+                    fireDTO.setFireStationNumberList(fireStationNumberList);
+                    fireDTOList.add(fireDTO);
+                });
+
+                return fireDTOList;
+
+            } catch (Exception exception) {
+                logger.error("Erreur lors de la récupération des informations pour un feu: " + exception.getMessage() + " Stack Trace : " + exception.getStackTrace());
+                return null;
+            }
+
+        }
         return null;
     }
 }
