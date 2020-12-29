@@ -1,6 +1,7 @@
 package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.model.FunctionalException;
+import com.safetynet.alerts.model.dto.FireDTO;
 import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
 import com.safetynet.alerts.model.dto.StationFloodInfoDTO;
 import com.safetynet.alerts.service.FireStationCommunityService;
@@ -19,6 +20,8 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -133,6 +136,51 @@ public class FireStationCommunityControllerTests {
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/flood/stations").
                 param("stations","1").
+                contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(builder).
+                andExpect(status().isOk());
+    }
+
+    @Test
+    public void getFireByAddressWithException() throws Exception{
+
+        when(fireStationCommunityServiceMock.getFireInfoByAddress(anyString())).thenReturn(null);
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/fire").
+                param("address","myAddress").
+                contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(builder).
+                andExpect(status().isBadRequest()).
+                andExpect(mvcResult ->
+                {
+                    assertThat(mvcResult.getResolvedException()).isInstanceOf(FunctionalException.class);
+                    assertThat(mvcResult.getResolvedException().getMessage()).isEqualTo("fire.get.error");
+                });
+    }
+
+    @Test
+    public void getFireByAddressValidTest() throws Exception{
+
+        List<FireDTO> fireDTOList = new ArrayList<>();
+        FireDTO fireDTO =new FireDTO();
+        fireDTO.setAge(22);
+        fireDTO.setLastname("myLastname");
+        fireDTO.setPhone("myPhone");
+        List<String> allergies = new ArrayList<>();
+        allergies.add("allergie1");
+        allergies.add("allergie2");
+        fireDTO.setAllergiesList(allergies);
+        List<String> medications = new ArrayList<>();
+        medications.add("medicament:100mg");
+        medications.add("medicament2:50mg");
+        fireDTO.setMedicationList(medications);
+
+        when(fireStationCommunityServiceMock.getFireInfoByAddress(anyString())).thenReturn(fireDTOList);
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/fire").
+                param("address","myAddress").
                 contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder).
