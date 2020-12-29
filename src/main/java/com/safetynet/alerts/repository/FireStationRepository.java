@@ -15,7 +15,7 @@ public interface FireStationRepository extends CrudRepository<FireStation,Long> 
 
     Optional<FireStation> findFirstByAddressIgnoreCaseAndStation(String address, Integer station);
 
-    List<FireStation> findAllByAddressIgnoreCase(String address);
+    List<FireStation> findDistinctByAddressIgnoreCase(String address);
 
     List<FireStation> findDistinctByStationIn(List<Integer> station);
 
