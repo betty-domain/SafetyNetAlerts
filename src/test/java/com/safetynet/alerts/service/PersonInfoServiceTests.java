@@ -27,8 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(properties = {
-        "application.runner.enabled=false" })
+@SpringBootTest()
 public class PersonInfoServiceTests {
 
     @MockBean

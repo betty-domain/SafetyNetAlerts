@@ -22,8 +22,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = ChildAlertController.class,
-        properties = { "application.runner.enabled=false" })
+@WebMvcTest(controllers = ChildAlertController.class)
 public class ChildAlertControllerTests {
 
     @Autowired

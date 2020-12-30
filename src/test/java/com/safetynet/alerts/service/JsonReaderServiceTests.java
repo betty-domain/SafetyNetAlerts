@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest(properties = {
-        "application.runner.enabled=true",
+        "application.runner.enabled=false",
         "spring.datasource.url=jdbc:h2:mem:testSafetyNetAlertJsonReader" })
 public class JsonReaderServiceTests {
 

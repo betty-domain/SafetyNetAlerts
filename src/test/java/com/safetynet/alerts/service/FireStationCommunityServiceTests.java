@@ -34,8 +34,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(properties = {
-        "application.runner.enabled=false" })
+@SpringBootTest()
 public class FireStationCommunityServiceTests {
 
     @MockBean

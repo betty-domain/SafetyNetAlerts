@@ -11,8 +11,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(properties = {
-        "application.runner.enabled=false" })
+@SpringBootTest()
 public class FamilyMemberDTOMapperTests {
 
     @Autowired

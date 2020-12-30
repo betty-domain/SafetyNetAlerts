@@ -26,8 +26,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest(controllers = FireStationCommunityController.class,
-        properties = { "application.runner.enabled=false" })
+@WebMvcTest(controllers = FireStationCommunityController.class)
 public class FireStationCommunityControllerTests {
 
 

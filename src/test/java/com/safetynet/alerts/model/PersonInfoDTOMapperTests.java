@@ -16,8 +16,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(properties = {
-        "application.runner.enabled=false" })
+@SpringBootTest()
 public class PersonInfoDTOMapperTests {
 
     @SpyBean

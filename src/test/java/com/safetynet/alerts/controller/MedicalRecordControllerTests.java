@@ -25,8 +25,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = MedicalRecordController.class, properties = {
-        "application.runner.enabled=false" })
+@WebMvcTest(controllers = MedicalRecordController.class)
 public class MedicalRecordControllerTests {
 
     @Autowired

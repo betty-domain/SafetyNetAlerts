@@ -34,8 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = PersonController.class, properties = {
-        "application.runner.enabled=false" })
+@WebMvcTest(controllers = PersonController.class)
 public class PersonControllerTests {
 
     @Autowired
