@@ -1,17 +1,16 @@
 package com.safetynet.alerts.integration;
 
-import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.service.PersonService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
+@Tag("IntegrationTests")
 @SpringBootTest(properties = {
         "application.runner.enabled=true" })
 public class PersonServiceIT {

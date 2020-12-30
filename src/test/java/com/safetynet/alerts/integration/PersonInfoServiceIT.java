@@ -2,7 +2,10 @@ package com.safetynet.alerts.integration;
 
 import com.safetynet.alerts.model.dto.PersonInfoDTO;
 import com.safetynet.alerts.service.PersonInfoService;
+import com.safetynet.alerts.service.PersonService;
 import com.safetynet.alerts.utils.DateUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +19,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-
+@Tag("IntegrationTests")
 @SpringBootTest(properties = {
         "application.runner.enabled=true" })
 public class PersonInfoServiceIT {
@@ -26,7 +29,7 @@ public class PersonInfoServiceIT {
 
     @SpyBean
     private DateUtils dateUtilsMock;
-
+    
     @Test
     @Transactional
     public void getPersonsInfoIT() {

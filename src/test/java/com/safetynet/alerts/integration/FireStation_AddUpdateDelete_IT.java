@@ -3,7 +3,7 @@ package com.safetynet.alerts.integration;
 import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.service.FireStationService;
-import org.assertj.core.api.AssertionsForClassTypes;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Tag("IntegrationTests")
 @SpringBootTest(properties = {
         "application.runner.enabled=true",
         "spring.datasource.url=jdbc:h2:mem:testSafetyNetAlertFireStationIT" })

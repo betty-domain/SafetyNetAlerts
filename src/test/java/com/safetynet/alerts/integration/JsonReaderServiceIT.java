@@ -4,18 +4,19 @@ import com.safetynet.alerts.service.FireStationService;
 import com.safetynet.alerts.service.JsonReaderService;
 import com.safetynet.alerts.service.MedicalRecordService;
 import com.safetynet.alerts.service.PersonService;
-import org.json.simple.JSONArray;
+
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.util.ReflectionTestUtils;
+
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
+@Tag("IntegrationTests")
 @SpringBootTest(properties = {
         "application.runner.enabled=true" })
 public class JsonReaderServiceIT {
@@ -31,9 +32,6 @@ public class JsonReaderServiceIT {
     @Autowired
     private FireStationService fireStationService;
 
-    @Autowired
-    private JsonReaderService jsonReaderService;
-
     @Test
     public void CheckLoadedDataFromJsonFile()
     {
@@ -41,6 +39,5 @@ public class JsonReaderServiceIT {
         assertThat(medicalRecordService.getAllMedicalRecords()).size().isEqualTo(23);
         assertThat(fireStationService.getAllFireStations()).size().isEqualTo(13);
     }
-
 
 }

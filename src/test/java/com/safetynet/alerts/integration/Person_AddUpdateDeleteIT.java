@@ -1,24 +1,21 @@
 package com.safetynet.alerts.integration;
 
-import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.service.FireStationService;
 import com.safetynet.alerts.service.MedicalRecordService;
 import com.safetynet.alerts.service.PersonService;
-import org.assertj.core.api.Assertions;
+
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
+@Tag("IntegrationTests")
 @SpringBootTest(properties = {
         "application.runner.enabled=true",
         "spring.datasource.url=jdbc:h2:mem:testSafetyNetAlertPersonIT" })
