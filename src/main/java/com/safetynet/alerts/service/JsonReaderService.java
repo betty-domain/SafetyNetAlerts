@@ -13,6 +13,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 
@@ -28,9 +29,7 @@ public class JsonReaderService {
 
     private static final Logger logger = LogManager.getLogger(JsonReaderService.class);
 
-    private List<Person> lstPerson;
-    private List<FireStation> lstFireStation;
-    private List<MedicalRecord> lstMedicalRecords;
+
 
     private ObjectMapper objectMapper;
 
@@ -43,18 +42,12 @@ public class JsonReaderService {
     @Autowired
     private FireStationService fireStationService;
 
-
+    @Value("${data.jsonFilePath}")
     private String filePath;
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
 
     public void readDataFromJsonFile() {
         logger.debug("Démarrage du chargement du fichier data.json");
 
-        //TODO : voir si cette syntaxe est acceptable et valable pour les tests unitaires ou s'il faut utiliser une notation avec classpath
-        this.filePath = "./src/main/resources/data.json";
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(this.filePath));
 
@@ -62,13 +55,13 @@ public class JsonReaderService {
 
             JSONObject jsonObject = (JSONObject) jsonParser.parse(inputStreamReader);
 
-            this.lstPerson = readListPersonFromJsonObject(jsonObject);
-            personService.saveAllPersons(this.lstPerson);
+            List<Person> lstPerson = readListPersonFromJsonObject(jsonObject);
+            personService.saveAllPersons(lstPerson);
 
-            this.lstFireStation = readListFireStationFromJsonObject(jsonObject);
+            List<FireStation> lstFireStation = readListFireStationFromJsonObject(jsonObject);
             fireStationService.saveAllFireStations(lstFireStation);
 
-            this.lstMedicalRecords = readListMedicalRecordFromJsonObject(jsonObject);
+            List<MedicalRecord> lstMedicalRecords = readListMedicalRecordFromJsonObject(jsonObject);
             medicalRecordService.saveAllMedicalRecords(lstMedicalRecords);
 
             inputStreamReader.close();

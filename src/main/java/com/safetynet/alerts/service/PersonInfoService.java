@@ -44,10 +44,8 @@ public class PersonInfoService {
             List<PersonInfoDTO> personInfoDTOList = new ArrayList<>();
 
             personList.forEach(personIterator -> {
-
                 Optional<MedicalRecord> medicalRecordForPerson = UtilsService.findMedicalRecord(medicalRecordList, personIterator);
                 personInfoDTOList.add(personInfoDTOMapper.personToPersonInfoDTO(personIterator, medicalRecordForPerson.orElse(null)));
-
             });
 
             return personInfoDTOList;

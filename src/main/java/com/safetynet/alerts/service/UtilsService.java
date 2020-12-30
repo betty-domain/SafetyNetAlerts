@@ -45,18 +45,15 @@ public class UtilsService {
 
     /**
      * Extrait la liste des numéros de stations d'une liste de caserne de pompiers
+     *
      * @param fireStationList liste de caserne de pompiers
      * @return liste des numéros de station, null si la liste des casernes est nulle
      */
-    public static List<Integer> getStationNumberList(List<FireStation> fireStationList)
-    {
-        if (fireStationList!=null)
-        {
-            return fireStationList.stream().filter(fireStation -> fireStation.getAddress()!=null && !fireStation.getAddress().isEmpty())
+    public static List<Integer> getStationNumberList(List<FireStation> fireStationList) {
+        if (fireStationList != null) {
+            return fireStationList.stream().filter(fireStation -> fireStation.getAddress() != null && !fireStation.getAddress().isEmpty())
                     .map(fireStation -> fireStation.getStation()).collect(Collectors.toList());
-        }
-        else
-        {
+        } else {
             return null;
         }
     }
