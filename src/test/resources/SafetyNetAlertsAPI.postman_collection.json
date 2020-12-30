@@ -1,0 +1,963 @@
+{
+	"info": {
+		"_postman_id": "2b004e5e-de06-4836-ac90-42abe8cdf76b",
+		"name": "SafetyNetAlertsAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Others Endpoint",
+			"item": [
+				{
+					"name": "GetPersonInfo Betty Domain",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/personInfo?firstname=Betty&lastname=Domain",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"personInfo"
+							],
+							"query": [
+								{
+									"key": "firstname",
+									"value": "Betty"
+								},
+								{
+									"key": "lastname",
+									"value": "Domain"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetPersonInfo John Boyd",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/personInfo?firstname=John&lastname=Boyd",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"personInfo"
+							],
+							"query": [
+								{
+									"key": "firstname",
+									"value": "John"
+								},
+								{
+									"key": "lastname",
+									"value": "Boyd"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "communityEmail by City Unknown",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/communityEmail?city=myCity",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"communityEmail"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "myCity"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "communityEmail by City",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/communityEmail?city=culver",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"communityEmail"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "culver"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "phoneAlert by Station Unknown",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/phoneAlert?firestation=150",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"phoneAlert"
+							],
+							"query": [
+								{
+									"key": "firestation",
+									"value": "150"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "phoneAlert by Station Existing",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/phoneAlert?firestation=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"phoneAlert"
+							],
+							"query": [
+								{
+									"key": "firestation",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "flood Info by StationList Existing",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/flood/stations?stations=1,2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"flood",
+								"stations"
+							],
+							"query": [
+								{
+									"key": "stations",
+									"value": "1,2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "flood Info by Station Existing",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/flood/stations?stations=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"flood",
+								"stations"
+							],
+							"query": [
+								{
+									"key": "stations",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "flood Info by Station Unknown",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/phoneAlert?firestation=150",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"phoneAlert"
+							],
+							"query": [
+								{
+									"key": "firestation",
+									"value": "150"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "childAlert by address existing",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/childAlert?address=1509 Culver St",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"childAlert"
+							],
+							"query": [
+								{
+									"key": "address",
+									"value": "1509 Culver St"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "childAlert by address unexisting",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/childAlert?address=1 allée des chênes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"childAlert"
+							],
+							"query": [
+								{
+									"key": "address",
+									"value": "1 allée des chênes"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PersonEndpoint",
+			"item": [
+				{
+					"name": "GetAllPersons",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/persons",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"persons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddPerson",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"firstName\":\"Betty\", \r\n     \"lastName\":\"Domain\",\r\n      \"address\":\"111 l'hosftede\",\r\n       \"city\":\"Godewaersvelde\",\r\n        \"zip\":\"59270\",\r\n         \"phone\":\"0123456789\",\r\n         \"email\":\"betty.domain@axa.fr\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/person",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"person"
+							]
+						},
+						"description": "Add person"
+					},
+					"response": []
+				},
+				{
+					"name": "AddPerson AlreadyExist",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"firstName\":\"John\", \r\n     \"lastName\":\"Boyd\",\r\n      \"address\":\"1509 Culver St\",\r\n       \"city\":\"Culver\",\r\n        \"zip\":\"97451\",\r\n         \"phone\":\"841-874-6512\",\r\n         \"email\":\"jaboyd@email.com\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/person",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"person"
+							]
+						},
+						"description": "Add person"
+					},
+					"response": []
+				},
+				{
+					"name": "UpdatePerson ExistingPerson",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"firstName\":\"John\", \r\n     \"lastName\":\"Boyd\",\r\n      \"address\":\"Ma nouvelle adresse\",\r\n       \"city\":\"Ma nouvelle ville\",\r\n        \"zip\":\"12345\",\r\n         \"phone\":\"111-111-111\",\r\n         \"email\":\"monemail@email.com\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/person",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"person"
+							]
+						},
+						"description": "Add person"
+					},
+					"response": []
+				},
+				{
+					"name": "UpdatePerson NonExistingPerson",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"firstName\":\"Johns\", \r\n     \"lastName\":\"Boyd\",\r\n      \"address\":\"Ma nouvelle adresse\",\r\n       \"city\":\"Ma nouvelle ville\",\r\n        \"zip\":\"12345\",\r\n         \"phone\":\"111-111-111\",\r\n         \"email\":\"monemail@email.com\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/person",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"person"
+							]
+						},
+						"description": "Add person"
+					},
+					"response": []
+				},
+				{
+					"name": "DeletePerson NonExistingPerson",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/person?firstname=Paul&lastname=Durand",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"person"
+							],
+							"query": [
+								{
+									"key": "firstname",
+									"value": "Paul"
+								},
+								{
+									"key": "lastname",
+									"value": "Durand"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeletePerson ExistingPerson",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/person?firstname=Foster&lastname=SHEPARD",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"person"
+							],
+							"query": [
+								{
+									"key": "firstname",
+									"value": "Foster"
+								},
+								{
+									"key": "lastname",
+									"value": "SHEPARD"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "FireStation endpoint",
+			"item": [
+				{
+					"name": "GetAllFireStations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/firestations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"firestations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetFireStation by StationNumber Existing",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/fireStation?stationNumber=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"fireStation"
+							],
+							"query": [
+								{
+									"key": "stationNumber",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetFireStation by StationNumber unknown",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/fireStation?stationNumber=150",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"fireStation"
+							],
+							"query": [
+								{
+									"key": "stationNumber",
+									"value": "150"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddFireStation AlreadyExist",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"address\": \"1509 Culver St\",\r\n    \"station\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/firestation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"firestation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddFireStation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"address\": \"123 Street\",\r\n    \"station\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/firestation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"firestation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateFirestation Existing",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"address\": \"1509 Culver St\",\r\n    \"station\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/firestation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"firestation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateFirestation NonExisting",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"address\": \"1000 Street unexisting\",\r\n    \"station\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/firestation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"firestation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteFireStation ByAddress Existing",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/firestation/834 Binoc Ave",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"firestation",
+								"834 Binoc Ave"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteFireStation ByAddress NonExisting",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/firestation/Unexisting Address",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"firestation",
+								"Unexisting Address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteFireStation ByAddressAndStation Existing",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/firestation/748 Townings Dr/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"firestation",
+								"748 Townings Dr",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteFireStation ByAddressAndStation NonExisting",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/firestation/112 Steppes Pl/12",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"firestation",
+								"112 Steppes Pl",
+								"12"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MedicalRecordEndpoint",
+			"item": [
+				{
+					"name": "GetAllMedicalRecords",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/medicalrecords",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"medicalrecords"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddMedicalRecord",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Betty\",\r\n    \"lastName\": \"Domain\",\r\n    \"medications\": [\r\n        \"aznol:350mg\",\r\n        \"hydrapermazol:100mg\"\r\n    ],\r\n    \"allergies\": [\r\n        \"nillacilan\",\r\n        \"allergies 2\"\r\n    ],\r\n    \"birthdate\": \"03/10/1984\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/medicalrecord",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"medicalrecord"
+							]
+						},
+						"description": "Add person"
+					},
+					"response": []
+				},
+				{
+					"name": "AddMedicalRecord AlreadyExist",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Tenley\",\r\n    \"lastName\": \"Boyd\",\r\n    \"medications\": [],\r\n    \"allergies\": [],\r\n    \"birthdate\": \"02/18/2012\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/medicalrecord",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"medicalrecord"
+							]
+						},
+						"description": "Add person"
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateMedicalRecord ExistingMedicalRecord",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Tenley\",\r\n    \"lastName\": \"Boyd\",\r\n    \"medications\": [\"medication:100mg\"],\r\n    \"allergies\": [\"allergies\"],\r\n    \"birthdate\": \"02/18/1980\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/medicalrecord",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"medicalrecord"
+							]
+						},
+						"description": "Add person"
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateMedicalRecord NonExistingMedicalRecord",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"unknown\",\r\n    \"lastName\": \"Boyd\",\r\n    \"medications\": [\"medication:100mg\"],\r\n    \"allergies\": [\"allergies\"],\r\n    \"birthdate\": \"02/18/1980\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/medicalrecord",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"medicalrecord"
+							]
+						},
+						"description": "Add person"
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteMedicalRecord NonExistingMedicalRecord",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/medicalrecord?firstname=Paul&lastname=Durand",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"medicalrecord"
+							],
+							"query": [
+								{
+									"key": "firstname",
+									"value": "Paul"
+								},
+								{
+									"key": "lastname",
+									"value": "Durand"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteMedicalRecord ExistingMedicalRecord",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/medicalrecord?firstname=Sophia&lastname=zemicks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"medicalrecord"
+							],
+							"query": [
+								{
+									"key": "firstname",
+									"value": "Sophia"
+								},
+								{
+									"key": "lastname",
+									"value": "zemicks"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
