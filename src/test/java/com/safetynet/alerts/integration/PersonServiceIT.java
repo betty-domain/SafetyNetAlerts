@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,7 +22,10 @@ public class PersonServiceIT {
     @Test
     public void getAllEmailsForCityIT()
     {
-        assertThat(personService.getAllEmailsForCity("Paris").size()).isEqualTo(2);
+        List<String> mailsList =personService.getAllEmailsForCity("Paris");
+        assertThat(mailsList.size()).isEqualTo(3);
+        assertThat(mailsList).containsExactlyInAnyOrder("gramps@email.com","clivfd@ymail.com","jpeter@email.com");
+
     }
 
     @Test

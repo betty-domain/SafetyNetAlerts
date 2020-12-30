@@ -159,7 +159,7 @@ public class PersonService {
                 List<Person> personList = personRepository.findAllByCityIgnoreCase(city);
                 if (personList != null) {
                     return personList.stream().filter(personIteratorFilter -> personIteratorFilter.getEmail() != null && !personIteratorFilter.getEmail().isEmpty()).
-                            map(personIterator -> personIterator.getEmail()).collect(Collectors.toList());
+                            map(personIterator -> personIterator.getEmail()).distinct().collect(Collectors.toList());
                 } else {
                     logger.info("Récupération d'une liste nulle de personnes.");
                     return null;

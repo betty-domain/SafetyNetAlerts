@@ -89,7 +89,7 @@ public class FireStationCommunityService {
 
         if (personList != null) {
             return personList.stream().filter(personIteratorFilter -> personIteratorFilter.getPhone() != null && !personIteratorFilter.getPhone().isEmpty()).
-                    map(personIterator -> personIterator.getPhone()).collect(Collectors.toList());
+                    map(personIterator -> personIterator.getPhone()).distinct().collect(Collectors.toList());
         } else {
             return null;
         }
