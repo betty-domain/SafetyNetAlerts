@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FireStationCommunityService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">alerts</a> &gt; <a href="index.source.html" class="el_package">com.safetynet.alerts.service</a> &gt; <span class="el_source">FireStationCommunityService.java</span></div><h1>FireStationCommunityService.java</h1><pre class="source lang-java linenums">package com.safetynet.alerts.service;
+
+import com.safetynet.alerts.model.FireStation;
+import com.safetynet.alerts.model.MedicalRecord;
+import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.model.dto.CommunityMemberDTO;
+import com.safetynet.alerts.model.dto.FireDTO;
+import com.safetynet.alerts.model.dto.FireStationCommunityDTO;
+import com.safetynet.alerts.model.dto.StationFloodInfoDTO;
+import com.safetynet.alerts.model.dto.FloodInfoDTO;
+import com.safetynet.alerts.model.mapper.CommunityMemberDTOMapper;
+import com.safetynet.alerts.model.mapper.FireDTOMapper;
+import com.safetynet.alerts.model.mapper.FloodInfoDTOMapper;
+import com.safetynet.alerts.repository.FireStationRepository;
+import com.safetynet.alerts.repository.MedicalRecordRepository;
+import com.safetynet.alerts.repository.PersonRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+<span class="fc" id="L30">public class FireStationCommunityService {</span>
+
+<span class="fc" id="L32">    private static final Logger logger = LogManager.getLogger(FireStationCommunityService.class);</span>
+
+    @Autowired
+    private MedicalRecordRepository medicalRecordRepository;
+
+    @Autowired
+    private PersonRepository personRepository;
+
+    @Autowired
+    private FireStationRepository fireStationRepository;
+
+    @Autowired
+    private CommunityMemberDTOMapper communityMemberDTOMapper;
+
+    @Autowired
+    private FloodInfoDTOMapper floodInfoDTOMapper;
+
+    @Autowired
+    private FireDTOMapper fireDTOMapper;
+
+    /**
+     * Récupérer les personnes rattachées à une station du feu ainsi que le nb d'adultes et d'enfants parmi cette liste
+     *
+     * @param stationNumber numéro de la station de feu
+     * @return Objet consolidant la liste des personnes et le nb d'adultes et d'enfants
+     */
+    public FireStationCommunityDTO getFireStationCommunity(Integer stationNumber) {
+
+<span class="fc" id="L60">        List&lt;Person&gt; personList = getPersonListByStationNumber(stationNumber);</span>
+
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">        if (personList != null) {</span>
+<span class="fc" id="L63">            List&lt;CommunityMemberDTO&gt; communityMemberDTOList = new ArrayList&lt;&gt;();</span>
+
+            //on construit les données à retourner en récupérant l'âge sur le medicalRecord de la personne parcourue dans la liste
+<span class="fc" id="L66">            personList.forEach(personIterator -&gt; {</span>
+<span class="fc" id="L67">                Optional&lt;MedicalRecord&gt; optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastNameAllIgnoreCase(personIterator.getFirstName(), personIterator.getLastName());</span>
+<span class="fc" id="L68">                communityMemberDTOList.add(communityMemberDTOMapper.personToCommunityMemberDTO(personIterator, optionalMedicalRecord.orElse(null)));</span>
+<span class="fc" id="L69">            });</span>
+
+<span class="fc" id="L71">            FireStationCommunityDTO fireStationCommunityDTO = new FireStationCommunityDTO();</span>
+<span class="fc" id="L72">            fireStationCommunityDTO.setCommunityMemberDTOList(communityMemberDTOList);</span>
+
+<span class="fc" id="L74">            return fireStationCommunityDTO;</span>
+        } else {
+<span class="nc" id="L76">            return null;</span>
+        }
+    }
+
+    /**
+     * Retourne la liste des téléphones des résidents rattachés au numéro de station de feu fourni
+     *
+     * @param stationNumber numéro des stations de feu
+     * @return liste des numéro de téléphone des résidents rattachés au numéro fourni (correspondant à plusieurs stations de feu)
+     */
+    public List&lt;String&gt; getPhoneListByStationNumber(Integer stationNumber) {
+
+<span class="fc" id="L88">        List&lt;Person&gt; personList = getPersonListByStationNumber(stationNumber);</span>
+
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">        if (personList != null) {</span>
+<span class="pc bpc" id="L91" title="2 of 4 branches missed.">            return personList.stream().filter(personIteratorFilter -&gt; personIteratorFilter.getPhone() != null &amp;&amp; !personIteratorFilter.getPhone().isEmpty()).</span>
+<span class="fc" id="L92">                    map(personIterator -&gt; personIterator.getPhone()).distinct().collect(Collectors.toList());</span>
+        } else {
+<span class="nc" id="L94">            return null;</span>
+        }
+    }
+
+    /**
+     * récupère la liste des personnes associées aux station de feu représentées par un numéro
+     *
+     * @param stationNumber numéro des stations de feu souhaitées
+     * @return liste des personnes associées aux stations demandées
+     */
+    private List&lt;Person&gt; getPersonListByStationNumber(Integer stationNumber) {
+<span class="pc bpc" id="L105" title="1 of 2 branches missed.">        if (stationNumber != null) {</span>
+            try {
+                //on récupère la liste des stations
+<span class="fc" id="L108">                List&lt;FireStation&gt; fireStationList = fireStationRepository.findDistinctByStation(stationNumber);</span>
+
+                //extraction de la liste des adresses des stations
+<span class="fc" id="L111">                List&lt;String&gt; addressList = getAddressListFromFireStationList(fireStationList);</span>
+
+                //on récupère la liste des personnes rattachées à la liste des adresses
+<span class="fc" id="L114">                return personRepository.findAllByAddressInOrderByAddress(addressList);</span>
+
+<span class="nc" id="L116">            } catch (Exception exception) {</span>
+<span class="nc" id="L117">                logger.error(&quot;Erreur lors de la récupération des personnes liées à une station de feu : &quot; + exception.getMessage() + &quot; Stack Trace : &quot; + exception.getStackTrace());</span>
+<span class="nc" id="L118">                return null;</span>
+            }
+        } else {
+<span class="nc" id="L121">            return null;</span>
+        }
+    }
+
+    /**
+     * Récupère la liste des adresses d'une liste de stations de feu
+     *
+     * @param fireStationList liste de stations de feu
+     * @return liste des adresses dédoublonnée
+     */
+    private List&lt;String&gt; getAddressListFromFireStationList(List&lt;FireStation&gt; fireStationList) {
+<span class="fc" id="L132">        List&lt;String&gt; addressList = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">        if (fireStationList != null) {</span>
+<span class="fc" id="L134">            fireStationList.forEach(fireStationIterator -&gt; {</span>
+<span class="pc bpc" id="L135" title="2 of 4 branches missed.">                if (fireStationIterator.getAddress() != null &amp;&amp; !fireStationIterator.getAddress().isEmpty()) {</span>
+<span class="fc" id="L136">                    addressList.add(fireStationIterator.getAddress());</span>
+                }
+<span class="fc" id="L138">            });</span>
+        }
+<span class="fc" id="L140">        return addressList.stream().distinct().collect(Collectors.toList());</span>
+    }
+
+    /**
+     * Récupère la liste de tous les foyers rattachés à une station
+     *
+     * @param stations numéro de la station de feu
+     * @return liste des foyers rattachés à la station de feu
+     */
+    public List&lt;StationFloodInfoDTO&gt; getFloodInfoByStations(List&lt;Integer&gt; stations) {
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">        if (stations != null) {</span>
+            try {
+<span class="fc" id="L152">                Map&lt;String, List&lt;Person&gt;&gt; mapPersonByFireStationAddress = getPersonsByStationNumber(stations);</span>
+
+<span class="fc" id="L154">                List&lt;StationFloodInfoDTO&gt; stationFloodInfoDTOList = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L156" title="All 2 branches covered.">                for (String fireStationAddress : mapPersonByFireStationAddress.keySet()) {</span>
+
+<span class="fc" id="L158">                    StationFloodInfoDTO stationFloodInfoDTO = new StationFloodInfoDTO();</span>
+<span class="fc" id="L159">                    stationFloodInfoDTO.setAddress(fireStationAddress);</span>
+
+                    //extraction de la liste des personnes liées à la station de feu à partir de l'adresse de celle-ci
+<span class="fc" id="L162">                    List&lt;Person&gt; personLinkedToFireStation = mapPersonByFireStationAddress.get(fireStationAddress);</span>
+
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">                    if (personLinkedToFireStation != null) {</span>
+<span class="fc" id="L165">                        List&lt;FloodInfoDTO&gt; floodInfoDTOList = new ArrayList&lt;&gt;();</span>
+
+                        //on construit les données à retourner en récupérant l'âge sur le medicalRecord de la personne parcourue dans la liste
+<span class="fc" id="L168">                        personLinkedToFireStation.forEach(personIterator -&gt; {</span>
+<span class="fc" id="L169">                            Optional&lt;MedicalRecord&gt; optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastNameAllIgnoreCase(personIterator.getFirstName(), personIterator.getLastName());</span>
+<span class="fc" id="L170">                            floodInfoDTOList.add(floodInfoDTOMapper.convertToFloodInfoDTO(personIterator, optionalMedicalRecord.orElse(null)));</span>
+<span class="fc" id="L171">                        });</span>
+<span class="fc" id="L172">                        stationFloodInfoDTO.setFloodInfoDTOList(floodInfoDTOList);</span>
+<span class="fc" id="L173">                        stationFloodInfoDTOList.add(stationFloodInfoDTO);</span>
+                    }
+<span class="fc" id="L175">                }</span>
+<span class="fc" id="L176">                return stationFloodInfoDTOList;</span>
+<span class="nc" id="L177">            } catch (Exception exception) {</span>
+<span class="nc" id="L178">                logger.error(&quot;Erreur lors de la récupération des informations pour un dégât des eaux : &quot; + exception.getMessage() + &quot; Stack Trace : &quot; + exception.getStackTrace());</span>
+<span class="nc" id="L179">                return null;</span>
+            }
+        }
+<span class="nc" id="L182">        return null;</span>
+    }
+
+    /**
+     * récupère la liste des personnes associées aux station de feu représentées par des numéros de stations
+     *
+     * @param stationsNumberList liste des numéros des stations de feu souhaitées
+     * @return liste des personnes associées aux stations demandées, regroupées par adresse
+     */
+    private Map&lt;String, List&lt;Person&gt;&gt; getPersonsByStationNumber(List&lt;Integer&gt; stationsNumberList) {
+
+        try {
+            //on récupère la liste des stations
+<span class="fc" id="L195">            List&lt;FireStation&gt; fireStationList = fireStationRepository.findDistinctByStationIn(stationsNumberList.stream().distinct().collect(Collectors.toList()));</span>
+
+            //extraction de la liste distincte des adresses des stations
+<span class="fc" id="L198">            List&lt;String&gt; addressList = getAddressListFromFireStationList(fireStationList);</span>
+
+            //on récupère la liste des personnes rattachées à la liste des adresses
+<span class="fc" id="L201">            List&lt;Person&gt; personList = personRepository.findAllByAddressInOrderByAddress(addressList);</span>
+
+<span class="fc" id="L203">            Map&lt;String, List&lt;Person&gt;&gt; mapPersonByStationAddress = new HashMap&lt;&gt;();</span>
+
+<span class="fc" id="L205">            addressList.forEach(addressIterator -&gt;</span>
+                    {
+<span class="fc" id="L207">                        List&lt;Person&gt; personListByAdress = personList.stream().filter(person -&gt; person.getAddress().equalsIgnoreCase(addressIterator)).collect(Collectors.toList());</span>
+<span class="fc" id="L208">                        mapPersonByStationAddress.put(addressIterator, personListByAdress);</span>
+<span class="fc" id="L209">                    }</span>
+            );
+<span class="fc" id="L211">            return mapPersonByStationAddress;</span>
+<span class="nc" id="L212">        } catch (Exception exception) {</span>
+<span class="nc" id="L213">            logger.error(&quot;Erreur lors de la récupération des personnes liées à une station de feu : &quot; + exception.getMessage() + &quot; Stack Trace : &quot; + exception.getStackTrace());</span>
+<span class="nc" id="L214">            return null;</span>
+        }
+    }
+
+    /**
+     * Récupère les informations suite à un feu fonction de l'adresse fourni
+     *
+     * @param address addresse recherchés
+     * @return Liste des habitants vivant à l'adresse donnée ainsi que le numéro de la caserne de pompiers la desservant
+     */
+    public List&lt;FireDTO&gt; getFireInfoByAddress(String address) {
+
+<span class="pc bpc" id="L226" title="1 of 2 branches missed.">        if (address != null) {</span>
+            try {
+                //on récupère la liste des casernes de pompiers qui desservent cette addresse
+<span class="fc" id="L229">                List&lt;FireStation&gt; fireStation = fireStationRepository.findDistinctByAddressIgnoreCase(address);</span>
+<span class="fc" id="L230">                List&lt;Integer&gt; fireStationNumberList = UtilsService.getStationNumberList(fireStation);</span>
+
+                //on récupère la liste des personnes qui vivent à cette adresse
+<span class="fc" id="L233">                List&lt;Person&gt; personList = personRepository.findAllByAddressIgnoreCase(address);</span>
+
+<span class="fc" id="L235">                List&lt;FireDTO&gt; fireDTOList = new ArrayList&lt;&gt;();</span>
+
+                //on fait le mapping des informations pour chaque personne de la liste
+<span class="fc" id="L238">                personList.forEach(personIterator -&gt; {</span>
+<span class="fc" id="L239">                    FireDTO fireDTO = null;</span>
+<span class="fc" id="L240">                    Optional&lt;MedicalRecord&gt; medicalRecord = medicalRecordRepository.findByFirstNameAndLastNameAllIgnoreCase(personIterator.getFirstName(), personIterator.getLastName());</span>
+
+<span class="fc" id="L242">                    fireDTO = fireDTOMapper.convertToFireDTO(personIterator, medicalRecord.orElse(null));</span>
+
+<span class="fc" id="L244">                    fireDTO.setFireStationNumberList(fireStationNumberList);</span>
+<span class="fc" id="L245">                    fireDTOList.add(fireDTO);</span>
+<span class="fc" id="L246">                });</span>
+
+<span class="fc" id="L248">                return fireDTOList;</span>
+
+<span class="nc" id="L250">            } catch (Exception exception) {</span>
+<span class="nc" id="L251">                logger.error(&quot;Erreur lors de la récupération des informations pour un feu: &quot; + exception.getMessage() + &quot; Stack Trace : &quot; + exception.getStackTrace());</span>
+<span class="nc" id="L252">                return null;</span>
+            }
+
+        }
+<span class="nc" id="L256">        return null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

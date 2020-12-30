@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FireStationCommunityDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">alerts</a> &gt; <a href="index.source.html" class="el_package">com.safetynet.alerts.model.dto</a> &gt; <span class="el_source">FireStationCommunityDTO.java</span></div><h1>FireStationCommunityDTO.java</h1><pre class="source lang-java linenums">package com.safetynet.alerts.model.dto;
+
+import com.fasterxml.jackson.annotation.JsonView;
+import com.safetynet.alerts.utils.Constants;
+import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
+public class FireStationCommunityDTO {
+
+    @JsonView(Views.Public.class)
+    private List&lt;CommunityMemberDTO&gt; communityMemberDTOList = new ArrayList&lt;&gt;();
+    @JsonView(Views.Public.class)
+    private long adultsCount;
+    @JsonView(Views.Public.class)
+    private long childrenCount;
+
+    public long getAdultsCount() {
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        adultsCount = communityMemberDTOList.stream().filter(communityMemberDTO -&gt; communityMemberDTO.getAge() &gt; Constants.AGE_MAX_CHILDREN).count();</span>
+<span class="fc" id="L22">        return adultsCount;</span>
+    }
+
+    public long getChildrenCount() {
+<span class="fc bfc" id="L26" title="All 4 branches covered.">        childrenCount = communityMemberDTOList.stream().filter(communityMemberDTO -&gt; communityMemberDTO.getAge() &lt;= Constants.AGE_MAX_CHILDREN &amp;&amp; communityMemberDTO.getAge()&gt;=0).count();</span>
+<span class="fc" id="L27">        return childrenCount;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

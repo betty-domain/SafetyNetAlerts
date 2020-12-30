@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FireStationService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">alerts</a> &gt; <a href="index.source.html" class="el_package">com.safetynet.alerts.service</a> &gt; <span class="el_source">FireStationService.java</span></div><h1>FireStationService.java</h1><pre class="source lang-java linenums">package com.safetynet.alerts.service;
+
+import com.safetynet.alerts.model.FireStation;
+import com.safetynet.alerts.repository.FireStationRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+<span class="fc" id="L14">public class FireStationService {</span>
+
+<span class="fc" id="L16">    private static final Logger logger = LogManager.getLogger(FireStationService.class);</span>
+
+    @Autowired
+    private FireStationRepository fireStationRepository;
+
+    /**
+     * Sauvegarder la liste des stations de feu
+     *
+     * @param fireStationsList Liste à sauvegarder
+     * @return true si la sauvegarde s'est bien passée, false en cas d'erreur
+     */
+    public boolean saveAllFireStations(List&lt;FireStation&gt; fireStationsList) {
+<span class="pc bpc" id="L28" title="1 of 4 branches missed.">        if (fireStationsList != null &amp;&amp; !fireStationsList.isEmpty()) {</span>
+            try {
+<span class="fc" id="L30">                fireStationRepository.saveAll(fireStationsList);</span>
+<span class="fc" id="L31">                return true;</span>
+<span class="fc" id="L32">            } catch (Exception exception) {</span>
+<span class="fc" id="L33">                logger.error(&quot;Erreur lors de l'enregistrement de la liste des personnes &quot; + exception.getMessage() + &quot; , Stack Trace : &quot; + exception.getStackTrace());</span>
+
+            }
+        }
+<span class="fc" id="L37">        return false;</span>
+    }
+
+    /**
+     * Récupère la liste de toutes les stations de feu
+     *
+     * @return Liste des stations de feu existantes
+     */
+    public Iterable&lt;FireStation&gt; getAllFireStations() {
+        try {
+<span class="fc" id="L47">            return fireStationRepository.findAll();</span>
+<span class="fc" id="L48">        } catch (Exception exception) {</span>
+<span class="fc" id="L49">            logger.error(&quot;Erreur lors de la récupération de la liste des stations de feu : &quot; + exception.getMessage() + &quot; Stack Trace + &quot; + exception.getStackTrace());</span>
+<span class="fc" id="L50">            return null;</span>
+        }
+    }
+
+    /**
+     * Ajoute une station de feu si elle n'existe pas encore
+     *
+     * @param fireStation station de feu à ajouter
+     * @return null en cas de problème lors de l'ajout, station de feu ajoutée sinon
+     */
+    public FireStation addFireStation(FireStation fireStation) {
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (fireStation != null) {</span>
+<span class="fc" id="L62">            Optional&lt;FireStation&gt; existingFireStation = fireStationRepository.findFirstByAddressIgnoreCaseAndStation(fireStation.getAddress(), fireStation.getStation());</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">            if (existingFireStation.isPresent()) {</span>
+<span class="fc" id="L64">                logger.error(&quot;Erreur lors de l'ajout d'une station de feu déjà existante&quot;);</span>
+<span class="fc" id="L65">                return null;</span>
+            } else {
+                try {
+<span class="fc" id="L68">                    fireStation.setId(fireStationRepository.save(fireStation).getId());</span>
+<span class="fc" id="L69">                } catch (Exception exception) {</span>
+<span class="fc" id="L70">                    logger.error(&quot;Erreur lors de l'ajout d'une station de feu : &quot; + exception.getMessage() + &quot; Stack Trace : &quot; + exception.getStackTrace());</span>
+<span class="fc" id="L71">                    return null;</span>
+<span class="fc" id="L72">                }</span>
+            }
+
+        }
+<span class="fc" id="L76">        return fireStation;</span>
+    }
+
+    /**
+     * Mise à jour du numéro d'une station de feu si elle existe déjà
+     *
+     * @param fireStation station de feu à mettre à jour
+     * @return null en cas de problème lors de la mise à jour, station de feu mise à jour sinon
+     */
+    public FireStation updateFireStation(FireStation fireStation) {
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (fireStation != null) {</span>
+<span class="fc" id="L87">            List&lt;FireStation&gt; existingFireStationList = fireStationRepository.findDistinctByAddressIgnoreCase(fireStation.getAddress());</span>
+
+<span class="fc bfc" id="L89" title="All 2 branches covered.">            if (existingFireStationList.isEmpty()) {</span>
+<span class="fc" id="L90">                logger.error(&quot;Erreur lors de la mise à jour d'une station de feu inexistante&quot;);</span>
+<span class="fc" id="L91">                return null;</span>
+
+            } else {
+
+<span class="fc bfc" id="L95" title="All 2 branches covered.">                for(FireStation fireStationToUpdate : existingFireStationList)</span>
+                {
+<span class="fc" id="L97">                    fireStationToUpdate.setStation(fireStation.getStation());</span>
+                    try {
+<span class="fc" id="L99">                        fireStationRepository.save(fireStationToUpdate);</span>
+<span class="fc" id="L100">                    } catch (Exception exception) {</span>
+<span class="fc" id="L101">                        logger.error(&quot;Erreur lors de la mise à jour d'une station de feu :&quot; + exception.getMessage() +</span>
+<span class="fc" id="L102">                                &quot; Stack Trace : &quot; + exception.getStackTrace());</span>
+<span class="fc" id="L103">                        return null;</span>
+<span class="fc" id="L104">                    }</span>
+<span class="fc" id="L105">                }</span>
+<span class="fc" id="L106">                return fireStation;</span>
+            }
+        }
+<span class="fc" id="L109">        return null;</span>
+    }
+
+    /**
+     * suppression d'une station de feu à partir de l'adresse
+     *
+     * @param address adresse de la station de feu à supprimer
+     * @return nombre de lignes supprimées, null si problème lors de la suppression
+     */
+    public Integer deleteFireStationByAddress(String address) {
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (address != null) {</span>
+<span class="fc" id="L120">            List&lt;FireStation&gt; existingFireStationList = fireStationRepository.findDistinctByAddressIgnoreCase(address);</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">            if (existingFireStationList.isEmpty()) {</span>
+<span class="fc" id="L122">                logger.error(&quot;Erreur lors de la suppression d'une station de feu inexistante&quot;);</span>
+<span class="fc" id="L123">                return null;</span>
+            } else {
+                try {
+<span class="fc" id="L126">                    return fireStationRepository.deleteByAddressIgnoreCase(address);</span>
+<span class="fc" id="L127">                } catch (Exception exception) {</span>
+<span class="fc" id="L128">                    logger.error(&quot;Erreur lors de la suppression d'une station de feu : &quot; + exception.getMessage() +</span>
+<span class="fc" id="L129">                            &quot; Stack Trace : &quot; + exception.getStackTrace());</span>
+<span class="fc" id="L130">                    return null;</span>
+                }
+            }
+        }
+<span class="fc" id="L134">        return null;</span>
+    }
+
+    /**
+     * suppression d'une station de feu à partir de l'adresse et de la station
+     *
+     * @param address adresse de la station à supprimer
+     * @param station numéro de la station à supprimer
+     * @return nombre de lignes supprimées, null si problèmes lors de la suppression
+     */
+    public Integer deleteFireStationByAddressAndStation(String address, Integer station) {
+<span class="pc bpc" id="L145" title="1 of 4 branches missed.">        if (address != null &amp;&amp; station != null) {</span>
+<span class="fc" id="L146">            Optional&lt;FireStation&gt; existingFireStationList = fireStationRepository.findFirstByAddressIgnoreCaseAndStation(address, station);</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">            if (existingFireStationList.isPresent()) {</span>
+                try {
+<span class="fc" id="L149">                    return fireStationRepository.deleteByAddressIgnoreCaseAndStation(address, station);</span>
+<span class="fc" id="L150">                } catch (Exception exception) {</span>
+<span class="fc" id="L151">                    logger.error(&quot;Erreur lors de la suppression d'une station de feu : &quot; + exception.getMessage() +</span>
+<span class="fc" id="L152">                            &quot; Stack Trace : &quot; + exception.getStackTrace());</span>
+<span class="fc" id="L153">                    return null;</span>
+                }
+            } else {
+<span class="fc" id="L156">                logger.error(&quot;Erreur lors de la suppression d'une station de feu inexistante : address : &quot; +</span>
+<span class="fc" id="L157">                        address + &quot; , station : &quot; + station.toString());</span>
+<span class="fc" id="L158">                return null;</span>
+            }
+        }
+<span class="fc" id="L161">        return null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

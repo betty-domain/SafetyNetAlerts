@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MedicalRecordController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">alerts</a> &gt; <a href="index.source.html" class="el_package">com.safetynet.alerts.controller</a> &gt; <span class="el_source">MedicalRecordController.java</span></div><h1>MedicalRecordController.java</h1><pre class="source lang-java linenums">package com.safetynet.alerts.controller;
+
+import com.safetynet.alerts.model.FunctionalException;
+import com.safetynet.alerts.model.MedicalRecord;
+import com.safetynet.alerts.service.MedicalRecordService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+<span class="fc" id="L19">public class MedicalRecordController {</span>
+
+<span class="fc" id="L21">    private static final Logger logger = LogManager.getLogger(MedicalRecordController.class);</span>
+
+    @Autowired
+    private MedicalRecordService medicalRecordService;
+
+    @GetMapping(&quot;/medicalrecords&quot;)
+    public Iterable&lt;MedicalRecord&gt; getAllMedicalRecords() {
+<span class="nc" id="L28">        logger.info(&quot;Requête Get sur le endpoint 'medicalrecords' reçue&quot;);</span>
+
+<span class="nc" id="L30">        Iterable&lt;MedicalRecord&gt; medicalRecordIterable = medicalRecordService.getAllMedicalRecords();</span>
+
+<span class="nc" id="L32">        logger.info(&quot;Réponse suite à la requête Get sur le endpoint medicalrecords transmise&quot;);</span>
+
+<span class="nc" id="L34">        return medicalRecordIterable;</span>
+    }
+
+    @PostMapping(&quot;/medicalrecord&quot;)
+    public MedicalRecord addMedicalRecord(@Validated @RequestBody MedicalRecord medicalRecord) {
+<span class="nc" id="L39">        logger.info(&quot;Requête Post sur le endpoint 'medicalRecord' reçue&quot;);</span>
+
+<span class="nc" id="L41">        MedicalRecord createdMedicalRecord = medicalRecordService.addMedicalRecord(medicalRecord);</span>
+
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        if (createdMedicalRecord != null) {</span>
+<span class="nc" id="L44">            logger.info(&quot;Réponse suite au Post sur le endpoint 'medicalRecord' envoyée&quot;);</span>
+<span class="nc" id="L45">            return createdMedicalRecord;</span>
+        } else {
+<span class="nc" id="L47">            throw new FunctionalException(&quot;medicalRecord.insert.error&quot;);</span>
+
+        }
+    }
+
+    @PutMapping(&quot;/medicalrecord&quot;)
+    public MedicalRecord updateMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
+<span class="nc" id="L54">        logger.info(&quot;Requête Put sur le endpoint 'medicalrecord' reçue&quot;);</span>
+
+<span class="nc" id="L56">        MedicalRecord updatedMedicalRecord = medicalRecordService.updateMedicalRecord(medicalRecord);</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (updatedMedicalRecord != null) {</span>
+<span class="nc" id="L58">            logger.info(&quot;Réponse suite au Put sur le endpoint 'medicalrecord' envoyée&quot;);</span>
+<span class="nc" id="L59">            return updatedMedicalRecord;</span>
+        } else {
+<span class="nc" id="L61">            throw new FunctionalException(&quot;medicalRecord.update.error&quot;);</span>
+        }
+    }
+
+    @DeleteMapping(&quot;/medicalrecord&quot;)
+    public Integer deleteMedicalRecord(@RequestParam String firstname, @RequestParam String lastname) {
+<span class="nc" id="L67">        logger.info(&quot;Requête Delete sur le endpoint 'medicalrecord' reçue avec les paramètres firstname :&quot; + firstname + &quot; et lastname : &quot; + lastname + &quot; reçue&quot;);</span>
+
+<span class="nc" id="L69">        Integer deleteResult = medicalRecordService.deleteMedicalRecord(firstname, lastname);</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (deleteResult != null) {</span>
+<span class="nc" id="L71">            logger.info(&quot;Réponse suite au Delete sur le endpoint 'medicalrecord' reçue avec les paramètres firstname :&quot; + firstname + &quot; et lastname : &quot; + lastname + &quot; envoyée&quot;);</span>
+<span class="nc" id="L72">            return deleteResult;</span>
+        } else {
+<span class="nc" id="L74">            throw new FunctionalException(&quot;medicalRecord.delete.error&quot;);</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

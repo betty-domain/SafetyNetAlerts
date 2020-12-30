@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MedicalRecordService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">alerts</a> &gt; <a href="index.source.html" class="el_package">com.safetynet.alerts.service</a> &gt; <span class="el_source">MedicalRecordService.java</span></div><h1>MedicalRecordService.java</h1><pre class="source lang-java linenums">package com.safetynet.alerts.service;
+
+import com.safetynet.alerts.model.MedicalRecord;
+import com.safetynet.alerts.repository.MedicalRecordRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+<span class="fc" id="L14">public class MedicalRecordService {</span>
+
+<span class="fc" id="L16">    private static final Logger logger = LogManager.getLogger(MedicalRecordService.class);</span>
+
+    @Autowired
+    private MedicalRecordRepository medicalRecordRepository;
+
+    /**
+     * Sauvergarde la liste des données médicales
+     *
+     * @param medicalRecordList liste des données médicales à sauvegarder
+     */
+    public boolean saveAllMedicalRecords(List&lt;MedicalRecord&gt; medicalRecordList) {
+<span class="pc bpc" id="L27" title="2 of 4 branches missed.">        if (medicalRecordList != null &amp;&amp; !medicalRecordList.isEmpty()) {</span>
+            try {
+<span class="fc" id="L29">                medicalRecordRepository.saveAll(medicalRecordList);</span>
+<span class="fc" id="L30">                return true;</span>
+<span class="nc" id="L31">            } catch (Exception exception) {</span>
+<span class="nc" id="L32">                logger.error(&quot;Erreur lors de l'enregistrement de la liste des données médicales &quot; + exception.getMessage() + &quot; , Stack Trace : &quot; + exception.getStackTrace());</span>
+            }
+        }
+<span class="nc" id="L35">        return false;</span>
+    }
+
+    /**
+     * récupère la liste de toutes les données médicales
+     * @return liste des données médicales
+     */
+    public Iterable&lt;MedicalRecord&gt; getAllMedicalRecords() {
+        try {
+<span class="fc" id="L44">            return medicalRecordRepository.findAll();</span>
+<span class="nc" id="L45">        } catch (Exception exception) {</span>
+<span class="nc" id="L46">            logger.error(&quot;Erreur lors de la récupération de la liste des données médicales : &quot; + exception.getMessage() + &quot; Stack Trace + &quot; + exception.getStackTrace());</span>
+<span class="nc" id="L47">            return null;</span>
+        }
+    }
+
+    /**
+     * ajoute une donnée médicale
+     * @param medicalRecord donnée médicale à ajouter
+     * @return donnée médicale si l'ajout s'est correctement passé, null sinon
+     */
+    public MedicalRecord addMedicalRecord(MedicalRecord medicalRecord) {
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">        if (medicalRecord != null) {</span>
+<span class="fc" id="L58">            Optional&lt;MedicalRecord&gt; medicalRecordOptional = this.getMedicalRecordByFirstNameAndLastName(medicalRecord.getFirstName(),medicalRecord.getLastName());</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">            if (medicalRecordOptional.isPresent())</span>
+            {
+<span class="nc" id="L61">                logger.error(&quot;Erreur lors de l'ajout d'une donnée médicale déjà existante&quot;);</span>
+<span class="nc" id="L62">                return null;</span>
+            }
+            else {
+                try {
+<span class="fc" id="L66">                    medicalRecordRepository.save(medicalRecord);</span>
+                }
+<span class="nc" id="L68">                catch (Exception exception) {</span>
+<span class="nc" id="L69">                    logger.error(&quot;Erreur lors de l'ajout d'une donnée médicale:&quot; + exception.getMessage() + &quot; StackTrace : &quot; + exception.getStackTrace());</span>
+<span class="nc" id="L70">                    return null;</span>
+<span class="fc" id="L71">                }</span>
+            }
+        }
+<span class="fc" id="L74">        return medicalRecord;</span>
+    }
+
+    /**
+     * mise à jour d'une donnée médicale
+     * @param medicalRecord donnée médicale à mettre à jour
+     * @return donnée médicale mise à jour, null sinon
+     */
+    public MedicalRecord updateMedicalRecord(final MedicalRecord medicalRecord) {
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">        if (medicalRecord!=null) {</span>
+<span class="fc" id="L84">            Optional&lt;MedicalRecord&gt; medicalRecordOptional = this.getMedicalRecordByFirstNameAndLastName(medicalRecord.getFirstName(), medicalRecord.getLastName());</span>
+
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">            if (medicalRecordOptional.isPresent()) {</span>
+<span class="fc" id="L87">                MedicalRecord medicalRecordToUpdate = medicalRecordOptional.get();</span>
+
+<span class="fc" id="L89">                medicalRecordToUpdate.setMedications(medicalRecord.getMedications());</span>
+<span class="fc" id="L90">                medicalRecordToUpdate.setAllergies(medicalRecord.getAllergies());</span>
+<span class="fc" id="L91">                medicalRecordToUpdate.setBirthDate(medicalRecord.getBirthDate());</span>
+
+                try {
+<span class="fc" id="L94">                    medicalRecordRepository.save(medicalRecordToUpdate);</span>
+<span class="fc" id="L95">                    return medicalRecordToUpdate;</span>
+<span class="nc" id="L96">                } catch (Exception exception) {</span>
+<span class="nc" id="L97">                    logger.error(&quot;Erreur lors de la mise à jour d'une donnée médicale : &quot; + exception.getMessage() + &quot; StackTrace : &quot; + exception.getStackTrace());</span>
+<span class="nc" id="L98">                    return null;</span>
+                }
+            } else {
+<span class="nc" id="L101">                logger.error(&quot;Erreur lors de la mise à jour d'une donnée médicale : la personne n'existe pas&quot;);</span>
+<span class="nc" id="L102">                return null;</span>
+            }
+        }
+        else
+        {
+<span class="nc" id="L107">            logger.error(&quot;Erreur lors de la mise à jour d'une donnée médicale: object null envoyé&quot;);</span>
+<span class="nc" id="L108">            return null;</span>
+        }
+    }
+
+    /**
+     * suppression d'une donnée médicale par le prénom et nom du patient
+     * @param firstname prénom du patient
+     * @param lastname nom du patient
+     * @return nombre de lignes suppérimées, null si la suppression ne s'est pas bien déroulée
+     */
+    public Integer deleteMedicalRecord(final String firstname, final String lastname) {
+<span class="fc" id="L119">        Optional&lt;MedicalRecord&gt; medicalRecordOptional = this.getMedicalRecordByFirstNameAndLastName(firstname,lastname);</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        if (medicalRecordOptional.isPresent()) {</span>
+            try {
+<span class="fc" id="L122">                return medicalRecordRepository.deleteMedicalRecordByFirstNameAndLastNameAllIgnoreCase(firstname, lastname);</span>
+
+<span class="nc" id="L124">            } catch (Exception exception) {</span>
+<span class="nc" id="L125">                logger.error(&quot;Erreur lors de la suppression d'une donnée médicale :&quot; + exception.getMessage() + &quot; StackTrace : &quot; + exception.getStackTrace());</span>
+<span class="nc" id="L126">                return null;</span>
+            }
+        }
+        else
+        {
+<span class="fc" id="L131">            logger.error(&quot;Erreur lors de la suppression d'une donnée médicale : personne inexistante&quot;);</span>
+<span class="fc" id="L132">            return null;</span>
+        }
+    }
+
+    /**
+     * récupère une donnée médicale fonction du prénom et nom du patient
+     * @param firstname prénom du patient
+     * @param lastname nom du patient
+     * @return donnée médicale si elle a été trouvée
+     */
+    public Optional&lt;MedicalRecord&gt; getMedicalRecordByFirstNameAndLastName(String firstname, String lastname) {
+        try {
+<span class="fc" id="L144">            return medicalRecordRepository.findByFirstNameAndLastNameAllIgnoreCase(firstname, lastname);</span>
+<span class="nc" id="L145">        } catch (Exception exception) {</span>
+<span class="nc" id="L146">            logger.error(&quot;Erreur lors de la récupération d'une donnée médicale : &quot; + exception.getMessage() + &quot; Stack Trace + &quot; + exception.getStackTrace());</span>
+<span class="nc" id="L147">            return null;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

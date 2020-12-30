@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UtilsService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">alerts</a> &gt; <a href="index.source.html" class="el_package">com.safetynet.alerts.service</a> &gt; <span class="el_source">UtilsService.java</span></div><h1>UtilsService.java</h1><pre class="source lang-java linenums">package com.safetynet.alerts.service;
+
+import com.safetynet.alerts.model.FireStation;
+import com.safetynet.alerts.model.MedicalRecord;
+import com.safetynet.alerts.model.Person;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+<span class="fc" id="L14">public class UtilsService {</span>
+
+    /**
+     * Extrait la liste des noms de famille d'une liste de persones
+     *
+     * @param personList
+     * @return
+     */
+    public static List&lt;String&gt; getLastNameList(List&lt;Person&gt; personList) {
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        if (personList != null) {</span>
+<span class="fc bfc" id="L24" title="All 4 branches covered.">            return personList.stream().filter(person -&gt; person.getLastName() != null &amp;&amp; !person.getLastName().isEmpty())</span>
+<span class="fc" id="L25">                    .map(person -&gt; person.getLastName()).distinct().collect(Collectors.toList());</span>
+        } else {
+<span class="fc" id="L27">            return new ArrayList&lt;&gt;();</span>
+        }
+    }
+
+    /**
+     * Recherche d'un dossier médical d'une personne parmi une liste de dossiers médicaux
+     *
+     * @param medicalRecordList liste de dossiers médicaux
+     * @param person            personne pour laquelle on recherche un dossier
+     * @return Optional de Dossier médical
+     */
+    public static Optional&lt;MedicalRecord&gt; findMedicalRecord(List&lt;MedicalRecord&gt; medicalRecordList, Person person) {
+
+<span class="fc" id="L40">        return medicalRecordList.stream().filter(medicalRecord -&gt;</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">                medicalRecord.getFirstName().equalsIgnoreCase(person.getFirstName())</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">                        &amp;&amp; medicalRecord.getLastName().equalsIgnoreCase(person.getLastName())</span>
+<span class="fc" id="L43">        ).findFirst();</span>
+    }
+
+    /**
+     * Extrait la liste des numéros de stations d'une liste de caserne de pompiers
+     *
+     * @param fireStationList liste de caserne de pompiers
+     * @return liste des numéros de station, null si la liste des casernes est nulle
+     */
+    public static List&lt;Integer&gt; getStationNumberList(List&lt;FireStation&gt; fireStationList) {
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        if (fireStationList != null) {</span>
+<span class="pc bpc" id="L54" title="1 of 4 branches missed.">            return fireStationList.stream().filter(fireStation -&gt; fireStation.getAddress() != null &amp;&amp; !fireStation.getAddress().isEmpty())</span>
+<span class="fc" id="L55">                    .map(fireStation -&gt; fireStation.getStation()).collect(Collectors.toList());</span>
+        } else {
+<span class="fc" id="L57">            return null;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
