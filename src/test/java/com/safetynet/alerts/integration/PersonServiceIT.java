@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(properties = {
         "application.runner.enabled=true" })
-public class PersonIT {
+public class PersonServiceIT {
 
     @Autowired
     private PersonService personService;
@@ -31,29 +31,4 @@ public class PersonIT {
     }
 
 
-
-    @Test
-    public void updatePersonIT()
-    {
-        // given
-        Person person = new Person();
-        person.setLastName("Cadigan");
-        person.setFirstName("Eric");
-        person.setAddress("1 allée des embrumes");
-        person.setZip("012345");
-        person.setEmail("monemail@email.fr");
-        person.setPhone("+330000000");
-        person.setCity("Poudelard");
-
-        // when
-        personService.updatePerson(person);
-
-        Optional<Person> foundPerson = personService.getPersonByFirstNameAndLastName(person.getFirstName(), person.getLastName());
-
-        // then
-        assertThat(foundPerson.get()).isEqualTo(person);
-
-
-
-    }
 }
