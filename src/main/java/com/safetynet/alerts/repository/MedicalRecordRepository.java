@@ -12,9 +12,6 @@ import java.util.Optional;
 public interface MedicalRecordRepository extends CrudRepository<MedicalRecord,Long> {
 
     List<MedicalRecord> findAllByLastNameAllIgnoreCase(String lastname);
-    //TODO revoir les appels à la méthode ci-dessus pour limiter la récupération des données aux personnes parcourues uniquement
-
-    List<MedicalRecord> findAllByLastNameIn(List<String> lastname);
 
     Optional<MedicalRecord> findByFirstNameAndLastNameAllIgnoreCase(String firstname, String lastname);
 

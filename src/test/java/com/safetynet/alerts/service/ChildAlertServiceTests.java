@@ -24,6 +24,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -56,8 +57,8 @@ public class ChildAlertServiceTests {
     @Test
     public void getChildAlertDTOListWithNullValues() {
         assertThat(childAlertService.getChildAlertDTOListFromAddress(null)).isNull();
-        verify(personRepositoryMock, Mockito.times(0)).findAllByAddressIgnoreCase(any(String.class));
-        verify(medicalRecordRepositoryMock, Mockito.times(0)).findAllByLastNameIn(anyList());
+        verify(personRepositoryMock, Mockito.times(0)).findAllByAddressIgnoreCase(anyString());
+        verify(medicalRecordRepositoryMock, Mockito.times(0)).findByFirstNameAndLastNameAllIgnoreCase(anyString(),anyString());
     }
 
     @Test
